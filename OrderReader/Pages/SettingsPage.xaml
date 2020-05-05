@@ -1,0 +1,63 @@
+﻿<local:BasePage x:TypeArguments="core:SettingsViewModel" x:Class="OrderReader.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OrderReader"
+      xmlns:core="clr-namespace:OrderReader.Core;assembly=OrderReader.Core"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="700"
+      Title="SettingsPage">
+
+    <Border>
+        <Grid>
+            
+            <TabControl TabStripPlacement="Left" Margin="20">
+                <TabItem Header="Processing">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}" HorizontalAlignment="Center" Margin="0 0 0 10" Text="Order Processing Settings"/>
+
+                                <TextBlock FontSize="{StaticResource FontSizeAverage}" Text="Export Directory"/>
+                                <Label Content="CSV file export directory"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Name="CSVExportDir" Text="{Binding CSVExportDir}"/>
+                                    <Button Grid.Column="1" Margin="10 5 0 5"
+                                            Content="Browse" IsEnabled="False"/>
+                                </Grid>
+                                <TextBlock FontSize="{StaticResource FontSizeAverage}" Margin="0 20 0 0" Text="Processing Settings"/>
+                                <TextBlock FontSize="{StaticResource FontSizeSmall}" Margin="0 10" TextWrapping="Wrap" Text="Here you can decide what will happen when you click &quot;Process Orders&quot;"/>
+                                <CheckBox Content="Export to CSV file"/>
+                                <CheckBox Content="Print"/>
+                            </StackPanel>
+                            <Button Grid.Row="1" Content="Save Settings" IsEnabled="False"/>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Appearance">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}" HorizontalAlignment="Center" Margin="0 0 0 10" Text="Application Appearance Settings"/>
+                            </StackPanel>
+                            <Button Grid.Row="1" Content="Save Settings" IsEnabled="False"/>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</local:BasePage>

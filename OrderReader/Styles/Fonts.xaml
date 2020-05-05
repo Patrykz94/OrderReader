@@ -1,0 +1,53 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:OrderReader"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+    <FontFamily x:Key="FontMain">pack://application;,,,/Fonts/#Trebuchet MS</FontFamily>
+    <FontFamily x:Key="IconFontRegular">pack://application;,,,/Fonts/#Font Awesome 5 Free Regular</FontFamily>
+    <FontFamily x:Key="IconFontSolid">pack://application;,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
+
+    <system:Double x:Key="FontSizeVerySmall">14</system:Double>
+    <system:Double x:Key="FontSizeSmall">16</system:Double>
+    <system:Double x:Key="FontSizeBelowAverage">18</system:Double>
+    <system:Double x:Key="FontSizeAverage">20</system:Double>
+    <system:Double x:Key="FontSizeAboveAverage">24</system:Double>
+    <system:Double x:Key="FontSizeLarge">28</system:Double>
+    <system:Double x:Key="FontSizeVeryLarge">34</system:Double>
+
+    <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
+        <Setter Property="FontFamily" Value="{StaticResource FontMain}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeAverage}"/>
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlockStyle">
+        <Setter Property="FontFamily" Value="{StaticResource FontMain}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeAverage}"/>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}"/>
+    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}"/>
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}"/>
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}"/>
+    <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}"/>
+    
+    <system:String x:Key="IconChat">&#xf086;</system:String>
+    <system:String x:Key="IconUser">&#xf007;</system:String>
+    <system:String x:Key="IconPicture">&#xf1c5;</system:String>
+    <system:String x:Key="IconGear">&#xf013;</system:String>
+    <system:String x:Key="IconChevronDown">&#xf078;</system:String>
+    <system:String x:Key="IconCheckMark">&#xf00c;</system:String>
+    
+    <!-- Navigation icons -->
+    <system:String x:Key="IconNavOrdersPanel">&#xf328;</system:String>
+    <system:String x:Key="IconNavCustomers">&#xf0c0;</system:String>
+    <system:String x:Key="IconNavSettings">&#xf013;</system:String>
+    <system:String x:Key="IconNavExit">&#xf2f5;</system:String>
+    
+    <!-- Window control icons -->
+    <system:String x:Key="IconWindowMinimize">&#xf2d1;</system:String>
+    <system:String x:Key="IconWindowRestore">&#xf2d2;</system:String>
+    <system:String x:Key="IconWindowMaximize">&#xf2d0;</system:String>
+    <system:String x:Key="IconWindowClose">&#xf410;</system:String>
+
+</ResourceDictionary>
