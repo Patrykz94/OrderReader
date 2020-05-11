@@ -4,19 +4,29 @@ using System.Windows.Input;
 namespace OrderReader.Core
 {
     /// <summary>
-    /// The View Model for a login screen
+    /// The View Model for a settings page
     /// </summary>
     public class SettingsViewModel : BaseViewModel
     {
         #region Public Properties
 
+        /// <summary>
+        /// An instance of the user settings class which holds settings that user can change
+        /// </summary>
         public UserSettings UserSettings { get; set; }
 
         #endregion
 
         #region Commands
 
+        /// <summary>
+        /// Command for loading setting
+        /// </summary>
         public ICommand LoadSettingsCommand { get; set; }
+
+        /// <summary>
+        /// Command for saving settings
+        /// </summary>
         public ICommand SaveSettingsCommand { get; set; }
 
         #endregion
@@ -24,14 +34,14 @@ namespace OrderReader.Core
         #region Constructor
 
         /// <summary>
-        /// Default constructor
+        /// A default constructor
         /// </summary>
-        /// <param name="window"></param>
         public SettingsViewModel()
         {
-
+            // Load the user settings initially
             UserSettings = Settings.LoadSettings();
 
+            // Command definitions
             LoadSettingsCommand = new RelayCommand(() => UserSettings = Settings.LoadSettings());
             SaveSettingsCommand = new RelayCommand(() => SaveSettings());
 
@@ -41,6 +51,9 @@ namespace OrderReader.Core
 
         #region Private Helpers
 
+        /// <summary>
+        /// A function that validates and saves the user settings
+        /// </summary>
         private void SaveSettings()
         {
             if (UserSettings.UserExportPath == "") UserSettings.UserExportPath = Settings.DefaultExportPath;

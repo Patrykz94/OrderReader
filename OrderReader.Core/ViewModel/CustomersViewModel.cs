@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace OrderReader.Core
 {
     /// <summary>
-    /// The View Model for customer settings
+    /// The View Model for customer settings page
     /// </summary>
     public class CustomersViewModel : BaseViewModel
     {
@@ -102,11 +102,12 @@ namespace OrderReader.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="window"></param>
         public CustomersViewModel()
         {
+            // Initialize the customers property
             Customers = new CustomersHandler();
 
+            // Command definitions
             DiscardCommand = new RelayCommand(() => {
                 Customers.LoadCustomers();
                 OnPropertyChanged(nameof(Customers));
