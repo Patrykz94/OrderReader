@@ -38,12 +38,12 @@ namespace OrderReader
         /// <summary>
         /// The minimum width of the window
         /// </summary>
-        public double WindowMinimumWidth { get; set; } = 1000;
+        public double WindowMinimumWidth { get; set; } = 1200;
 
         /// <summary>
         /// The minimum height of the window
         /// </summary>
-        public double WindowMinimumHeight { get; set; } = 600;
+        public double WindowMinimumHeight { get; set; } = 700;
 
         /// <summary>
         /// True if the window should be borderless because it is docked or maximized

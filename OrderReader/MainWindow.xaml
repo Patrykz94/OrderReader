@@ -13,7 +13,7 @@
         Icon="Images/Logo/logo-small.png"
         MinWidth="{Binding WindowMinimumWidth}"
         MinHeight="{Binding WindowMinimumHeight}"
-        Title="Order Reader" Height="600" Width="1000">
+        Title="Order Reader" Height="700" Width="1200">
 
     <Window.Resources>
         <Style TargetType="{x:Type local:MainWindow}">

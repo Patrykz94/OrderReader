@@ -1,4 +1,6 @@
-﻿namespace OrderReader.Core
+﻿using System.Windows.Input;
+
+namespace OrderReader.Core
 {
     /// <summary>
     /// The View Model for a login screen
@@ -7,13 +9,14 @@
     {
         #region Public Properties
 
-        public string CSVExportDir { get; set; }
+        public UserSettings UserSettings { get; set; }
 
         #endregion
 
         #region Commands
 
-
+        public ICommand LoadSettings { get; set; }
+        public ICommand SaveSettings { get; set; }
 
         #endregion
 
@@ -26,7 +29,10 @@
         public SettingsViewModel()
         {
 
-            CSVExportDir = "Test";
+            UserSettings = Settings.LoadSettings();
+
+            LoadSettings = new RelayCommand(() => UserSettings = Settings.LoadSettings());
+            SaveSettings = new RelayCommand(() => Settings.SaveSettings(UserSettings));
 
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml.Serialization;
+﻿using System.Collections.ObjectModel;
 
 namespace OrderReader.Core
 {
@@ -15,7 +12,7 @@ namespace OrderReader.Core
         /// <summary>
         /// A list of all known customers
         /// </summary>
-        public List<Customer> Customers { get; private set; }
+        public ObservableCollection<Customer> Customers { get; private set; }
 
         #endregion
 
@@ -26,7 +23,7 @@ namespace OrderReader.Core
         /// </summary>
         public CustomersHandler()
         {
-            Customers = new List<Customer>();
+            LoadCustomers();
         }
 
         #endregion
@@ -35,23 +32,12 @@ namespace OrderReader.Core
 
         public void SaveCustomers()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Customer>), new XmlRootAttribute("Customers"));
-
-            using(TextWriter tw = new StreamWriter($@"{Environment.CurrentDirectory}\test.xml"))
-            {
-                serializer.Serialize(tw, Customers);
-            }
+            Settings.SaveCustomers(Customers);
         }
 
         public void LoadCustomers()
         {
-            XmlSerializer deserializer = new XmlSerializer(typeof(List<Customer>), new XmlRootAttribute("Customers"));
-
-            using(TextReader reader = new StreamReader($@"{Environment.CurrentDirectory}\test.xml"))
-            {
-                object obj = deserializer.Deserialize(reader);
-                Customers = (List<Customer>)obj;
-            }
+            Customers = Settings.LoadCustomers();
         }
 
         #endregion

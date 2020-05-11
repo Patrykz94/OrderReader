@@ -13,7 +13,7 @@
         <Grid>
             
             <TabControl TabStripPlacement="Left" Margin="20">
-                <TabItem Header="Processing">
+                <TabItem Header="Processing" Tag="Decide how orders are processed">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -21,7 +21,14 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}" HorizontalAlignment="Center" Margin="0 0 0 10" Text="Order Processing Settings"/>
+                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}"
+                                           HorizontalAlignment="Center"
+                                           Text="Order Processing Settings"/>
+                                
+                                <TextBlock FontSize="{StaticResource FontSizeSmall}"
+                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                           HorizontalAlignment="Center" Margin="0 0 0 10"
+                                           Text="Decide how orders are processed"/>
 
                                 <TextBlock FontSize="{StaticResource FontSizeAverage}" Text="Export Directory"/>
                                 <Label Content="CSV file export directory"/>
@@ -30,30 +37,57 @@
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Name="CSVExportDir" Text="{Binding CSVExportDir}"/>
+                                    <TextBox Grid.Column="0" Name="CSVExportDir" Text="{Binding UserSettings.UserExportPath}"/>
                                     <Button Grid.Column="1" Margin="10 5 0 5"
                                             Content="Browse" IsEnabled="False"/>
                                 </Grid>
-                                <TextBlock FontSize="{StaticResource FontSizeAverage}" Margin="0 20 0 0" Text="Processing Settings"/>
-                                <TextBlock FontSize="{StaticResource FontSizeSmall}" Margin="0 10" TextWrapping="Wrap" Text="Here you can decide what will happen when you click &quot;Process Orders&quot;"/>
-                                <CheckBox Content="Export to CSV file"/>
-                                <CheckBox Content="Print"/>
+                                <TextBlock FontSize="{StaticResource FontSizeAverage}"
+                                           Margin="0 20 0 0" Text="Processing Settings"/>
+                                
+                                <TextBlock FontSize="{StaticResource FontSizeSmall}"
+                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                           Margin="0 10" TextWrapping="Wrap"
+                                           Text="Decide what happens when you click &quot;Process Orders&quot;"/>
+                                
+                                <CheckBox Content="Export to CSV file" IsChecked="{Binding UserSettings.ExportCSV}"/>
+                                <CheckBox Content="Print" IsChecked="{Binding UserSettings.PrintOrders}"/>
                             </StackPanel>
-                            <Button Grid.Row="1" Content="Save Settings" IsEnabled="False"/>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="Save Changes" Command="{Binding SaveSettings}" Margin="0 5 10 5"/>
+                                <Button Grid.Column="1" Style="{StaticResource AltButton}" Content="Discard Changes" Command="{Binding LoadSettings}" Margin="10 5 0 5"/>
+                            </Grid>
                         </Grid>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Appearance">
+                <TabItem Header="Appearance" Tag="Customize application appearance">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}" HorizontalAlignment="Center" Margin="0 0 0 10" Text="Application Appearance Settings"/>
+                                <TextBlock FontSize="{StaticResource FontSizeAboveAverage}"
+                                           HorizontalAlignment="Center"
+                                           Text="Application Appearance Settings"/>
+                                
+                                <TextBlock FontSize="{StaticResource FontSizeSmall}"
+                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                           HorizontalAlignment="Center" Margin="0 0 0 10"
+                                           Text="Cheng colorz n shit, yo"/>
                             </StackPanel>
-                            <Button Grid.Row="1" Content="Save Settings" IsEnabled="False"/>
+                            <StackPanel Grid.Row="1">
+                                <TextBlock Text="Nothing to see here..."
+                                           FontSize="{StaticResource FontSizeAboveAverage}"
+                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <Button Grid.Row="2" Content="Save Settings" IsEnabled="False"/>
                         </Grid>
                     </ScrollViewer>
                 </TabItem>

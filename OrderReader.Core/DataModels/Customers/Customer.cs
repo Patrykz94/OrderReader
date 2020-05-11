@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 
 namespace OrderReader.Core
@@ -30,12 +31,12 @@ namespace OrderReader.Core
         /// <summary>
         /// List of depots for this customer
         /// </summary>
-        public List<Depot> Depots { get; } = new List<Depot>();
+        public ObservableCollection<Depot> Depots { get; } = new ObservableCollection<Depot>();
 
         /// <summary>
         /// List of products for this customer
         /// </summary>
-        public List<Product> Products { get; } = new List<Product>();
+        public ObservableCollection<Product> Products { get; } = new ObservableCollection<Product>();
 
         #endregion
 
@@ -51,7 +52,7 @@ namespace OrderReader.Core
         /// <param name="OrderName">Name on Orders</param>
         /// <param name="Depots">A list of depots that belong to this customer</param>
         /// <param name="Products">A list of products that belong to this customer</param>
-        public Customer(string Name, string CSVName, string OrderName, List<Depot> Depots = null, List<Product> Products = null)
+        public Customer(string Name, string CSVName, string OrderName, ObservableCollection<Depot> Depots = null, ObservableCollection<Product> Products = null)
         {
             this.Name = Name;
             this.CSVName = CSVName;
@@ -74,8 +75,8 @@ namespace OrderReader.Core
             Name = (string)info.GetValue("Name", typeof(string));
             CSVName = (string)info.GetValue("CSVName", typeof(string));
             OrderName = (string)info.GetValue("OrderName", typeof(string));
-            Depots = (List<Depot>)info.GetValue("Depots", typeof(List<Depot>));
-            Products = (List<Product>)info.GetValue("Products", typeof(List<Product>));
+            Depots = (ObservableCollection<Depot>)info.GetValue("Depots", typeof(ObservableCollection<Depot>));
+            Products = (ObservableCollection<Product>)info.GetValue("Products", typeof(ObservableCollection<Product>));
         }
 
         #endregion
@@ -133,7 +134,7 @@ namespace OrderReader.Core
         /// Add a list of products if it doesn't already exist
         /// </summary>
         /// <param name="Products">A list of <see cref="Product"/></param>
-        public void AddProducts(List<Product> Products)
+        public void AddProducts(ObservableCollection<Product> Products)
         {
             foreach (Product product in Products)
             {
@@ -157,6 +158,7 @@ namespace OrderReader.Core
                 if (product.Name == Name)
                 {
                     Products.Remove(product);
+                    return;
                 }
             }
         }
@@ -215,7 +217,7 @@ namespace OrderReader.Core
         /// Add a list of depots if it doesn't already exist
         /// </summary>
         /// <param name="Depots">A list of <see cref="Depot"/></param>
-        public void AddDepots(List<Depot> Depots)
+        public void AddDepots(ObservableCollection<Depot> Depots)
         {
             foreach (Depot depot in Depots)
             {
@@ -239,6 +241,7 @@ namespace OrderReader.Core
                 if (depot.Name == Name)
                 {
                     Depots.Remove(depot);
+                    return;
                 }
             }
         }

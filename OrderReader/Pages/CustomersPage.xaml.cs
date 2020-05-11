@@ -1,4 +1,6 @@
 ﻿using OrderReader.Core;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OrderReader
 {

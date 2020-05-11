@@ -7,6 +7,8 @@
     <FontFamily x:Key="IconFontRegular">pack://application;,,,/Fonts/#Font Awesome 5 Free Regular</FontFamily>
     <FontFamily x:Key="IconFontSolid">pack://application;,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
 
+    <system:Double x:Key="FontSizeTiny">10</system:Double>
+    <system:Double x:Key="FontSizeExtremelySmall">12</system:Double>
     <system:Double x:Key="FontSizeVerySmall">14</system:Double>
     <system:Double x:Key="FontSizeSmall">16</system:Double>
     <system:Double x:Key="FontSizeBelowAverage">18</system:Double>

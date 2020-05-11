@@ -4,10 +4,10 @@
 
     <!-- Background Colors -->
     
-    <Color x:Key="BackgroundLight">#f5f5f5</Color>
+    <Color x:Key="BackgroundLight">#f1f1f1</Color>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLight}"/>
 
-    <Color x:Key="BackgroundLighter">#fbfbfb</Color>
+    <Color x:Key="BackgroundLighter">#f8f8f8</Color>
     <SolidColorBrush x:Key="BackgroundLighterBrush" Color="{StaticResource BackgroundLighter}"/>
 
     <Color x:Key="BackgroundVeryLight">#ffffff</Color>
@@ -27,6 +27,9 @@
 
     <Color x:Key="BackgroundRed">#cc4040</Color>
     <SolidColorBrush x:Key="BackgroundRedBrush" Color="{StaticResource BackgroundRed}"/>
+
+    <Color x:Key="BackgroundLightRed">#ff6f6f</Color>
+    <SolidColorBrush x:Key="BackgroundLightRedBrush" Color="{StaticResource BackgroundLightRed}"/>
 
     <Color x:Key="BackgroundGreen">#30aa30</Color>
     <SolidColorBrush x:Key="BackgroundGreenBrush" Color="{StaticResource BackgroundGreen}"/>

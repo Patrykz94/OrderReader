@@ -20,7 +20,7 @@
             <Border Background="{StaticResource BackgroundVeryLightBrush}"
                     CornerRadius="10"
                     Padding="15 10"
-                    Margin="20 20 20 0"
+                    Margin="10 10 10 0"
                     MaxWidth="500"
                     Grid.Row="0">
 
@@ -34,23 +34,232 @@
                                Margin="0 0 20 0"
                                Grid.Column="0"/>
 
-                    <ComboBox Grid.Column="1" ItemsSource="{Binding Customers}" SelectedIndex="0"/>
+                    <ComboBox x:Name="customerSelection" Grid.Column="1" Text="-Select Customer-" ItemsSource="{Binding Customers.Customers}" SelectedIndex="{Binding SelectedCustomerID}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
             </Border>
 
             <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="20">
-                <TabItem Header="Customer">
-                    <StackPanel>
-                        <Button Content="Load Customers" Command="{Binding LoadCustomers}"/>
-                        <Button Content="Save Customers" Command="{Binding SaveCustomers}"/>
-                        <TextBlock/>
-                    </StackPanel>
+                <TabItem Header="Customer" Tag="Manage customer information">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           FontSize="{StaticResource FontSizeAboveAverage}"
+                                           Text="Customer Information"/>
+                                <TextBlock HorizontalAlignment="Center"
+                                           FontSize="{StaticResource FontSizeSmall}"
+                                           Text="View and manage information about customers"
+                                           Margin="0 0 0 20" Foreground="{StaticResource ForegroundLessDarkBrush}"/>
+
+                                <TextBlock Text="Customer Information"/>
+
+                                <UniformGrid Columns="2">
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name"/>
+                                        <TextBox Text="{Binding Name}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content="Name in CSV files"/>
+                                        <TextBox Text="{Binding CSVName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name on order files"/>
+                                        <TextBox Text="{Binding OrderName}"/>
+                                    </StackPanel>
+                                
+                                </UniformGrid>
+
+                                <TextBlock Text="Other Information" Margin="0 30 0 10"/>
+
+                                <UniformGrid Columns="2">
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Number of depots"/>
+                                        <TextBlock Text="{Binding Depots.Count}" Margin="5 0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content="Number of products"/>
+                                        <TextBlock Text="{Binding Products.Count}" Margin="5 0"/>
+                                    </StackPanel>
+                                </UniformGrid>
+
+                            </StackPanel>
+                            
+                            <UniformGrid Grid.Row="1" Columns="2" Margin="0 20 0 0">
+                                <Button Content="Save Changes" Command="{Binding SaveCommand}" Margin="0 5 10 5"/>
+                                <Button Style="{StaticResource AltButton}" Content="Discard Changes" Command="{Binding DiscardCommand}" Margin="10 5 0 5"/>
+                            </UniformGrid>
+                        </Grid>
+                    </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Depots">
-                    <TextBlock Text="Depots"/>
+                <TabItem Header="Depots" Tag="Add or remove depots" DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock HorizontalAlignment="Center"
+                                               FontSize="{StaticResource FontSizeAboveAverage}">
+                                        <Run Text="Depots for "/><Run Text="{Binding Name}"/>
+                                </TextBlock>
+                                <TextBlock HorizontalAlignment="Center"
+                                                   FontSize="{StaticResource FontSizeSmall}"
+                                                   Text="Add, edit or remove depots from customers"
+                                                   Margin="0 0 0 20" Foreground="{StaticResource ForegroundLessDarkBrush}"/>
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0 0 10 20"
+                                            DataContext="{Binding ElementName=DepotsList, Path=SelectedItem}">
+                                    <TextBlock FontSize="{StaticResource FontSizeBelowAverage}" Text="Edit/Remove selected depot"/>
+                                    <Label Content="Name"/>
+                                    <TextBox Text="{Binding Name}"/>
+                                    <Label Content="Name in CSV files"/>
+                                    <TextBox Text="{Binding CSVName}"/>
+                                    <Label Content="Name on order files"/>
+                                    <TextBox Text="{Binding OrderName}"/>
+                                    <Button Content="Remove Depot" Command="{Binding DataContext.RemoveDepotCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}" IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"/>
+                                </StackPanel>
+                            
+                                <ListBox Grid.Column="1" x:Name="DepotsList" Margin="10 0 0 20"
+                                         ItemsSource="{Binding Depots}" SelectedIndex="{Binding DataContext.SelectedDepotID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+
+                            <StackPanel Grid.Row="2" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
+                                <TextBlock Text="Add new depot"/>
+
+                                <UniformGrid Columns="2">
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewDepotName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content="Name in CSV files" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewDepotCSVName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name on order files" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewDepotOrderName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content=""/>
+                                        <Button Content="Add Depot" Command="{Binding AddNewDepotCommand}"/>
+                                    </StackPanel>
+
+                                </UniformGrid>
+                            </StackPanel>
+
+                        </Grid>
+                    </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Products">
-                    <TextBlock Text="Products"/>
+                <TabItem Header="Products" Tag="Add or remove products" DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock HorizontalAlignment="Center"
+                                               FontSize="{StaticResource FontSizeAboveAverage}">
+                                        <Run Text="Products for "/><Run Text="{Binding Name}"/>
+                                </TextBlock>
+                                <TextBlock HorizontalAlignment="Center"
+                                                   FontSize="{StaticResource FontSizeSmall}"
+                                                   Text="Add, edit or remove products from customers"
+                                                   Margin="0 0 0 20" Foreground="{StaticResource ForegroundLessDarkBrush}"/>
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" Margin="0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0 0 10 20"
+                                            DataContext="{Binding ElementName=ProductsList, Path=SelectedItem}">
+                                    <TextBlock FontSize="{StaticResource FontSizeBelowAverage}" Text="Edit/Remove selected product"/>
+                                    <Label Content="Name"/>
+                                    <TextBox Text="{Binding Name}"/>
+                                    <Label Content="Name in CSV files"/>
+                                    <TextBox Text="{Binding CSVName}"/>
+                                    <Label Content="Name on order files"/>
+                                    <TextBox Text="{Binding OrderName}"/>
+                                    <Button Content="Remove Product" Command="{Binding DataContext.RemoveProductCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}" IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                </StackPanel>
+
+                                <ListBox Grid.Column="1" x:Name="ProductsList" Margin="10 0 0 20"
+                                         ItemsSource="{Binding Products}" SelectedIndex="{Binding DataContext.SelectedProductID, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+
+                            <StackPanel Grid.Row="2" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
+                                <TextBlock Text="Add new product"/>
+
+                                <UniformGrid Columns="2">
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewProductName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content="Name in CSV files" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewProductCSVName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="0 0 10 0">
+                                        <Label Content="Name on order files" Margin="0 5"/>
+                                        <TextBox Text="{Binding NewProductOrderName}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Margin="10 0 0 0">
+                                        <Label Content=""/>
+                                        <Button Content="Add Product" Command="{Binding AddNewProductCommand}"/>
+                                    </StackPanel>
+
+                                </UniformGrid>
+                            </StackPanel>
+
+                        </Grid>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
             
