@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.IO;
+using System.Windows.Input;
 
 namespace OrderReader.Core
 {
@@ -15,8 +16,8 @@ namespace OrderReader.Core
 
         #region Commands
 
-        public ICommand LoadSettings { get; set; }
-        public ICommand SaveSettings { get; set; }
+        public ICommand LoadSettingsCommand { get; set; }
+        public ICommand SaveSettingsCommand { get; set; }
 
         #endregion
 
@@ -31,9 +32,26 @@ namespace OrderReader.Core
 
             UserSettings = Settings.LoadSettings();
 
-            LoadSettings = new RelayCommand(() => UserSettings = Settings.LoadSettings());
-            SaveSettings = new RelayCommand(() => Settings.SaveSettings(UserSettings));
+            LoadSettingsCommand = new RelayCommand(() => UserSettings = Settings.LoadSettings());
+            SaveSettingsCommand = new RelayCommand(() => SaveSettings());
 
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        private void SaveSettings()
+        {
+            if (UserSettings.UserExportPath == "") UserSettings.UserExportPath = Settings.DefaultExportPath;
+
+            if (Directory.Exists(UserSettings.UserExportPath))
+            {
+                Settings.SaveSettings(UserSettings);
+                UserSettings = Settings.LoadSettings();
+            }
+
+            // TODO: Let user know if something went wrong
         }
 
         #endregion

@@ -37,9 +37,10 @@
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Name="CSVExportDir" Text="{Binding UserSettings.UserExportPath}"/>
+                                    <TextBox Grid.Column="0" Name="CSVExportDir"
+                                             Text="{Binding UserSettings.UserExportPath, UpdateSourceTrigger=PropertyChanged}"/>
                                     <Button Grid.Column="1" Margin="10 5 0 5"
-                                            Content="Browse" IsEnabled="False"/>
+                                            Content="Browse" Click="BrowseButton_Click"/>
                                 </Grid>
                                 <TextBlock FontSize="{StaticResource FontSizeAverage}"
                                            Margin="0 20 0 0" Text="Processing Settings"/>
@@ -48,17 +49,17 @@
                                            Foreground="{StaticResource ForegroundLessDarkBrush}"
                                            Margin="0 10" TextWrapping="Wrap"
                                            Text="Decide what happens when you click &quot;Process Orders&quot;"/>
-                                
-                                <CheckBox Content="Export to CSV file" IsChecked="{Binding UserSettings.ExportCSV}"/>
-                                <CheckBox Content="Print" IsChecked="{Binding UserSettings.PrintOrders}"/>
+
+                                <CheckBox Content="Export to CSV file" IsChecked="{Binding UserSettings.ExportCSV, UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox Content="Print" IsChecked="{Binding UserSettings.PrintOrders, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="Save Changes" Command="{Binding SaveSettings}" Margin="0 5 10 5"/>
-                                <Button Grid.Column="1" Style="{StaticResource AltButton}" Content="Discard Changes" Command="{Binding LoadSettings}" Margin="10 5 0 5"/>
+                                <Button Grid.Column="0" Content="Save Changes" Command="{Binding SaveSettingsCommand}" Margin="0 5 10 5"/>
+                                <Button Grid.Column="1" Style="{StaticResource AltButton}" Content="Discard Changes" Command="{Binding LoadSettingsCommand}" Margin="10 5 0 5"/>
                             </Grid>
                         </Grid>
                     </ScrollViewer>
