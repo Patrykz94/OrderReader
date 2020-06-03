@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -32,11 +30,6 @@ namespace OrderReader.Core
         /// The full path of the settings file
         /// </summary>
         public static string SettingsFile { get; } = Path.GetFullPath(Path.Combine(SettingsPath, @"settings.xml"));
-
-        /// <summary>
-        /// The full path of the customers file
-        /// </summary>
-        public static string CustomersFile { get; } = Path.GetFullPath(Path.Combine(SettingsPath, @"customers.xml"));
 
         /// <summary>
         /// The default export location for CSV files. This will be created and used if the user doesn't specify a custom location
@@ -79,34 +72,6 @@ namespace OrderReader.Core
             using (TextWriter writer = new StreamWriter(SettingsFile))
             {
                 serializer.Serialize(writer, settings);
-            }
-        }
-
-        public static ObservableCollection<Customer> LoadCustomers()
-        {
-            if (File.Exists(CustomersFile))
-            {
-                XmlSerializer deserializer = new XmlSerializer(typeof(ObservableCollection<Customer>), new XmlRootAttribute("Customers"));
-
-                using (TextReader reader = new StreamReader(CustomersFile))
-                {
-                    object obj = deserializer.Deserialize(reader);
-                    return (ObservableCollection<Customer>)obj;
-                }
-            }
-
-            return new ObservableCollection<Customer>();
-        }
-
-        public static void SaveCustomers(ObservableCollection<Customer> customers)
-        {
-            if (!Directory.Exists(SettingsPath)) Directory.CreateDirectory(SettingsPath);
-
-            XmlSerializer serializer = new XmlSerializer(typeof(ObservableCollection<Customer>), new XmlRootAttribute("Customers"));
-
-            using (TextWriter writer = new StreamWriter(CustomersFile))
-            {
-                serializer.Serialize(writer, customers);
             }
         }
 

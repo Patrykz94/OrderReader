@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:OrderReader"
       xmlns:core="clr-namespace:OrderReader.Core;assembly=OrderReader.Core"
       mc:Ignorable="d" 
-      d:DesignHeight="500" d:DesignWidth="700"
+      d:DesignHeight="600" d:DesignWidth="900"
       Title="SettingsPage">
 
     <Border>
@@ -30,28 +30,48 @@
                                            HorizontalAlignment="Center" Margin="0 0 0 10"
                                            Text="Decide how orders are processed"/>
 
-                                <TextBlock FontSize="{StaticResource FontSizeAverage}" Text="Export Directory"/>
-                                <Label Content="CSV file export directory"/>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Name="CSVExportDir"
-                                             Text="{Binding UserSettings.UserExportPath, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <Button Grid.Column="1" Margin="10 5 0 5"
-                                            Content="Browse" Click="BrowseButton_Click"/>
-                                </Grid>
-                                <TextBlock FontSize="{StaticResource FontSizeAverage}"
-                                           Margin="0 20 0 0" Text="Processing Settings"/>
-                                
-                                <TextBlock FontSize="{StaticResource FontSizeSmall}"
-                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
-                                           Margin="0 10" TextWrapping="Wrap"
-                                           Text="Decide what happens when you click &quot;Process Orders&quot;"/>
+                                <GroupBox Header="Export Directory" Padding="0 10">
+                                    
+                                    <StackPanel>
+                                        
+                                        <Label Content="CSV file export directory"/>
+                                        
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBox Grid.Column="0" Name="CSVExportDir"
+                                                     Text="{Binding UserSettings.UserExportPath, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <Button Grid.Column="1" Margin="10 5 0 5"
+                                                    Content="Browse" Click="BrowseButton_Click"/>
+                                        </Grid>
 
-                                <CheckBox Content="Export to CSV file" IsChecked="{Binding UserSettings.ExportCSV, UpdateSourceTrigger=PropertyChanged}"/>
-                                <CheckBox Content="Print" IsChecked="{Binding UserSettings.PrintOrders, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+
+                                </GroupBox>
+
+                                <GroupBox Header="Processing Settings" Margin="0 20 0 0" Padding="0 10">
+
+                                    <StackPanel>
+
+                                        <TextBlock FontSize="{StaticResource FontSizeSmall}"
+                                               Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                               Margin="0 10" TextWrapping="Wrap"
+                                               Text="Decide what happens when you click &quot;Process Orders&quot;"/>
+
+                                        <CheckBox Content="Export to CSV file"
+                                                  Margin="0 5"
+                                                  IsChecked="{Binding UserSettings.ExportCSV, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <CheckBox Content="Print"
+                                                  Margin="0 5"
+                                                  IsChecked="{Binding UserSettings.PrintOrders, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                    </StackPanel>
+
+                                </GroupBox>
+                                
                             </StackPanel>
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>

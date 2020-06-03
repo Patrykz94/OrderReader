@@ -1,60 +1,76 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace OrderReader.Core
+﻿namespace OrderReader.Core
 {
     /// <summary>
     /// A class that stores information about depot
     /// </summary>
-    [Serializable]
-    public class Depot : ISerializable
+    public class Depot
     {
         #region Public Properties
-            
+
+        /// <summary>
+        /// Unique Depot ID number
+        /// </summary>
+        public int Id { get; } = -1;
+
+        /// <summary>
+        /// Id of the customer that this depot belongs to
+        /// </summary>
+        public int CustomerId { get; }
+
         /// <summary>
         /// This is the name of the depot that will be displayed in the application
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// The name that will appear on the CSV file
         /// </summary>
-        public string CSVName { get; set; }
+        public string CSVName { get; private set; }
 
         /// <summary>
         /// The name that will appear on the orders that we are reading from
         /// </summary>
-        public string OrderName { get; set; }
+        public string OrderName { get; private set; }
 
         #endregion
 
         #region Constructor
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public Depot() { }
 
         /// <summary>
-        /// Default constructor that creates a new depot
+        /// Constructor that creates a new depot
         /// </summary>
-        /// <param name="Name">Name as will appear in the UI</param>
-        /// <param name="CSVName">Name on CSV files</param>
-        /// <param name="OrderName">Name on Orders</param>
-        public Depot(string Name, string CSVName, string OrderName)
+        /// <param name="customerId">The Id number of customer that owns this depot</param>
+        /// <param name="name">Name as will appear in the UI</param>
+        /// <param name="csvName">Name on CSV files</param>
+        /// <param name="orderName">Name on Orders</param>
+        public Depot(int customerId, string name, string csvName, string orderName)
         {
-            this.Name = Name;
-            this.CSVName = CSVName;
-            this.OrderName = OrderName;
+            CustomerId = customerId;
+            Name = name;
+            CSVName = csvName;
+            OrderName = orderName;
         }
 
         /// <summary>
-        /// A constructor for deserializing this class
+        /// Constructor that creates a new depot. Used when loading depots from databse
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public Depot(SerializationInfo info, StreamingContext context)
+        /// <param name="id">The Id number of this depot</param>
+        /// <param name="customerId">The Id number of customer that owns this depot</param>
+        /// <param name="name">Name as will appear in the UI</param>
+        /// <param name="csvName">Name on CSV files</param>
+        /// <param name="orderName">Name on Orders</param>
+        public Depot(int id, int customerId, string name, string csvName, string orderName)
         {
-            Name = (string)info.GetValue("Name", typeof(string));
-            CSVName = (string)info.GetValue("CSVName", typeof(string));
-            OrderName = (string)info.GetValue("OrderName", typeof(string));
+            Id = id;
+            CustomerId = customerId;
+            Name = name;
+            CSVName = csvName;
+            OrderName = orderName;
         }
 
         #endregion
@@ -64,26 +80,14 @@ namespace OrderReader.Core
         /// <summary>
         /// Updates the depot information
         /// </summary>
-        /// <param name="Name">Name as will appear in the UI</param>
-        /// <param name="CSVName">Name on CSV files</param>
-        /// <param name="OrderName">Name on Orders</param>
-        public void Update(string Name, string CSVName, string OrderName)
+        /// <param name="name">Name as will appear in the UI</param>
+        /// <param name="csvName">Name on CSV files</param>
+        /// <param name="orderName">Name on Orders</param>
+        public void Update(string name, string csvName, string orderName)
         {
-            this.Name = Name;
-            this.CSVName = CSVName;
-            this.OrderName = OrderName;
-        }
-
-        /// <summary>
-        /// Serializes this object
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Name", Name);
-            info.AddValue("CSVName", CSVName);
-            info.AddValue("OrderName", OrderName);
+            Name = name;
+            CSVName = csvName;
+            OrderName = orderName;
         }
 
         #endregion

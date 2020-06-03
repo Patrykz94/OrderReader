@@ -190,20 +190,9 @@
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="{StaticResource BackgroundLightBlue}" Duration="0:0:0.1" Storyboard.TargetName="border" Storyboard.TargetProperty="Background.Color"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="{StaticResource BackgroundBlue}" Duration="0:0:0.1" Storyboard.TargetName="border" Storyboard.TargetProperty="Background.Color"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BackgroundLightBlueBrush}"/>
+                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="{StaticResource BackgroundLessDarkBrush}"/>
                             <Setter Property="Foreground" Value="{StaticResource ForegroundLessLightBrush}"/>
@@ -318,8 +307,8 @@
     
     <!-- Icon button -->
     <Style x:Key="IconButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
-        <Setter Property="Background" Value="{StaticResource BackgroundBlueBrush}"/>
-        <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLessDarkBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
         <Setter Property="FontFamily" Value="{StaticResource IconFontSolid}"/>
@@ -335,36 +324,30 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="True">
+                            SnapsToDevicePixels="True"
+                            CornerRadius="3">
                         <Grid>
                             <Viewbox>
                                 <TextBlock Text="{TemplateBinding Content}"
-                                       Focusable="False"
-                                       FontFamily="{TemplateBinding FontFamily}"
-                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                       Margin="{TemplateBinding Padding}"
-                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                           Focusable="False"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                           Margin="{TemplateBinding Padding}"
+                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                             </Viewbox>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="{StaticResource BackgroundLightBlue}" Duration="0:0:0.2" Storyboard.TargetName="border" Storyboard.TargetProperty="Background.Color"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="MouseLeave">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="{StaticResource BackgroundBlue}" Duration="0:0:0.2" Storyboard.TargetName="border" Storyboard.TargetProperty="Background.Color"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" TargetName="border" Value="{StaticResource ForegroundDarkBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource BackgroundBlueBrush}"/>
+                            <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource BackgroundLightBlueBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -458,6 +441,53 @@
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                     </BulletDecorator>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ListBox Item Delete Button -->
+    <Style TargetType="{x:Type Button}" x:Key="ListBoxItemDeleteButton" BasedOn="{StaticResource TextButton}">
+        <Setter Property="Padding" Value="10 0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource IconFontSolid}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBelowAverage}"/>
+        <Setter Property="Content" Value="{StaticResource IconDelete}"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="3">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="Label"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       FontFamily="{StaticResource FontMain}"
+                                       FontSize="{StaticResource FontSizeSmall}"
+                                       Text="Remove"
+                                       Visibility="Collapsed"/>
+                            <TextBlock VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       FontFamily="{TemplateBinding FontFamily}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Text="{TemplateBinding Content}"
+                                       Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="true">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter TargetName="Label" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource BackgroundRedBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

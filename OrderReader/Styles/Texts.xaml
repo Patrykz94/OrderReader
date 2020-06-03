@@ -12,7 +12,7 @@
     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="FontSize" Value="{StaticResource FontSizeAverage}"/>
         <Setter Property="FontFamily" Value="{StaticResource FontMain}"/>
-        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Padding" Value="9"/>
         <Setter Property="Margin" Value="0 5 0 5"/>
         <Setter Property="BorderBrush" Value="{StaticResource ForegroundLessDarkBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -371,7 +371,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                     <Border x:Name="Border"
-                            Padding="5 5"
+                            Padding="5"
                             SnapsToDevicePixels="True"
                             Background="Transparent">
                         <VisualStateManager.VisualStateGroups>
@@ -420,12 +420,13 @@
                         <Border x:Name="Border"
                                 Grid.Column="1"
                                 CornerRadius="10"
-                                Padding="20"
                                 KeyboardNavigation.TabNavigation="Local"
                                 KeyboardNavigation.DirectionalNavigation="Contained"
                                 KeyboardNavigation.TabIndex="2"
                                 Background="White">
-                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="20">
+                                <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
+                            </ScrollViewer>
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -464,7 +465,7 @@
                             </ContentControl>
                         </Border>
                     </Grid>
-                    
+
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Panel.ZIndex" Value="100" />
@@ -477,6 +478,70 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundVeryLightBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ForegroundLessDarkBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBox">
+                    <Border Name="Border"
+                            BorderThickness="1"
+                            CornerRadius="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                        <ScrollViewer Margin="0" Focusable="false">
+                            <StackPanel Margin="4" IsItemsHost="True"/>
+                        </ScrollViewer>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="Border" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource BackgroundBlueBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="Foreground" Value="{StaticResource ForegroundVeryDarkBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border Padding="5"
+                            SnapsToDevicePixels="true"
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource ForegroundLightBrush}"/>
+                            <Setter Property="Background" Value="{StaticResource BackgroundBlueBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="{x:Type GroupBox}" TargetType="GroupBox">
+        <Setter Property="BorderBrush" Value="{StaticResource ForegroundLessLightBrush}"/>
     </Style>
 
 </ResourceDictionary>

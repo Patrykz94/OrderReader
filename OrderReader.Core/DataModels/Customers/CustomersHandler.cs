@@ -30,14 +30,9 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public void SaveCustomers()
-        {
-            Settings.SaveCustomers(Customers);
-        }
-
         public void LoadCustomers()
         {
-            Customers = Settings.LoadCustomers();
+            Customers = SqliteDataAccess.LoadCustomers();
         }
 
         #endregion

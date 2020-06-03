@@ -33,12 +33,15 @@
     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}"/>
     <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}"/>
     
+    <!-- Regular Icons -->
     <system:String x:Key="IconChat">&#xf086;</system:String>
     <system:String x:Key="IconUser">&#xf007;</system:String>
     <system:String x:Key="IconPicture">&#xf1c5;</system:String>
     <system:String x:Key="IconGear">&#xf013;</system:String>
     <system:String x:Key="IconChevronDown">&#xf078;</system:String>
     <system:String x:Key="IconCheckMark">&#xf00c;</system:String>
+    <system:String x:Key="IconDelete">&#xf2ed;</system:String>
+    <system:String x:Key="IconReload">&#xf2f1;</system:String>
     
     <!-- Navigation icons -->
     <system:String x:Key="IconNavOrdersPanel">&#xf328;</system:String>
