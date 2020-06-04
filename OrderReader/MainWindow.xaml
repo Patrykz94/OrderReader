@@ -131,11 +131,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Frame Grid.Column="1" x:Name="MainFrame"
-                   NavigationUIVisibility="Hidden"
-                   Content="{Binding ApplicationViewModel.CurrentPage,
+            <local:PageHost Grid.Column="1"
+                            x:Name="MainFrame"
+                            d:DataContext=""
+                            DataContext="{Binding ApplicationViewModel.CurrentPage,
                                      Source={x:Static local:ViewModelLocator.Instance},
-                                     Converter={local:ApplicationPageValueConverter}}"/>
+                                     Converter={local:ApplicationPageValueConverter}}"
+                            CurrentPage="{Binding}"/>
 
         </Grid>
     </Border>

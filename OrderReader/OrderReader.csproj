@@ -95,8 +95,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AttachedProperties\NoFrameHistoryAttachedProperty.cs" />
     <Compile Include="Controls\NavigationPanel.xaml.cs">
       <DependentUpon>NavigationPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PageHost.xaml.cs">
+      <DependentUpon>PageHost.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataValidation\ValidationRules\MaximumCharactersRule.cs" />
     <Compile Include="DataValidation\ValidationRules\MaximumValueRule.cs" />
@@ -127,6 +131,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\PageHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -140,7 +148,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AttachedProperties\BaseAttachedProperty.cs" />
-    <Compile Include="AttachedProperties\ButtonBoxAttachedProperties.cs" />
+    <Compile Include="AttachedProperties\ButtonBoxAttachedProperty.cs" />
     <Compile Include="AttachedProperties\FrameworkElementAnimationAttachedProperties.cs" />
     <Compile Include="AttachedProperties\PasswordBoxAttachedProperties.cs" />
     <Compile Include="MainWindow.xaml.cs">

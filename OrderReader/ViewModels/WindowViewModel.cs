@@ -185,11 +185,11 @@ namespace OrderReader
             CloseCommand = new RelayCommand(() => mWindow.Close());
             MenuCommand = new RelayCommand(() => SystemCommands.ShowSystemMenu(mWindow, GetMousePosition()));
             // Got to orders page
-            OrdersPanelCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().CurrentPage = ApplicationPage.Orders);
+            OrdersPanelCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Orders));
             // Got to customers page
-            CustomersCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().CurrentPage = ApplicationPage.Customers);
+            CustomersCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Customers));
             // Got to settings page
-            SettingsCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().CurrentPage = ApplicationPage.Settings);
+            SettingsCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Settings));
 
             // Fix window resize issue
             var resizer = new WindowResizer(mWindow);
