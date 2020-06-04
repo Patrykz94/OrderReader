@@ -133,7 +133,7 @@ namespace OrderReader.Core
         /// <summary>
         /// Price of currently selected product
         /// </summary>
-        public string SelectedProductPrice { get; set; }
+        public decimal SelectedProductPrice { get; set; }
 
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace OrderReader.Core
         /// <summary>
         /// The new product price that user has entered
         /// </summary>
-        public string NewProductPrice { get; set; } = "";
+        public decimal NewProductPrice { get; set; } = 0.0m;
 
         #endregion
 
@@ -280,7 +280,7 @@ namespace OrderReader.Core
                 SelectedProductName = "";
                 SelectedProductCSVName = "";
                 SelectedProductOrderName = "";
-                SelectedProductPrice = "";
+                SelectedProductPrice = 0.0m;
 
                 return;
             }
@@ -321,7 +321,7 @@ namespace OrderReader.Core
                     SelectedProductName = "";
                     SelectedProductCSVName = "";
                     SelectedProductOrderName = "";
-                    SelectedProductPrice = "";
+                    SelectedProductPrice = 0.0m;
                 }
                 else
                 {
@@ -331,7 +331,7 @@ namespace OrderReader.Core
                     SelectedProductName = product.Name;
                     SelectedProductCSVName = product.CSVName;
                     SelectedProductOrderName = product.OrderName;
-                    SelectedProductPrice = product.Price.ToString();
+                    SelectedProductPrice = product.Price;
                 }
             }
         }
@@ -345,11 +345,15 @@ namespace OrderReader.Core
             // Select the correct customer based on the index provided
             Customer customer = Customers.Customers[customerIndex];
 
-            // Make sure none of the requeired fields are empty
-            if (SelectedCustomerName == "" || SelectedCustomerCSVName == "" || SelectedCustomerOrderName == "") return;
+            // Make sure all fields have the required number of characters
+            if (SelectedCustomerName.Length < 3 || SelectedCustomerCSVName.Length < 3 || SelectedCustomerOrderName.Length < 3) return;
+            if (SelectedCustomerName.Length > 50 || SelectedCustomerCSVName.Length > 50 || SelectedCustomerOrderName.Length > 50) return;
 
             // Make sure that some changes have actually been made
             if (SelectedCustomerName == customer.Name && SelectedCustomerCSVName == customer.CSVName && SelectedCustomerOrderName == customer.OrderName) return;
+
+            // Make sure that the name is unique
+            if (SelectedCustomerName != customer.Name && Customers.HasCustomerName(SelectedCustomerName)) return;
 
             // Change the customer on currently loaded customers list
             customer.Update(SelectedCustomerName, SelectedCustomerCSVName, SelectedCustomerOrderName);
@@ -371,11 +375,15 @@ namespace OrderReader.Core
             Customer customer = Customers.Customers[customerIndex];
             Depot depot = customer.Depots[depotIndex];
 
-            // Make sure none of the requeired fields are empty
-            if (SelectedDepotName == "" || SelectedDepotCSVName == "" || SelectedDepotOrderName == "") return;
+            // Make sure all fields have the required number of characters
+            if (SelectedDepotName.Length < 3 || SelectedDepotCSVName.Length < 3 || SelectedDepotOrderName.Length < 3) return;
+            if (SelectedDepotName.Length > 50 || SelectedDepotCSVName.Length > 50 || SelectedDepotOrderName.Length > 50) return;
 
             // Make sure that some changes have actually been made
             if (SelectedDepotName == depot.Name && SelectedDepotCSVName == depot.CSVName && SelectedDepotOrderName == depot.OrderName) return;
+
+            // Make sure that the name is unique for this customer
+            if (SelectedDepotName != depot.Name && customer.HasDepotName(SelectedDepotName)) return;
 
             // Change the depot on currently loaded customers list
             depot.Update(SelectedDepotName, SelectedDepotCSVName, SelectedDepotOrderName);
@@ -397,16 +405,21 @@ namespace OrderReader.Core
             Customer customer = Customers.Customers[customerIndex];
             Product product = customer.Products[productIndex];
 
-            // Make sure none of the requeired fields are empty
-            if (SelectedProductName == "" || SelectedProductCSVName == "" || SelectedProductOrderName == "") return;
+            // Make sure all fields have the required number of characters
+            if (SelectedProductName.Length < 3 || SelectedProductCSVName.Length < 3 || SelectedProductOrderName.Length < 3) return;
+            if (SelectedProductName.Length > 50 || SelectedProductCSVName.Length > 50 || SelectedProductOrderName.Length > 50) return;
+
+            // Make sure the product price is within bounds
+            if (SelectedProductPrice < 0.0m || SelectedProductPrice > 1000.0m) return;
 
             // Make sure that some changes have actually been made
             if (SelectedProductName == product.Name && SelectedProductCSVName == product.CSVName && SelectedProductOrderName == product.OrderName) return;
 
-            // TODO: Integrate the price into the form
+            // Make sure that the name is unique for this customer
+            if (SelectedProductName != product.Name && customer.HasProductName(SelectedProductName)) return;
 
             // Change the product on currently loaded customers list
-            product.Update(SelectedProductName, SelectedProductCSVName, SelectedProductOrderName, product.Price);
+            product.Update(SelectedProductName, SelectedProductCSVName, SelectedProductOrderName, SelectedProductPrice);
 
             // Update the product in the database
             SqliteDataAccess.UpdateProduct(product);
@@ -462,10 +475,12 @@ namespace OrderReader.Core
             // Find the selected customer object
             Customer customer = Customers.Customers[customerIndex];
 
-            // Validate that user has entered all necessary data
-            if (NewDepotName == "" || NewDepotCSVName == "" || NewDepotOrderName == "") return;
+            // Make sure all fields have the required number of characters
+            if (NewDepotName.Length < 3 || NewDepotCSVName.Length < 3 || NewDepotOrderName.Length < 3) return;
+            if (NewDepotName.Length > 50 || NewDepotCSVName.Length > 50 || NewDepotOrderName.Length > 50) return;
 
-            // TODO: Show an error message and maybe highlight the border around the field
+            // Make sure that the name is unique for this customer
+            if (customer.HasDepotName(NewDepotName)) return;
 
             // Create a depot object to be inserted into the database
             Depot depot = new Depot(customer.Id, NewDepotName, NewDepotCSVName, NewDepotOrderName);
@@ -498,13 +513,18 @@ namespace OrderReader.Core
             // Find the selected customer object
             Customer customer = Customers.Customers[customerIndex];
 
-            // Validate that user has entered all necessary data
-            if (NewProductName == "" || NewProductCSVName == "" || NewProductOrderName == "") return;
+            // Make sure all fields have the required number of characters
+            if (NewProductName.Length < 3 || NewProductCSVName.Length < 3 || NewProductOrderName.Length < 3) return;
+            if (NewProductName.Length > 50 || NewProductCSVName.Length > 50 || NewProductOrderName.Length > 50) return;
 
-            // TODO: Show an error message and maybe highlight the border around the field
+            // Make sure the product price is within bounds
+            if (NewProductPrice < 0.0m || NewProductPrice > 1000.0m) return;
+
+            // Make sure that the name is unique for this customer
+            if (customer.HasProductName(NewProductName)) return;
 
             // Create a product object to be inserted into the database
-            Product product = new Product(customer.Id, NewProductName, NewProductCSVName, NewProductOrderName);
+            Product product = new Product(customer.Id, NewProductName, NewProductCSVName, NewProductOrderName, NewProductPrice);
 
             // First make sure that there isn't already a product with exactly the same CSVName & OrderName combination
             if (!customer.SameProductExists(product))
@@ -521,6 +541,7 @@ namespace OrderReader.Core
                     NewProductName = "";
                     NewProductCSVName = "";
                     NewProductOrderName = "";
+                    NewProductPrice = 0.0m;
                 }
             }
         }

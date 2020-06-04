@@ -98,6 +98,11 @@
     <Compile Include="Controls\NavigationPanel.xaml.cs">
       <DependentUpon>NavigationPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataValidation\ValidationRules\MaximumCharactersRule.cs" />
+    <Compile Include="DataValidation\ValidationRules\MaximumValueRule.cs" />
+    <Compile Include="DataValidation\ValidationRules\MinimumCharactersRule.cs" />
+    <Compile Include="DataValidation\ValidationRules\MinimumValueRule.cs" />
+    <Compile Include="DataValidation\ValidationRules\NotEmptyRule.cs" />
     <Compile Include="Pages\CustomersPage.xaml.cs">
       <DependentUpon>CustomersPage.xaml</DependentUpon>
     </Compile>
@@ -108,10 +113,13 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
+    <Compile Include="ValueConverters\BaseMultiValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="ValueConverters\InverseBooleanConverter.cs" />
     <Compile Include="ValueConverters\IoCConverter.cs" />
     <Compile Include="ValueConverters\StringRGBToBrushConverter.cs" />
+    <Compile Include="ValueConverters\ValidationToBooleanConverter.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Window\WindowResizer.cs" />
@@ -162,6 +170,10 @@
     <Page Include="Styles\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Texts.xaml">
       <Generator>MSBuild:Compile</Generator>

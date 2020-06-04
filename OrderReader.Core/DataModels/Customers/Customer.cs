@@ -92,7 +92,7 @@ namespace OrderReader.Core
         }
 
         /// <summary>
-        /// A function that checks if a product with this name already exists for this customer
+        /// A function that checks if a product with this id already exists for this customer
         /// </summary>
         /// <param name="id">Id number of the product</param>
         /// <returns><see cref="bool"/> whether the products already exists or not</returns>
@@ -101,6 +101,21 @@ namespace OrderReader.Core
             foreach (Product product in Products)
             {
                 if (product.Id == id) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function that checks if a product with this name already exists for this customer
+        /// </summary>
+        /// <param name="name">Name of the product</param>
+        /// <returns><see cref="bool"/> whether the products already exists or not</returns>
+        public bool HasProductName(string name)
+        {
+            foreach (Product product in Products)
+            {
+                if (product.Name == name) return true;
             }
 
             return false;
@@ -221,6 +236,21 @@ namespace OrderReader.Core
             foreach (Depot depot in Depots)
             {
                 if (depot.Id == id) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function that checks if a depot with this name already exists for this customer
+        /// </summary>
+        /// <param name="name">Name of the depot</param>
+        /// <returns><see cref="bool"/> whether the depot already exists or not</returns>
+        public bool HasDepotName(string name)
+        {
+            foreach (Depot depot in Depots)
+            {
+                if (depot.Name == name) return true;
             }
 
             return false;

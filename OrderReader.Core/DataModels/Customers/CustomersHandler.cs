@@ -30,9 +30,27 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
+        /// <summary>
+        /// Loads the customers from database into the Customers property
+        /// </summary>
         public void LoadCustomers()
         {
             Customers = SqliteDataAccess.LoadCustomers();
+        }
+
+        /// <summary>
+        /// Check if a customer with that name already exists
+        /// </summary>
+        /// <param name="name">Name as it appears in the UI</param>
+        /// <returns>true or false</returns>
+        public bool HasCustomerName(string name)
+        {
+            foreach (Customer customer in Customers)
+            {
+                if (customer.Name == name) return true;
+            }
+
+            return false;
         }
 
         #endregion

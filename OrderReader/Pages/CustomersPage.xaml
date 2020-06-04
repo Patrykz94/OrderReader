@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:OrderReader"
       xmlns:core="clr-namespace:OrderReader.Core;assembly=OrderReader.Core"
+      xmlns:sysglb="clr-namespace:System.Globalization;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="900"
       Title="CustomersPage">
@@ -69,33 +70,68 @@
 
                                 <StackPanel Margin="0 0 10 0">
                                     <Label Content="Name"/>
-                                    <TextBox Text="{Binding DataContext.SelectedCustomerName}"
-                                             Tag="Customer Name"/>
+                                    <TextBox Tag="Customer Name" x:Name="SelectedCustomerName"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedCustomerName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </StackPanel>
 
                                 <StackPanel Margin="10 0 0 0">
                                     <Label Content="Name in CSV files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedCustomerCSVName}"
-                                             Tag="Customer CSV Name"/>
+                                    <TextBox Tag="Customer CSV Name" x:Name="SelectedCustomerCSVName"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedCustomerCSVName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </StackPanel>
 
                                 <StackPanel Margin="0 0 10 0">
                                     <Label Content="Name on order files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedCustomerOrderName}"
-                                             Tag="Customer Orader Name"/>
+                                    <TextBox Tag="Customer Orader Name" x:Name="SelectedCustomerOrderName"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedCustomerOrderName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </StackPanel>
 
                                 <StackPanel Margin="10 0 0 0">
                                     <Label Content=""/>
                                     <Button Content="Update Customer"
-                                            Command="{Binding DataContext.UpdateCustomerCommand}"/>
+                                            Command="{Binding DataContext.UpdateCustomerCommand}">
+                                        <Button.IsEnabled>
+                                            <MultiBinding Converter="{local:ValidationToBooleanConverter}" Mode="OneWay">
+                                                <Binding ElementName="SelectedCustomerName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedCustomerCSVName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedCustomerOrderName" Path="(Validation.HasError)"/>
+                                            </MultiBinding>
+                                        </Button.IsEnabled>
+                                    </Button>
                                 </StackPanel>
 
                             </UniformGrid>
 
                         </GroupBox>
 
-                        <GroupBox Header="Other Information" Margin="0 20 0 0" Padding="0 10">
+                        <GroupBox Header="Other Information" Margin="0 10" Padding="0 10">
 
                             <UniformGrid Columns="2">
                                 <StackPanel Margin="0 0 10 0">
@@ -145,20 +181,55 @@
                                 <StackPanel Grid.Column="0" x:Name="DepotEditor" Margin="0 0 10 0"
                                             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
                                     <Label Content="Name"/>
-                                    <TextBox Text="{Binding DataContext.SelectedDepotName}"
-                                             Tag="Depot Name"
-                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Depot Name" x:Name="SelectedDepotName"
+                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedDepotName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Label Content="Name in CSV files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedDepotCSVName}"
-                                             Tag="Depot CSV Name"
-                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Depot CSV Name" x:Name="SelectedDepotCSVName"
+                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedDepotCSVName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Label Content="Name on order files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedDepotOrderName}"
-                                             Tag="Depot Order Name"
-                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Depot Order Name" x:Name="SelectedDepotOrderName"
+                                             IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedDepotOrderName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Button Content="Update Depot"
-                                            Command="{Binding DataContext.UpdateDepotCommand}"
-                                            IsEnabled="{Binding ElementName=DepotsList, Path=SelectedItems.Count}"/>
+                                            Command="{Binding DataContext.UpdateDepotCommand}">
+                                        <Button.IsEnabled>
+                                            <MultiBinding Converter="{local:ValidationToBooleanConverter}" Mode="OneWay">
+                                                <Binding ElementName="DepotsList" Path="SelectedItems.Count" Converter="{local:InverseBooleanConverter}" Mode="OneWay"/>
+                                                <Binding ElementName="SelectedDepotName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedDepotCSVName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedDepotOrderName" Path="(Validation.HasError)"/>
+                                            </MultiBinding>
+                                        </Button.IsEnabled>
+                                    </Button>
                                 </StackPanel>
 
                                 <ListBox Grid.Column="1" x:Name="DepotsList" Margin="10 0 0 0" Height="{Binding ActualHeight, ElementName=DepotEditor}"
@@ -180,7 +251,7 @@
 
                         </GroupBox>
 
-                        <GroupBox Grid.Row="2" Header="Add new depot"  Padding="0 10">
+                        <GroupBox Grid.Row="2" Header="Add new depot"  Padding="0 10" Margin="0 10">
 
                             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
 
@@ -188,25 +259,60 @@
 
                                     <StackPanel Margin="0 0 10 0">
                                         <Label Content="Name" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewDepotName}"
-                                                 Tag="Depot Name"/>
+                                        <TextBox Tag="Depot Name" x:Name="NewDepotName"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewDepotName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="10 0 0 0">
                                         <Label Content="Name in CSV files" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewDepotCSVName}"
-                                                 Tag="Depot CSV Name"/>
+                                        <TextBox Tag="Depot CSV Name" x:Name="NewDepotCSVName"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewDepotCSVName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="0 0 10 0">
                                         <Label Content="Name on order files" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewDepotOrderName}"
-                                                 Tag="Depot Order Name"/>
+                                        <TextBox Tag="Depot Order Name" x:Name="NewDepotOrderName"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewDepotOrderName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="10 0 0 0">
                                         <Label Content=""/>
-                                        <Button Content="Add Depot" Command="{Binding AddNewDepotCommand}"/>
+                                        <Button Content="Add Depot" Command="{Binding AddNewDepotCommand}">
+                                            <Button.IsEnabled>
+                                                <MultiBinding Converter="{local:ValidationToBooleanConverter}" Mode="OneWay">
+                                                    <Binding ElementName="NewDepotName" Path="(Validation.HasError)"/>
+                                                    <Binding ElementName="NewDepotCSVName" Path="(Validation.HasError)"/>
+                                                    <Binding ElementName="NewDepotOrderName" Path="(Validation.HasError)"/>
+                                                </MultiBinding>
+                                            </Button.IsEnabled>
+                                        </Button>
                                     </StackPanel>
 
                                 </UniformGrid>
@@ -247,24 +353,74 @@
                                 <StackPanel Grid.Column="0" x:Name="ProductEditor" Margin="0 0 10 0"
                                             DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
                                     <Label Content="Name"/>
-                                    <TextBox Text="{Binding DataContext.SelectedProductName}"
-                                             Tag="Product Name"
-                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Product Name" x:Name="SelectedProductName"
+                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedProductName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Label Content="Name in CSV files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedProductCSVName}"
-                                             Tag="Product CSV Name"
-                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Product CSV Name" x:Name="SelectedProductCSVName"
+                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedProductCSVName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Label Content="Name on order files"/>
-                                    <TextBox Text="{Binding DataContext.SelectedProductOrderName}"
-                                             Tag="Product Order Name"
-                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Product Order Name" x:Name="SelectedProductOrderName"
+                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedProductOrderName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                    <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Label Content="Price"/>
-                                    <TextBox Text="{Binding DataContext.SelectedProductPrice}"
-                                             Tag="Product Price"
-                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                    <TextBox Tag="Product Price" x:Name="SelectedProductPrice"
+                                             IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"
+                                             Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                        <TextBox.Text>
+                                            <Binding Path="DataContext.SelectedProductPrice"
+                                                     ValidatesOnDataErrors="True"
+                                                     UpdateSourceTrigger="PropertyChanged"
+                                                     StringFormat="{}{0:#,#0.00}"
+                                                     ConverterCulture="{x:Static sysglb:CultureInfo.InvariantCulture}">
+                                                <Binding.ValidationRules>
+                                                    <local:NotEmptyRule/>
+                                                    <local:MinimumValueRule MinimumValue="0"/>
+                                                    <local:MaximumValueRule MaximumValue="1000"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                     <Button Content="Update Product"
-                                            Command="{Binding DataContext.UpdateProductCommand}"
-                                            IsEnabled="{Binding ElementName=ProductsList, Path=SelectedItems.Count}"/>
+                                            Command="{Binding DataContext.UpdateProductCommand}">
+                                        <Button.IsEnabled>
+                                            <MultiBinding Converter="{local:ValidationToBooleanConverter}" Mode="OneWay">
+                                                <Binding ElementName="ProductsList" Path="SelectedItems.Count" Converter="{local:InverseBooleanConverter}" Mode="OneWay"/>
+                                                <Binding ElementName="SelectedProductName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedProductCSVName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedProductOrderName" Path="(Validation.HasError)"/>
+                                                <Binding ElementName="SelectedProductPrice" Path="(Validation.HasError)"/>
+                                            </MultiBinding>
+                                        </Button.IsEnabled>
+                                    </Button>
                                 </StackPanel>
 
                                 <ListBox Grid.Column="1" x:Name="ProductsList" Margin="10 0 0 0" Height="{Binding ActualHeight, ElementName=ProductEditor}"
@@ -286,37 +442,90 @@
 
                         </GroupBox>
 
-                        <GroupBox Header="Add new product" Grid.Row="2" Padding="0 10">
+                        <GroupBox Header="Add new product" Grid.Row="2" Padding="0 10" Margin="0 10">
 
                             <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}}">
-                            
+
                                 <UniformGrid Columns="2">
 
                                     <StackPanel Margin="0 0 10 0">
                                         <Label Content="Name" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewProductName}"
-                                                 Tag="Product Name"/>
+                                        <TextBox x:Name="NewProductName" Tag="Product Name"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewProductName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="10 0 0 0">
                                         <Label Content="Name in CSV files" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewProductCSVName}"
-                                                 Tag="Product CSV Name"/>
+                                        <TextBox x:Name="NewProductCSVName" Tag="Product CSV Name"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewProductCSVName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="0 0 10 0">
                                         <Label Content="Name on order files" Margin="0 5"/>
-                                        <TextBox Text="{Binding NewProductOrderName}"
-                                                 Tag="Product Order Name"/>
+                                        <TextBox x:Name="NewProductOrderName" Tag="Product Order Name"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewProductOrderName" ValidatesOnDataErrors="True" UpdateSourceTrigger="PropertyChanged">
+                                                    <Binding.ValidationRules>
+                                                        <local:MinimumCharactersRule MinimumCharacters="3"/>
+                                                        <local:MaximumCharactersRule MaximumCharacters="50"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                     <StackPanel Margin="10 0 0 0">
-                                        <Label Content=""/>
-                                        <Button Content="Add Product" Command="{Binding AddNewProductCommand}"/>
+                                        <Label Content="Price" Margin="0 5"/>
+                                        <TextBox x:Name="NewProductPrice" Tag="Product Price"
+                                                 Validation.ErrorTemplate="{StaticResource TextBoxErrorTemplate}">
+                                            <TextBox.Text>
+                                                <Binding Path="NewProductPrice"
+                                                         ValidatesOnDataErrors="True"
+                                                         UpdateSourceTrigger="PropertyChanged"
+                                                         StringFormat="{}{0:#,#0.00}"
+                                                         ConverterCulture="{x:Static sysglb:CultureInfo.InvariantCulture}">
+                                                    <Binding.ValidationRules>
+                                                        <local:NotEmptyRule/>
+                                                        <local:MinimumValueRule MinimumValue="0"/>
+                                                        <local:MaximumValueRule MaximumValue="1000"/>
+                                                    </Binding.ValidationRules>
+                                                </Binding>
+                                            </TextBox.Text>
+                                        </TextBox>
                                     </StackPanel>
 
                                 </UniformGrid>
-                                
+
+                                <Button Margin="0 10 0 0" Content="Add Product" Command="{Binding AddNewProductCommand}">
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{local:ValidationToBooleanConverter}" Mode="OneWay">
+                                            <Binding ElementName="NewProductName" Path="(Validation.HasError)"/>
+                                            <Binding ElementName="NewProductCSVName" Path="(Validation.HasError)"/>
+                                            <Binding ElementName="NewProductOrderName" Path="(Validation.HasError)"/>
+                                            <Binding ElementName="NewProductPrice" Path="(Validation.HasError)"/>
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                </Button>
+
                             </StackPanel>
 
                         </GroupBox>
