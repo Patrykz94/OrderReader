@@ -13,6 +13,10 @@ namespace OrderReader
         {
             if (parameter == null)
                 return (bool)value ? Visibility.Hidden : Visibility.Visible;
+            else if (parameter.GetType() == typeof(string) && (string)parameter == "Collapse")
+                return (bool)value ? Visibility.Collapsed : Visibility.Visible;
+            else if (parameter.GetType() == typeof(string) && (string)parameter == "CollapseReversed")
+                return (bool)value ? Visibility.Visible : Visibility.Collapsed;
             else
                 return (bool)value ? Visibility.Visible : Visibility.Hidden;
         }
