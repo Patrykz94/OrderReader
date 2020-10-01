@@ -59,6 +59,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\SqliteDataAccess.cs" />
@@ -68,7 +69,8 @@
     <Compile Include="DataModels\Customers\Product.cs" />
     <Compile Include="DataModels\Customers\CustomersHandler.cs" />
     <Compile Include="DataModels\Orders\Order.cs" />
-    <Compile Include="DataModels\Orders\OrderLine.cs" />
+    <Compile Include="DataModels\Orders\OrderProduct.cs" />
+    <Compile Include="DataModels\Orders\OrdersLibrary.cs" />
     <Compile Include="DataModels\Settings.cs" />
     <Compile Include="DataModels\UserSettings.cs" />
     <Compile Include="Expressions\ExpressionsHelpers.cs" />
@@ -80,6 +82,8 @@
     <Compile Include="ViewModel\Base\IHavePassword.cs" />
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
     <Compile Include="ViewModel\Base\RelayParameterizedCommand.cs" />
+    <Compile Include="ViewModel\Orders\OrderListItemViewModel.cs" />
+    <Compile Include="ViewModel\Orders\OrderListViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\CustomersViewModel.cs" />
     <Compile Include="ViewModel\OrdersViewModel.cs" />

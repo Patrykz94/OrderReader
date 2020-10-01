@@ -6,25 +6,26 @@
       xmlns:local="clr-namespace:OrderReader"
       xmlns:core="clr-namespace:OrderReader.Core;assembly=OrderReader.Core"
       mc:Ignorable="d"
-      d:DesignHeight="500" d:DesignWidth="700"
+      d:DesignHeight="600" d:DesignWidth="900"
       Title="OrdersPage">
 
     <Border>
         <Grid>
 
             <!-- Main content scroll -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel
                     TextBlock.TextAlignment="Center">
 
                     <!-- Main content white box -->
-                    <Border Background="{StaticResource BackgroundVeryLightBrush}"
+                    <Border Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
+                            Background="{StaticResource BackgroundVeryLightBrush}"
                             CornerRadius="10"
                             Padding="15 20 15 20"
-                            Margin="20">
+                            Margin="20 10">
 
                         <StackPanel>
-                            
+
                             <!-- Content Should go here -->
                             <TextBlock FontFamily="{StaticResource FontMain}"
                                        FontSize="{StaticResource FontSizeLarge}"
@@ -41,6 +42,9 @@
                         </StackPanel>
 
                     </Border>
+
+                    <local:OrderListControl Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=true}"
+                                            DataContext="{Binding OrdersHandler}"/>
 
                 </StackPanel>
             </ScrollViewer>

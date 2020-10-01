@@ -27,17 +27,42 @@ namespace OrderReader.Core
         public static void Setup()
         {
             // Bind all required view models
-            BindViewMoels();
+            BindViewModels();
+
+            // Create the OrdersLibrary
+            SetupOrdersLibrary();
+
+            // Create the CustomersHandler
+            SetupCustomersHandler();
         }
 
         /// <summary>
         /// Binds all singleton view models
         /// </summary>
-        private static void BindViewMoels()
+        private static void BindViewModels()
         {
             // Bind to a single instance of Application view model
             Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
         }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="OrdersLibrary"/>
+        /// </summary>
+        private static void SetupOrdersLibrary()
+        {
+            // Set up a single instance of the OrdersHandler
+            Kernel.Bind<OrdersLibrary>().ToConstant(new OrdersLibrary());
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="CustomersHandler"/>
+        /// </summary>
+        private static void SetupCustomersHandler()
+        {
+            // Set up a single instance of the OrdersHandler
+            Kernel.Bind<CustomersHandler>().ToConstant(new CustomersHandler());
+        }
+
 
         #endregion
 
@@ -49,6 +74,15 @@ namespace OrderReader.Core
         public static T Get<T>()
         {
             return Kernel.Get<T>();
+        }
+
+        /// <summary>
+        /// Quicker way to get the customers handler instance
+        /// </summary>
+        /// <returns><see cref="CustomersHandler"/> object instance</returns>
+        public static CustomersHandler Customers()
+        {
+            return Kernel.Get<CustomersHandler>();
         }
     }
 }
