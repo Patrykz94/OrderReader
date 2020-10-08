@@ -65,5 +65,9 @@
 
     <Color x:Key="ForegroundVeryDark">#000000</Color>
     <SolidColorBrush x:Key="ForegroundVeryDarkBrush" Color="{StaticResource ForegroundVeryDark}"/>
+    
+    <!-- Control colors -->
+    <Color x:Key="Control.ScrollBar">#777777</Color>
+    <SolidColorBrush x:Key="Control.ScrollBar.Brush" Color="{StaticResource Control.ScrollBar}"/>
 
 </ResourceDictionary>
