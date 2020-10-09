@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading;
+using System.Windows.Forms.VisualStyles;
 
 namespace OrderReader.Core
 {
@@ -19,7 +21,7 @@ namespace OrderReader.Core
         #region Constructor
 
         /// <summary>
-        /// A default constructor that loads a list of customers
+        /// Default constructor that loads the customers from database
         /// </summary>
         public CustomersHandler()
         {
@@ -39,6 +41,21 @@ namespace OrderReader.Core
         }
 
         /// <summary>
+        /// Checks if a customer with that ID exists
+        /// </summary>
+        /// <param name="id">ID number of the customer</param>
+        /// <returns>True or false</returns>
+        public bool HasCustomer(int id)
+        {
+            foreach (Customer customer in Customers)
+            {
+                if (customer.Id == id) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Check if a customer with that name already exists
         /// </summary>
         /// <param name="name">Name as it appears in the UI</param>
@@ -51,6 +68,21 @@ namespace OrderReader.Core
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Gets the customer object by ID number
+        /// </summary>
+        /// <param name="customerId">The ID number of required customer</param>
+        /// <returns><see cref="Customer"/> object or Null</returns>
+        public Customer GetCustomerByID(int customerId)
+        {
+            foreach (Customer customer in Customers)
+            {
+                if (customer.Id == customerId) return customer;
+            }
+
+            return null;
         }
 
         #endregion

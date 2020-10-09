@@ -225,7 +225,8 @@ namespace OrderReader.Core
         public CustomersViewModel()
         {
             // Initialize the customers property
-            Customers = new CustomersHandler();
+            Customers = IoC.Get<CustomersHandler>();
+            Customers.LoadCustomers();
             UpdateFields(IndexChangedFor.Customer);
 
             // Command definitions

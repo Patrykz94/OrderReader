@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="OrderReader.OrderListControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OrderReader"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="900">
+    <Grid Margin="20 0">
+        <!-- The items control that will hold all orders-->
+        <ItemsControl ItemsSource="{Binding Orders}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                    <!-- An order list item that -->
+                    <local:OrderListItemControl/>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

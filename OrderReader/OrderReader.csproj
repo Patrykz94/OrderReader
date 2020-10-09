@@ -99,6 +99,12 @@
     <Compile Include="Controls\NavigationPanel.xaml.cs">
       <DependentUpon>NavigationPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Orders\OrderListItemControl.cs">
+      <DependentUpon>OrderListItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Orders\OrderListControl.xaml.cs">
+      <DependentUpon>OrderListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PageHost.xaml.cs">
       <DependentUpon>PageHost.xaml</DependentUpon>
     </Compile>
@@ -128,6 +134,14 @@
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Window\WindowResizer.cs" />
     <Page Include="Controls\NavigationPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Orders\OrderListItemControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Orders\OrderListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -174,6 +188,10 @@
     <Page Include="Styles\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Controls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -21,7 +21,7 @@
             <Border Background="{StaticResource BackgroundVeryLightBrush}"
                     CornerRadius="10"
                     Padding="15 10"
-                    Margin="10 10 10 0"
+                    Margin="20 10 20 0"
                     MaxWidth="500"
                     Grid.Row="0">
 
