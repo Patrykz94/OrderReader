@@ -152,7 +152,7 @@ namespace OrderReader.Core
             }
         }
 
-        private static string LoadConnectionString(string id = "Development")
+        private static string LoadConnectionString(string id = "Development2")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
