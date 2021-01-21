@@ -4,7 +4,7 @@
 
     <!-- Background Colors -->
     
-    <Color x:Key="BackgroundLight">#f1f1f1</Color>
+    <Color x:Key="BackgroundLight">#e5e5e5</Color>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLight}"/>
 
     <Color x:Key="BackgroundLighter">#f8f8f8</Color>
@@ -13,7 +13,7 @@
     <Color x:Key="BackgroundVeryLight">#ffffff</Color>
     <SolidColorBrush x:Key="BackgroundVeryLightBrush" Color="{StaticResource BackgroundVeryLight}"/>
 
-    <Color x:Key="BackgroundLessLight">#dfdfdf</Color>
+    <Color x:Key="BackgroundLessLight">#d1d1d1</Color>
     <SolidColorBrush x:Key="BackgroundLessLightBrush" Color="{StaticResource BackgroundLessLight}"/>
 
     <Color x:Key="BackgroundDark">#333333</Color>
@@ -22,6 +22,9 @@
     <Color x:Key="BackgroundLessDark">#444444</Color>
     <SolidColorBrush x:Key="BackgroundLessDarkBrush" Color="{StaticResource BackgroundLessDark}"/>
 
+    <Color x:Key="BackgroundEvenLessDark">#aaaaaa</Color>
+    <SolidColorBrush x:Key="BackgroundEvenLessDarkBrush" Color="{StaticResource BackgroundEvenLessDark}"/>
+    
     <Color x:Key="BackgroundDarkNav">#3a3a3a</Color>
     <SolidColorBrush x:Key="BackgroundDarkNavBrush" Color="{StaticResource BackgroundDarkNav}"/>
 
@@ -69,5 +72,11 @@
     <!-- Control colors -->
     <Color x:Key="Control.ScrollBar">#777777</Color>
     <SolidColorBrush x:Key="Control.ScrollBar.Brush" Color="{StaticResource Control.ScrollBar}"/>
+
+    <Color x:Key="Control.DataGrid.RowSelected">#888888</Color>
+    <SolidColorBrush x:Key="Control.DataGrid.RowSelectedBrush" Color="{StaticResource Control.DataGrid.RowSelected}"/>
+
+    <Color x:Key="Control.OrderButton.Hover">#30aa30</Color>
+    <SolidColorBrush x:Key="Control.OrderButton.HoverBrush" Color="{StaticResource Control.OrderButton.Hover}"/>
 
 </ResourceDictionary>

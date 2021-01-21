@@ -13,21 +13,40 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContentControl}">
                         <!-- The border for an order [dat rhyme...]-->
-                        <Border Background="{StaticResource BackgroundVeryLightBrush}"
-                                CornerRadius="10"
-                                Padding="15 10"
-                                Margin="0 10">
-                            <GroupBox FontSize="{StaticResource FontSizeAverage}" Padding="5">
-                                <GroupBox.Header>
-                                    <TextBlock>
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0} - {1:dd/MM/yy}">
-                                                <Binding Path="CustomerName" />
-                                                <Binding Path="Date"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </GroupBox.Header>
+                        <Border Margin="0 10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal" Margin="5 0">
+                                    <Border Padding="20 10"
+                                            Margin="5 0"
+                                            HorizontalAlignment="Left"
+                                            Background="{StaticResource BackgroundVeryLightBrush}"
+                                            CornerRadius="10 10 0 0">
+                                        <TextBlock FontSize="{StaticResource FontSizeAverage}">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} - {1:dd/MM/yy}">
+                                                    <Binding Path="CustomerName" />
+                                                    <Binding Path="Date"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </Border>
+                                    <Button Style="{StaticResource OrderProcessButton}" Content="Process Order" Margin="5 0"/>
+                                    <Button Style="{StaticResource OrderProcessButton}" Content="Delete Order" Margin="5 0">
+                                        <Button.Resources>
+                                            <SolidColorBrush x:Key="Control.OrderButton.HoverBrush" Color="{StaticResource BackgroundLightRed}"/>
+                                        </Button.Resources>
+                                    </Button>
+                                </StackPanel>
+
                                 <DataGrid ItemsSource="{Binding OrdersTable}"
                                           AutoGenerateColumns="True"
                                           CanUserReorderColumns="False"
@@ -37,9 +56,11 @@
                                           IsReadOnly="True"
                                           HorizontalScrollBarVisibility="Disabled"
                                           HeadersVisibility="Column"
-                                          ColumnWidth="*">
+                                          ColumnWidth="*"
+                                          Grid.Column="0"
+                                          Grid.Row="1">
                                 </DataGrid>
-                            </GroupBox>
+                            </Grid>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
