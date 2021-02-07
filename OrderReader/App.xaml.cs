@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using OrderReader.Core;
 
 namespace OrderReader
@@ -17,12 +18,24 @@ namespace OrderReader
             // Let the base aplication do what it needs
             base.OnStartup(e);
 
-            // Setup IoC
-            IoC.Setup();
+            // Setup the main appication
+            ApplicationSetup();
 
             // Show the main window
             Current.MainWindow = new MainWindow();
             Current.MainWindow.Show();
+        }
+
+        /// <summary>
+        /// Configures our application ready for use
+        /// </summary>
+        private void ApplicationSetup()
+        {
+            // Setup IoC
+            IoC.Setup();
+
+            // Bind a UI Manager
+            IoC.Kernel.Bind<IUIManager>().ToConstant(new UIManager());
         }
     }
 }

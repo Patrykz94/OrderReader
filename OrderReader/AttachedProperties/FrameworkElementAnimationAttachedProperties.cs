@@ -79,4 +79,38 @@ namespace OrderReader
                 await element.SlideAndFadeOutToLeftAsync(FirstLoad ? 0 : 0.2f, keepMargin: false);
         }
     }
+
+    /// <summary>
+    /// Animates a framework element sliding it out from the top on show
+    /// and sliding out to the top on hide
+    /// </summary>
+    public class AnimateSlideInFromTopProperty : AnimateBaseProperty<AnimateSlideInFromTopProperty>
+    {
+        protected override async void DoAnimation(FrameworkElement element, bool value)
+        {
+            if (value)
+                // Animate in
+                await element.SlideAndFadeInFromTopAsync(FirstLoad ? 0 : 0.2f, keepMargin: false);
+            else
+                // Animate out
+                await element.SlideAndFadeOutToTopAsync(FirstLoad ? 0 : 0.2f, keepMargin: false);
+        }
+    }
+
+    /// <summary>
+    /// Animates a framework element fading it in on show
+    /// and fading out on hide
+    /// </summary>
+    public class AnimateFadeInProperty : AnimateBaseProperty<AnimateFadeInProperty>
+    {
+        protected override async void DoAnimation(FrameworkElement element, bool value)
+        {
+            if (value)
+                // Animate in
+                await element.FadeInAsync(FirstLoad ? 0 : 0.2f);
+            else
+                // Animate out
+                await element.FadeOutAsync(FirstLoad ? 0 : 0.2f);
+        }
+    }
 }
