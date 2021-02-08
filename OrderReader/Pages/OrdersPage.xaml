@@ -9,9 +9,8 @@
       d:DesignHeight="600" d:DesignWidth="900"
       Title="OrdersPage">
 
-    <Border>
+    <Border local:DropFilesBehaviourExtension.IsEnabled="True">
         <Grid>
-
             <!-- Main content scroll -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel
@@ -43,8 +42,9 @@
 
                     </Border>
 
-                    <local:OrderListControl Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=true}"
-                                            DataContext="{Binding OrdersHandler}"/>
+                    <Border Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=true}">
+                        <local:OrderListControl DataContext="{Binding OrdersHandler}"/>
+                    </Border>
 
                 </StackPanel>
             </ScrollViewer>

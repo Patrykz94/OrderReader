@@ -57,14 +57,10 @@ namespace OrderReader.Core
         private void SaveSettings()
         {
             if (UserSettings.UserExportPath == "") UserSettings.UserExportPath = Settings.DefaultExportPath;
-
-            if (Directory.Exists(UserSettings.UserExportPath))
-            {
-                Settings.SaveSettings(UserSettings);
-                UserSettings = Settings.LoadSettings();
-            }
-
-            // TODO: Let user know if something went wrong
+            if (!Directory.Exists(UserSettings.UserExportPath)) Directory.CreateDirectory(UserSettings.UserExportPath);
+            
+            Settings.SaveSettings(UserSettings);
+            UserSettings = Settings.LoadSettings();
         }
 
         #endregion

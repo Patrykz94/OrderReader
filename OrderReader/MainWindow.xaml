@@ -35,17 +35,17 @@
 
                                 <!-- Window border and dropshadow -->
                                 <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=0}"
-                                        Background="{Binding ForegroundLightBrush, FallbackValue=White}">
+                                        Background="{StaticResource ForegroundLightBrush}">
                                     <Border.Effect>
                                         <DropShadowEffect ShadowDepth="0" Opacity="0.3"/>
                                     </Border.Effect>
                                 </Border>
 
                                 <!-- Dimmed overlay -->
-                                <Border Panel.ZIndex="10" Opacity="0.3">
+                                <!--<Border Panel.ZIndex="10" Opacity="0.3">
                                     <Border Background="{StaticResource ForegroundVeryDarkBrush}"
                                             local:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
-                                </Border>
+                                </Border>-->
 
                                 <!-- The main window content -->
                                 <Grid>

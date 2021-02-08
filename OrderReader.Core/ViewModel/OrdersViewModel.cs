@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace OrderReader.Core
 {
     /// <summary>
     /// The View Model for orders panel
     /// </summary>
-    public class OrdersViewModel : BaseViewModel
+    public class OrdersViewModel : BaseViewModel, IFilesDropped
     {
         #region Public Properties
 
@@ -36,6 +37,16 @@ namespace OrderReader.Core
         public OrdersViewModel()
         {
             OrdersHandler = new OrderListViewModel();
+        }
+
+        #endregion
+
+        #region Public Helpers
+
+        public void OnFilesDropped(string[] files)
+        {
+            // TODO: Implement the handling logic here
+            throw new NotImplementedException();
         }
 
         #endregion

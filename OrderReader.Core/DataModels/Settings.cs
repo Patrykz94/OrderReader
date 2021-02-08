@@ -22,6 +22,11 @@ namespace OrderReader.Core
         public static string AppDataPath { get; } = Path.GetFullPath(Path.Combine(ApplicationPath, @"..\", @"AppData"));
 
         /// <summary>
+        /// The path where we can store temporary files
+        /// </summary>
+        public static string TempFilesPath { get; } = Path.GetFullPath(Path.Combine(AppDataPath, @"TempFiles"));
+
+        /// <summary>
         /// The path where the application setting/config files should be stored
         /// </summary>
         public static string SettingsPath { get; } = Path.GetFullPath(Path.Combine(AppDataPath, @"Settings"));
@@ -39,6 +44,13 @@ namespace OrderReader.Core
         #endregion
 
         #region Public Helpers
+
+        public static void Initialize()
+        {
+            if (!Directory.Exists(AppDataPath)) Directory.CreateDirectory(AppDataPath);
+            if (!Directory.Exists(TempFilesPath)) Directory.CreateDirectory(TempFilesPath);
+            if (!Directory.Exists(SettingsPath)) Directory.CreateDirectory(SettingsPath);
+        }
 
         /// <summary>
         /// Load user settings from file
@@ -65,8 +77,6 @@ namespace OrderReader.Core
         /// </summary>
         public static void SaveSettings(UserSettings settings)
         {
-            if (!Directory.Exists(SettingsPath)) Directory.CreateDirectory(SettingsPath);
-
             XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
 
             using (TextWriter writer = new StreamWriter(SettingsFile))

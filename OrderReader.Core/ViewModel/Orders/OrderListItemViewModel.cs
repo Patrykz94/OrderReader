@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Windows.Input;
 
 namespace OrderReader.Core
 {
@@ -11,6 +12,11 @@ namespace OrderReader.Core
     public class OrderListItemViewModel : BaseViewModel
     {
         #region Public Properties
+
+        /// <summary>
+        /// Reference to the list containing this item view model
+        /// </summary>
+        public ObservableCollection<OrderListItemViewModel> OrdersList { get; private set; }
 
         /// <summary>
         /// The ID of this order
@@ -40,6 +46,20 @@ namespace OrderReader.Core
 
         #endregion
 
+        #region Commands
+
+        /// <summary>
+        /// Command that processes this order
+        /// </summary>
+        public ICommand ProcessCommand { get; set; }
+
+        /// <summary>
+        /// Commad that removes this order from the list of orders
+        /// </summary>
+        public ICommand DeleteCommand { get; set; }
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
@@ -47,8 +67,9 @@ namespace OrderReader.Core
         /// </summary>
         /// <param name="orderId">The ID of those orders</param>
         /// <param name="orders">A an <see cref="ObservableCollection{T}"/> of <see cref="Order"/> objects</param>
-        public OrderListItemViewModel(string orderId, ObservableCollection<Order> orders)
+        public OrderListItemViewModel(ObservableCollection<OrderListItemViewModel> orderList, string orderId, ObservableCollection<Order> orders)
         {
+            OrdersList = orderList;
             OrderID = orderId;
             Orders = orders;
             if (Orders.Count > 0)
@@ -59,6 +80,10 @@ namespace OrderReader.Core
 
             OrdersTable = new DataTable();
             ReloadTable();
+
+            // Command definitions
+            ProcessCommand = new RelayCommand(ProcessOrder);
+            DeleteCommand = new RelayCommand(DeleteOrder);
         }
 
         #endregion
@@ -72,6 +97,7 @@ namespace OrderReader.Core
         {
             // Clear all data first
             OrdersTable.Clear();
+            OrdersTable.Columns.Clear();
 
             // Add order details columns
             OrdersTable.Columns.Add("Depot", typeof(string));
@@ -144,6 +170,35 @@ namespace OrderReader.Core
             totalRow["Total"] = totalProducts;
 
             OrdersTable.Rows.Add(totalRow);
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        /// <summary>
+        /// Process the current order
+        /// </summary>
+        private void ProcessOrder()
+        {
+            // Load the user settings
+            UserSettings settings = Settings.LoadSettings();
+
+            // Perform all the order processing tasks based on users settings
+            if (settings.ExportCSV) CSVExport.ExportOrdersToCSV(OrderID);
+
+            // Once processed, remove the order
+            DeleteOrder();
+        }
+
+        /// <summary>
+        /// Delete the current order by removing it from orders library and then reloading the page
+        /// </summary>
+        private void DeleteOrder()
+        {
+            if (OrdersList.Contains(this)) OrdersList.Remove(this);
+            // Remove the orders first
+            IoC.Get<OrdersLibrary>().RemoveAllOrdersWithID(OrderID);
         }
 
         #endregion

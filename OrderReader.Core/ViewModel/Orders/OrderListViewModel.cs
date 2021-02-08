@@ -17,6 +17,8 @@ namespace OrderReader.Core
 
         #endregion
 
+        #region Constructor
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -31,9 +33,41 @@ namespace OrderReader.Core
             {
                 if (IoC.Get<OrdersLibrary>().HasOrdersWithID(orderId))
                 {
-                    Orders.Add(new OrderListItemViewModel(orderId, IoC.Get<OrdersLibrary>().GetAllOrdersWithID(orderId)));
+                    Orders.Add(new OrderListItemViewModel(Orders, orderId, IoC.Get<OrdersLibrary>().GetAllOrdersWithID(orderId)));
                 }
             }
         }
+
+        #endregion
+
+        #region Public Helpers
+
+        public void UpdateAllOrders()
+        {
+            //List<string> OrderIDs = IoC.Get<OrdersLibrary>().GetUniqueOrderIDs();
+
+            for (int i = Orders.Count-1; i >= 0; i--)
+            {
+                var OrderVM = Orders[i];
+                if (IoC.Get<OrdersLibrary>().HasOrdersWithID(OrderVM.OrderID))
+                {
+                    for (int c = OrderVM.Orders.Count-1; c >= 0; c--)
+                    {
+                        Order o = OrderVM.Orders[c];
+                        if (!IoC.Get<OrdersLibrary>().HasOrder(o))
+                        {
+                            OrderVM.Orders.Remove(o);
+                            OrderVM.ReloadTable();
+                        }
+                    }
+                }
+                else
+                {
+                    Orders.Remove(OrderVM);
+                }
+            }
+        }
+
+        #endregion
     }
 }

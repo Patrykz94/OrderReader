@@ -100,6 +100,62 @@ namespace OrderReader.Core
             return AllOrders;
         }
 
+        /// <summary>
+        /// Removes all orders with the specified order id
+        /// </summary>
+        /// <param name="orderId">Order ID as a <see cref="string"/></param>
+        public void RemoveAllOrdersWithID(string orderId)
+        {
+            for (int i = Orders.Count-1; i >= 0; i--)
+            {
+                if (Orders[i].OrderID == orderId)
+                {
+                    Orders.Remove(Orders[i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Removes the specified order object from the list of orders
+        /// </summary>
+        /// <param name="orderToRemove"><see cref="Order"/> object</param>
+        public void RemoveOrder(Order orderToRemove)
+        {
+            for (int i = Orders.Count-1; i >= 0; i--)
+            {
+                if (Orders[i] == orderToRemove)
+                {
+                    Orders.Remove(Orders[i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Simple function that adds the order to the list of orders
+        /// </summary>
+        /// <param name="orderToAdd"><see cref="Order"/> object</param>
+        public void AddOrder(Order orderToAdd)
+        {
+            Orders.Add(orderToAdd);
+        }
+
+        /// <summary>
+        /// Checks of the order passed in matches any of the orders already in the library
+        /// </summary>
+        /// <param name="orderIn"><see cref="Order"/> object</param>
+        /// <returns>Returns true or false</returns>
+        public bool HasOrder(Order orderIn)
+        {
+            foreach (Order order in Orders)
+            {
+                if (order == orderIn)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
     }
 }

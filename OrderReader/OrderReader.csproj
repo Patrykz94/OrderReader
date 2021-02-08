@@ -113,6 +113,7 @@
     <Compile Include="DataValidation\ValidationRules\MinimumCharactersRule.cs" />
     <Compile Include="DataValidation\ValidationRules\MinimumValueRule.cs" />
     <Compile Include="DataValidation\ValidationRules\NotEmptyRule.cs" />
+    <Compile Include="DependencyProperties\DropFilesBehaviourExtension.cs" />
     <Compile Include="Dialogs\BaseDialogUserControl.cs" />
     <Compile Include="Dialogs\DialogMessageBox.xaml.cs">
       <DependentUpon>DialogMessageBox.xaml</DependentUpon>

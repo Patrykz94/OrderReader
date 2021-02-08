@@ -18,6 +18,9 @@
         {
             // Set the current page
             CurrentPage = page;
+
+            // Fire off a CurrentPage changed event
+            OnPropertyChanged(nameof(CurrentPage));
         }
     }
 }

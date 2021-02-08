@@ -39,8 +39,10 @@
                                             </TextBlock.Text>
                                         </TextBlock>
                                     </Border>
-                                    <Button Style="{StaticResource OrderProcessButton}" Content="Process Order" Margin="5 0"/>
-                                    <Button Style="{StaticResource OrderProcessButton}" Content="Delete Order" Margin="5 0">
+                                    <Button Style="{StaticResource OrderProcessButton}" Content="Process Order" Margin="5 0"
+                                            Command="{Binding ProcessCommand}"/>
+                                    <Button Style="{StaticResource OrderProcessButton}" Content="Delete Order" Margin="5 0"
+                                            Command="{Binding DeleteCommand}">
                                         <Button.Resources>
                                             <SolidColorBrush x:Key="Control.OrderButton.HoverBrush" Color="{StaticResource BackgroundLightRed}"/>
                                         </Button.Resources>

@@ -36,6 +36,9 @@ namespace OrderReader
 
             // Bind a UI Manager
             IoC.Kernel.Bind<IUIManager>().ToConstant(new UIManager());
+
+            // Initialize the settings class which creates all required directories
+            Settings.Initialize();
         }
     }
 }
