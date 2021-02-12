@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 
 namespace OrderReader.Core
 {
@@ -14,11 +13,6 @@ namespace OrderReader.Core
         /// A <see cref="OrderListViewModel"/> that holds all customer orders
         /// </summary>
         public OrderListViewModel OrdersHandler { get; set; }
-
-        /// <summary>
-        /// Whether or not any orders exist
-        /// </summary>
-        public bool HasOrders => OrdersExist();
 
         #endregion
 
@@ -47,19 +41,6 @@ namespace OrderReader.Core
         {
             // TODO: Implement the handling logic here
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Private Helpers
-
-        /// <summary>
-        /// Check if any orders exist
-        /// </summary>
-        /// <returns>True or false</returns>
-        private bool OrdersExist()
-        {
-            return IoC.Get<OrdersLibrary>().Orders.Count > 0;
         }
 
         #endregion

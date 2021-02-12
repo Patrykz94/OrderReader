@@ -17,7 +17,7 @@
                     TextBlock.TextAlignment="Center">
 
                     <!-- Main content white box -->
-                    <Border Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=Collapse}"
+                    <Border Visibility="{Binding OrdersHandler.Orders.Count, Converter={local:IntegerToVisibilityConverter}, ConverterParameter=Collapse}"
                             Background="{StaticResource BackgroundVeryLightBrush}"
                             CornerRadius="10"
                             Padding="15 20 15 20"
@@ -42,7 +42,7 @@
 
                     </Border>
 
-                    <Border Visibility="{Binding HasOrders, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=true}">
+                    <Border Visibility="{Binding OrdersHandler.Orders.Count, Converter={local:IntegerToVisibilityConverter}, ConverterParameter=true}">
                         <local:OrderListControl DataContext="{Binding OrdersHandler}"/>
                     </Border>
 
