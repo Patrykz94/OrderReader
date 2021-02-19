@@ -12,29 +12,55 @@ namespace OrderReader.Core
         #region Public Properties
 
         /// <summary>
-        /// The export location for CSV files that the user selects. It will override the default export location
-        /// </summary>
-        public string UserExportPath { get; set; }
-
-        /// <summary>
         /// Whether or not the CSV files should be exported
         /// </summary>
         public bool ExportCSV { get; set; }
+
+        /// <summary>
+        /// The export location for CSV files that the user selects. It will override the default export location
+        /// </summary>
+        public string UserCSVExportPath { get; set; }
+
+        /// <summary>
+        /// Whether or not the PDF file should be exported
+        /// </summary>
+        public bool ExportPDF { get; set; }
+
+        /// <summary>
+        /// The export location for PDF files that the user selects. It will override the default export location
+        /// </summary>
+        public string UserPDFExportPath { get; set; }
 
         /// <summary>
         /// Whether or not the processed orders should be printed
         /// </summary>
         public bool PrintOrders { get; set; }
 
+        /// <summary>
+        /// The printer that user prefers to use. If not available, default printer will be chosen
+        /// </summary>
+        public string PreferredPrinterName { get; set; }
+
+        /// <summary>
+        /// Number of copies to print
+        /// </summary>
+        public int PrintingCopies { get; set; }
+
         #endregion
 
         #region Constructor
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public UserSettings()
         {
-            UserExportPath = Settings.DefaultExportPath;
+            UserCSVExportPath = Settings.DefaultExportPath;
+            UserPDFExportPath = Settings.DefaultExportPath;
             ExportCSV = true;
+            ExportPDF = true;
             PrintOrders = true;
+            PrintingCopies = 1;
         }
 
         /// <summary>
@@ -44,9 +70,14 @@ namespace OrderReader.Core
         /// <param name="context"></param>
         public UserSettings(SerializationInfo info, StreamingContext context)
         {
-            UserExportPath = (string)info.GetValue("UserExportPath", typeof(string));
+            // Load saved settings
+            UserCSVExportPath = (string)info.GetValue("UserCSVExportPath", typeof(string));
+            UserPDFExportPath = (string)info.GetValue("UserPDFExportPath", typeof(string));
             ExportCSV = (bool)info.GetValue("ExportCSV", typeof(bool));
+            ExportPDF = (bool)info.GetValue("ExportPDF", typeof(bool));
             PrintOrders = (bool)info.GetValue("PrintOrders", typeof(bool));
+            PreferredPrinterName = (string)info.GetValue("SelectedPrinterName", typeof(string));
+            PrintingCopies = (int)info.GetValue("PrintingCopies", typeof(int));
         }
 
         #endregion
@@ -60,9 +91,13 @@ namespace OrderReader.Core
         /// <param name="context"></param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("UserExportPath", UserExportPath);
+            info.AddValue("UserCSVExportPath", UserCSVExportPath);
+            info.AddValue("UserPDFExportPath", UserPDFExportPath);
             info.AddValue("ExportCSV", ExportCSV);
+            info.AddValue("ExportPDF", ExportPDF);
             info.AddValue("PrintOrders", PrintOrders);
+            info.AddValue("SelectedPrinterName", PreferredPrinterName);
+            info.AddValue("PrintingCopies", PrintingCopies);
         }
 
         #endregion

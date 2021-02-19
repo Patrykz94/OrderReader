@@ -4,15 +4,19 @@
 
     <ControlTemplate x:Key="TextBoxErrorTemplate">
         <StackPanel>
-            <TextBlock Text="{Binding [0].ErrorContent}"
-                       Foreground="OrangeRed"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Right"
-                       Margin="0 0 5 0"
-                       FontSize="{StaticResource FontSizeVerySmall}"
-                       TextWrapping="WrapWithOverflow"
-                       MaxWidth="{Binding ActualWidth, ElementName=TextBox}"/>
-            <Border BorderBrush="OrangeRed" BorderThickness="3" CornerRadius="3">
+            <Border Background="OrangeRed"
+                    HorizontalAlignment="Right"
+                    Padding="3 0"
+                    CornerRadius="5 5 0 0">
+                <TextBlock Text="{Binding [0].ErrorContent}"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           FontSize="{StaticResource FontSizeVerySmall}"
+                           TextWrapping="WrapWithOverflow"
+                           MaxWidth="{Binding ActualWidth, ElementName=TextBox}"/>
+            </Border>
+            <Border BorderBrush="OrangeRed" BorderThickness="3" CornerRadius="3 0 3 3">
                 <AdornedElementPlaceholder x:Name="TextBox"/>
             </Border>
         </StackPanel>

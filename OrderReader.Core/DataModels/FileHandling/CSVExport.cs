@@ -49,10 +49,10 @@ namespace OrderReader.Core
                 UserSettings settings = Settings.LoadSettings();
 
                 // Before saving the file, make sure that the export path exists, if not then create it
-                if (!Directory.Exists(settings.UserExportPath)) Directory.CreateDirectory(settings.UserExportPath);
+                if (!Directory.Exists(settings.UserCSVExportPath)) Directory.CreateDirectory(settings.UserCSVExportPath);
 
                 // Create the file
-                File.WriteAllLines($"{ settings.UserExportPath }\\{ fileName }", lines);
+                File.WriteAllLines($"{ settings.UserCSVExportPath }\\{ fileName }", lines);
             }
         }
     }

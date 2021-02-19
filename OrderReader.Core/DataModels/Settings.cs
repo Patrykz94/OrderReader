@@ -39,7 +39,7 @@ namespace OrderReader.Core
         /// <summary>
         /// The default export location for CSV files. This will be created and used if the user doesn't specify a custom location
         /// </summary>
-        public static string DefaultExportPath { get; } = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"CSVExport"));
+        public static string DefaultExportPath { get; } = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"FileExport"));
 
         #endregion
 

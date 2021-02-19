@@ -177,7 +177,7 @@ namespace OrderReader.Core
         #region Private Helpers
 
         /// <summary>
-        /// Process the current order
+        /// Process current order using settings specified by the user
         /// </summary>
         private void ProcessOrder()
         {
@@ -186,6 +186,8 @@ namespace OrderReader.Core
 
             // Perform all the order processing tasks based on users settings
             if (settings.ExportCSV) CSVExport.ExportOrdersToCSV(OrderID);
+
+            if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(this);
 
             // Once processed, remove the order
             DeleteOrder();
@@ -196,6 +198,8 @@ namespace OrderReader.Core
         /// </summary>
         private void DeleteOrder()
         {
+            // TODO: ask user to confirm whether this order should be removed.
+            // Need to create a confirmation message box with multiple possible answers
             if (OrdersList.Contains(this)) OrdersList.Remove(this);
             // Remove the orders first
             IoC.Get<OrdersLibrary>().RemoveAllOrdersWithID(OrderID);

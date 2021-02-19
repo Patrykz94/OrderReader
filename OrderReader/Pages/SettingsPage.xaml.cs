@@ -20,13 +20,28 @@ namespace OrderReader
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BrowseButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void BrowseCSVButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             string selectedPath = BrowseFolder();
 
             if (selectedPath != null)
             {
                 CSVExportDir.Text = selectedPath;
+            }
+        }
+
+        /// <summary>
+        /// Button click event that displays a dialog to the user and processes the result
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BrowsePDFButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            string selectedPath = BrowseFolder();
+
+            if (selectedPath != null)
+            {
+                PDFExportDir.Text = selectedPath;
             }
         }
 
