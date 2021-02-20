@@ -12,12 +12,11 @@
 
     <Border>
         <Grid>
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
+
             <Border Background="{StaticResource BackgroundVeryLightBrush}"
                     CornerRadius="10"
                     Padding="15 10"
@@ -31,6 +30,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    
                     <TextBlock Text="Customer Selection:"
                                VerticalAlignment="Center"
                                Margin="0 0 20 0"
@@ -44,17 +44,17 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-                    
+
                     <Button Grid.Column="2" Style="{StaticResource IconButton}" Margin="10 0 0 0" Command="{Binding ReloadCommand}"
                             Height="{Binding ActualHeight, ElementName=customerSelection}" Content="{StaticResource IconReload}"/>
                 </Grid>
-                
+
             </Border>
 
             <TabControl Grid.Row="1" TabStripPlacement="Left" Margin="20">
 
                 <TabItem Header="Customer" Tag="Manage customer information">
-                    
+
                     <StackPanel DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
                         <TextBlock HorizontalAlignment="Center"
                                            FontSize="{StaticResource FontSizeAboveAverage}"
@@ -147,18 +147,18 @@
 
                         </GroupBox>
                     </StackPanel>
-                    
+
                 </TabItem>
-                
+
                 <TabItem Header="Depots" Tag="Add or remove depots" DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
-                    
+
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        
+
                         <StackPanel Grid.Row="0">
                             <TextBlock HorizontalAlignment="Center"
                                                FontSize="{StaticResource FontSizeAboveAverage}">
@@ -316,14 +316,14 @@
                                     </StackPanel>
 
                                 </UniformGrid>
-                                
+
                             </StackPanel>
 
                         </GroupBox>
 
                     </Grid>
                 </TabItem>
-                
+
                 <TabItem Header="Products" Tag="Add or remove products" DataContext="{Binding ElementName=customerSelection, Path=SelectedItem}">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -343,7 +343,7 @@
                         </StackPanel>
 
                         <GroupBox Header="Edit/Remove selected product" Grid.Row="1" Margin="0 10" Padding="0 10">
-                        
+
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -532,9 +532,7 @@
 
                     </Grid>
                 </TabItem>
-            
             </TabControl>
-            
         </Grid>
     </Border>
 </local:BasePage>

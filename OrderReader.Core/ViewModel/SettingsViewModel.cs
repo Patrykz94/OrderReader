@@ -105,7 +105,7 @@ namespace OrderReader.Core
             {
                 if (PrintersList[i] == UserSettings.PreferredPrinterName)
                 {
-                    _printerIndex = i;
+                    SelectedPrinterIndex = i;
                     break;
                 }
             }

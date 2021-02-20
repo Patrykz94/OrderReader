@@ -28,7 +28,7 @@
     <Color x:Key="BackgroundDarkNav">#3a3a3a</Color>
     <SolidColorBrush x:Key="BackgroundDarkNavBrush" Color="{StaticResource BackgroundDarkNav}"/>
 
-    <Color x:Key="BackgroundRed">#cc4040</Color>
+    <Color x:Key="BackgroundRed">#ed2424</Color>
     <SolidColorBrush x:Key="BackgroundRedBrush" Color="{StaticResource BackgroundRed}"/>
 
     <Color x:Key="BackgroundLightRed">#ff6f6f</Color>
