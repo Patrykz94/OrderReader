@@ -114,10 +114,14 @@
     <Compile Include="DataModels\Customers\Product.cs" />
     <Compile Include="DataModels\Customers\CustomersHandler.cs" />
     <Compile Include="DataModels\FileHandling\CSVExport.cs" />
+    <Compile Include="DataModels\FileHandling\FileImport.cs" />
+    <Compile Include="DataModels\FileHandling\OrderParsers\KeelingsPDFParser.cs" />
     <Compile Include="DataModels\FileHandling\PDFExport.cs" />
+    <Compile Include="DataModels\FileHandling\PDFImport.cs" />
     <Compile Include="DataModels\Orders\Order.cs" />
     <Compile Include="DataModels\Orders\OrderProduct.cs" />
     <Compile Include="DataModels\Orders\OrdersLibrary.cs" />
+    <Compile Include="DataModels\Orders\OrderWarning.cs" />
     <Compile Include="DataModels\PrintingManager.cs" />
     <Compile Include="DataModels\Settings.cs" />
     <Compile Include="DataModels\UserSettings.cs" />

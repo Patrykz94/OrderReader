@@ -6,12 +6,19 @@ using System.IO;
 
 namespace OrderReader.Core
 {
+    /// <summary>
+    /// Is responsible for exporting data into a CSV file
+    /// </summary>
     public static class CSVExport
     {
+        /// <summary>
+        /// A function that will export the orders with provided order ID to a CSV file
+        /// </summary>
+        /// <param name="orderId">The orderID that is used to group orders together</param>
         public static void ExportOrdersToCSV(string orderId)
         {
             // Create a list of orders that we want to process and populate it
-            ObservableCollection<Order> orders = IoC.Get<OrdersLibrary>().GetAllOrdersWithID(orderId);
+            ObservableCollection<Order> orders = IoC.Orders().GetAllOrdersWithID(orderId);
 
             // Make sure that list is not empty
             if (orders.Count == 0) return;

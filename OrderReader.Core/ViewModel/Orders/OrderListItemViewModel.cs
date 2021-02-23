@@ -44,6 +44,38 @@ namespace OrderReader.Core
         /// </summary>
         public DataTable OrdersTable { get; set; }
 
+        /// <summary>
+        /// The data view that will be displayed in the orders page
+        /// </summary>
+        public DataView OrdersView
+        {
+            get { return OrdersTable.DefaultView; }
+        }
+
+        /// <summary>
+        /// The number of warnings
+        /// </summary>
+        public ObservableCollection<OrderWarning> WarningsList
+        {
+            get
+            {
+                ObservableCollection<OrderWarning> list = new ObservableCollection<OrderWarning>();
+                foreach (Order order in Orders)
+                {
+                    foreach (OrderWarning warning in order.Warnings)
+                    {
+                        list.Add(warning);
+                    }
+                }
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not there are any warnings
+        /// </summary>
+        public bool HasWarnings => WarningsList.Count > 0;
+
         #endregion
 
         #region Commands
@@ -91,17 +123,31 @@ namespace OrderReader.Core
         #region Public Helpers
 
         /// <summary>
+        /// Check if that order exists
+        /// </summary>
+        /// <param name="orderIn">An <see cref="Order"/> object</param>
+        /// <returns>True or false</returns>
+        public bool HasOrder(Order orderIn)
+        {
+            foreach (Order order in Orders)
+            {
+                if (order == orderIn)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Reload all data in the <see cref="DataTable"/>
         /// </summary>
         public void ReloadTable()
         {
-            // Clear all data first
-            OrdersTable.Clear();
-            OrdersTable.Columns.Clear();
+            // Get a clean new data table
+            DataTable tempTable = new DataTable();
 
             // Add order details columns
-            OrdersTable.Columns.Add("Depot", typeof(string));
-            OrdersTable.Columns.Add("PO Number", typeof(string));
+            tempTable.Columns.Add("Depot", typeof(string));
+            tempTable.Columns.Add("PO Number", typeof(string));
 
             // Add product columns
             // First make a list of all unique product ID's in those orders
@@ -120,16 +166,16 @@ namespace OrderReader.Core
             // Then create columns for each of the product IDs and name them with the product names
             foreach (int id in uniqueProducts.Keys)
             {
-                OrdersTable.Columns.Add(uniqueProducts[id], typeof(string));
+                tempTable.Columns.Add(uniqueProducts[id], typeof(string));
             }
 
             // Add total column
-            OrdersTable.Columns.Add("Total", typeof(string));
+            tempTable.Columns.Add("Total", typeof(string));
 
             // Add rows with data
             foreach (Order order in Orders)
             {
-                DataRow row = OrdersTable.NewRow();
+                DataRow row = tempTable.NewRow();
 
                 row["Depot"] = order.DepotName;
                 row["PO Number"] = order.OrderReference;
@@ -141,11 +187,11 @@ namespace OrderReader.Core
 
                 row["Total"] = order.GetTotalProductQuantity();
 
-                OrdersTable.Rows.Add(row);
+                tempTable.Rows.Add(row);
             }
 
             // Add the total row
-            DataRow totalRow = OrdersTable.NewRow();
+            DataRow totalRow = tempTable.NewRow();
 
             totalRow["Depot"] = "";
             totalRow["PO Number"] = "Total";
@@ -169,7 +215,11 @@ namespace OrderReader.Core
 
             totalRow["Total"] = totalProducts;
 
-            OrdersTable.Rows.Add(totalRow);
+            tempTable.Rows.Add(totalRow);
+
+            OrdersTable = tempTable;
+            OnPropertyChanged(nameof(OrdersView));
+            OnPropertyChanged(nameof(WarningsList));
         }
 
         #endregion
@@ -202,7 +252,7 @@ namespace OrderReader.Core
             // Need to create a confirmation message box with multiple possible answers
             if (OrdersList.Contains(this)) OrdersList.Remove(this);
             // Remove the orders first
-            IoC.Get<OrdersLibrary>().RemoveAllOrdersWithID(OrderID);
+            IoC.Orders().RemoveAllOrdersWithID(OrderID);
         }
 
         #endregion

@@ -122,6 +122,21 @@ namespace OrderReader.Core
         }
 
         /// <summary>
+        /// A function that checks if a product with this order name exists for this customer
+        /// </summary>
+        /// <param name="orderName">Order Name of the product</param>
+        /// <returns><see cref="bool"/> whether the products exists or not</returns>
+        public bool HasProductOrderName(string orderName)
+        {
+            foreach (Product product in Products)
+            {
+                if (product.OrderName == orderName) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// A function that checks if a product with this CSVName and OrderName already exists for this customer
         /// </summary>
         /// <param name="product">A <see cref="Product"/> object to compare</param>
@@ -227,6 +242,22 @@ namespace OrderReader.Core
         }
 
         /// <summary>
+        /// Gets the product by it's order name
+        /// </summary>
+        /// <param name="orderName">Order Name of this product</param>
+        /// <returns><see cref="Product"/> object</returns>
+        public Product GetProduct(string orderName)
+        {
+            foreach (Product product in Products)
+            {
+                if (product.OrderName == orderName) return product;
+            }
+
+            // If the product was not found, return null
+            return null;
+        }
+
+        /// <summary>
         /// A function that checks if a depot with this id already exists for this customer
         /// </summary>
         /// <param name="id">Id of the depot</param>
@@ -251,6 +282,21 @@ namespace OrderReader.Core
             foreach (Depot depot in Depots)
             {
                 if (depot.Name == name) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// A function that checks if a depot with this order name already exists for this customer
+        /// </summary>
+        /// <param name="orderName">Order name for the depot</param>
+        /// <returns><see cref="bool"/> whether the depot exists or not</returns>
+        public bool HasDepotOrderName(string orderName)
+        {
+            foreach (Depot depot in Depots)
+            {
+                if (depot.OrderName == orderName) return true;
             }
 
             return false;
@@ -354,6 +400,22 @@ namespace OrderReader.Core
             foreach (Depot depot in Depots)
             {
                 if (depot.Id == id) return depot;
+            }
+
+            // If the depot was not found, return null
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the depot by it's Order Name
+        /// </summary>
+        /// <param name="orderName">Order name of this depot</param>
+        /// <returns><see cref="Depot"/> object</returns>
+        public Depot GetDepot(string orderName)
+        {
+            foreach (Depot depot in Depots)
+            {
+                if (depot.OrderName == orderName) return depot;
             }
 
             // If the depot was not found, return null

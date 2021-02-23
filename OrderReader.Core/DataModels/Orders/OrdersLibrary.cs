@@ -23,29 +23,6 @@ namespace OrderReader.Core
         public OrdersLibrary()
         {
             Orders = new ObservableCollection<Order>();
-
-            // TODO: Remove the test code below
-            Order order = new Order("PO123456", DateTime.Today.AddDays(1.0), 1, 4);
-            order.AddProduct(1, 20.0);
-            order.AddProduct(2, 15.0);
-            order.AddProduct(3, 45.0);
-            order.AddProduct(2, 50.0);
-
-            Order order2 = new Order("PO654321", DateTime.Today.AddDays(1.0), 1, 6);
-            order2.AddProduct(1, 25.0);
-            order2.AddProduct(2, 15.0);
-
-            Order order3 = new Order("PO24680", DateTime.Today.AddDays(1.0), 2, 38);
-            order3.AddProduct(4, 25.0);
-
-            Order order4 = new Order("PO08642", DateTime.Today.AddDays(2.0), 1, 8);
-            order4.AddProduct(1, 25.0);
-            order4.AddProduct(2, 15.0);
-
-            Orders.Add(order);
-            Orders.Add(order2);
-            Orders.Add(order3);
-            Orders.Add(order4);
         }
 
         #endregion
@@ -149,9 +126,22 @@ namespace OrderReader.Core
             foreach (Order order in Orders)
             {
                 if (order == orderIn)
-                {
                     return true;
-                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if an order with the same reference number already exists
+        /// </summary>
+        /// <param name="orderIn">An <see cref="Order"/> object</param>
+        /// <returns><see cref="bool"/> whether or not the order exists</returns>
+        public bool HasOrderWithSameReference(Order orderIn)
+        {
+            foreach (Order order in Orders)
+            {
+                if (order.OrderReference == orderIn.OrderReference)
+                    return true;
             }
             return false;
         }

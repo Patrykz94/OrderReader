@@ -1,5 +1,4 @@
-﻿using System;
-using Ninject;
+﻿using Ninject;
 
 namespace OrderReader.Core
 {
@@ -71,6 +70,8 @@ namespace OrderReader.Core
 
         #endregion
 
+        #region Public Helpers
+
         /// <summary>
         /// Get's a service from the IoC, of he specified type
         /// </summary>
@@ -89,5 +90,16 @@ namespace OrderReader.Core
         {
             return Kernel.Get<CustomersHandler>();
         }
+
+        /// <summary>
+        /// Quicker way to get the orders library instance
+        /// </summary>
+        /// <returns><see cref="OrdersLibrary"/> object instance</returns>
+        public static OrdersLibrary Orders()
+        {
+            return Kernel.Get<OrdersLibrary>();
+        }
+
+        #endregion
     }
 }

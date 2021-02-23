@@ -51,6 +51,16 @@ namespace OrderReader.Core
         /// </summary>
         public ObservableCollection<OrderProduct> Products { get; private set; } = new ObservableCollection<OrderProduct>();
 
+        /// <summary>
+        /// A list of warnings for this order
+        /// </summary>
+        public ObservableCollection<OrderWarning> Warnings { get; private set; } = new ObservableCollection<OrderWarning>();
+
+        /// <summary>
+        /// Whether there are any warnings for this order
+        /// </summary>
+        public bool HasWarnings => Warnings.Count > 0;
+
         #endregion
 
         #region Constructor
@@ -98,6 +108,40 @@ namespace OrderReader.Core
 
             // If same product is not on this order yet, add it to the list
             Products.Add(new OrderProduct(CustomerID, productId, quantity));
+        }
+
+        /// <summary>
+        /// Add a product to the order
+        /// </summary>
+        /// <param name="product">An <see cref="OrderProduct"/> object</param>
+        public void AddProduct(OrderProduct product)
+        {
+            if (product.CustomerID == CustomerID)
+            {
+                // First iterate through the list of products already on the order
+                foreach (OrderProduct line in Products)
+                {
+                    // Look for the same product id
+                    if (line.ProductID == product.ProductID)
+                    {
+                        // If same product is already on the list, just add the new quantity to the existing one
+                        line.Quantity += product.Quantity;
+                        return;
+                    }
+                }
+
+                // If same product is not on this order yet, add it to the list
+                Products.Add(product);
+            }
+        }
+
+        /// <summary>
+        /// Add a warning to the list
+        /// </summary>
+        /// <param name="warning">A <see cref="OrderWarning"/> object</param>
+        public void AddWarning(OrderWarning warning)
+        {
+            Warnings.Add(warning);
         }
 
         /// <summary>

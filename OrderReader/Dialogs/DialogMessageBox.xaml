@@ -10,8 +10,9 @@
                 CornerRadius="5" Margin="5" Padding="5">
         <StackPanel d:DataContext="{x:Static core:MessageBoxDialogDesignModel.Instance}">
             <TextBlock Text="{Binding Message}"
-                           FontSize="{StaticResource FontSizeBelowAverage}"
-                           Foreground="{StaticResource ForegroundDarkBrush}"/>
+                       FontSize="{StaticResource FontSizeBelowAverage}"
+                       Foreground="{StaticResource ForegroundDarkBrush}"
+                       TextWrapping="WrapWithOverflow"/>
             <Button Content="{Binding ButtonText}"
                     FontSize="{StaticResource FontSizeAverage}"
                     Command="{Binding CloseCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BaseDialogUserControl}}}"

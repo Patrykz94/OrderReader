@@ -13,8 +13,7 @@
         <Grid>
             <!-- Main content scroll -->
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel
-                    TextBlock.TextAlignment="Center">
+                <StackPanel TextBlock.TextAlignment="Center">
 
                     <!-- Main content white box -->
                     <Border Visibility="{Binding OrdersHandler.Orders.Count, Converter={local:IntegerToVisibilityConverter}, ConverterParameter=Collapse}"

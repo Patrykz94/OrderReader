@@ -20,6 +20,11 @@ namespace OrderReader
         /// </summary>
         public Control Content { get; set; }
 
+        /// <summary>
+        /// The maximum width of a window
+        /// </summary>
+        public double WindowMaximumWidth { get; set; } = 500.0;
+
         #endregion
 
         #region Constructor

@@ -37,10 +37,20 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
+        /// <summary>
+        /// When a file is dropped, process the file
+        /// </summary>
+        /// <param name="files"></param>
         public void OnFilesDropped(string[] files)
         {
-            // TODO: Implement the handling logic here
-            throw new NotImplementedException();
+            foreach (string file in files)
+            {
+                FileImport fileImport = new FileImport(file);
+                fileImport.ProcessFile();
+            }
+
+            // Once files have been processed, refresh the orders page
+            OrdersHandler.UpdateAllOrders();
         }
 
         #endregion

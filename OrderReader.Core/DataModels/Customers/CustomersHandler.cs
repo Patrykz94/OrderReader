@@ -71,6 +71,21 @@ namespace OrderReader.Core
         }
 
         /// <summary>
+        /// Check if a customer with that order name already exists
+        /// </summary>
+        /// <param name="orderName">The name that will appear on the orders that we are reading from</param>
+        /// <returns>True or false</returns>
+        public bool HasCustomerOrderName(string orderName)
+        {
+            foreach (Customer customer in Customers)
+            {
+                if (customer.OrderName == orderName) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets the customer object by ID number
         /// </summary>
         /// <param name="customerId">The ID number of required customer</param>
@@ -80,6 +95,21 @@ namespace OrderReader.Core
             foreach (Customer customer in Customers)
             {
                 if (customer.Id == customerId) return customer;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the customer object by the order name
+        /// </summary>
+        /// <param name="orderName">The name that will appear on the orders that we are reading from</param>
+        /// <returns>A <see cref="Customer"/> object</returns>
+        public Customer GetCustomerByOrderName(string orderName)
+        {
+            foreach (Customer customer in Customers)
+            {
+                if (customer.OrderName == orderName) return customer;
             }
 
             return null;

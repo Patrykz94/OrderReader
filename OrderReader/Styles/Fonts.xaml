@@ -43,6 +43,7 @@
     <system:String x:Key="IconDelete">&#xf2ed;</system:String>
     <system:String x:Key="IconReload">&#xf2f1;</system:String>
     <system:String x:Key="IconSave">&#xf0c7;</system:String>
+    <system:String x:Key="IconWarning">&#xf071;</system:String>
 
     <!-- Navigation icons -->
     <system:String x:Key="IconNavOrdersPanel">&#xf328;</system:String>

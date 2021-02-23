@@ -30,14 +30,37 @@
                                             HorizontalAlignment="Left"
                                             Background="{StaticResource BackgroundVeryLightBrush}"
                                             CornerRadius="10 10 0 0">
-                                        <TextBlock FontSize="{StaticResource FontSizeAverage}">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} - {1:dd/MM/yy}">
-                                                    <Binding Path="CustomerName" />
-                                                    <Binding Path="Date"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="{StaticResource FontSizeAverage}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} - {1:dd/MM/yy}">
+                                                        <Binding Path="CustomerName" />
+                                                        <Binding Path="Date"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                            <TextBlock Margin="10 0 0 0" Foreground="{StaticResource BackgroundDarkOrangeBrush}"
+                                                       Visibility="{Binding HasWarnings, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=CollapseReversed}">
+                                                <Run Text="{StaticResource IconWarning}" Style="{StaticResource IconText}"/>
+                                                <Run Text="{Binding WarningsList.Count, Mode=OneWay}"/>
+                                                <TextBlock.ToolTip>
+                                                    <StackPanel MaxWidth="500">
+                                                        <ItemsControl ItemsSource="{Binding WarningsList}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel>
+                                                                        <TextBlock Text="{Binding Message}" FontSize="{StaticResource FontSizeBelowAverage}" TextWrapping="Wrap"/>
+                                                                        <Border BorderBrush="Silver" BorderThickness="0 1 0 0" Margin="0 5"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        <TextBlock Text="This order can be processed but please double check the above warnings."
+                                                                   TextWrapping="Wrap" FontSize="{StaticResource FontSizeBelowAverage}" FontStyle="Italic"/>
+                                                    </StackPanel>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </StackPanel>
                                     </Border>
                                     <Button Style="{StaticResource OrderProcessButton}" Content="Process Order" Margin="5 0"
                                             Command="{Binding ProcessCommand}"/>
@@ -49,7 +72,7 @@
                                     </Button>
                                 </StackPanel>
 
-                                <DataGrid ItemsSource="{Binding OrdersTable}"
+                                <DataGrid ItemsSource="{Binding OrdersView}"
                                           AutoGenerateColumns="True"
                                           CanUserReorderColumns="False"
                                           CanUserDeleteRows="False"
@@ -57,6 +80,7 @@
                                           CanUserSortColumns="False"
                                           IsReadOnly="True"
                                           HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Disabled"
                                           HeadersVisibility="Column"
                                           ColumnWidth="*"
                                           Grid.Column="0"

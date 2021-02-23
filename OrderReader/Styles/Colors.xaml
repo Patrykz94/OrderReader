@@ -43,6 +43,9 @@
     <Color x:Key="BackgroundOrange">#ff9900</Color>
     <SolidColorBrush x:Key="BackgroundOrangeBrush" Color="{StaticResource BackgroundOrange}"/>
 
+    <Color x:Key="BackgroundDarkOrange">#ff6600</Color>
+    <SolidColorBrush x:Key="BackgroundDarkOrangeBrush" Color="{StaticResource BackgroundDarkOrange}"/>
+
     <Color x:Key="BackgroundBlue">#5588ff</Color>
     <SolidColorBrush x:Key="BackgroundBlueBrush" Color="{StaticResource BackgroundBlue}"/>
     

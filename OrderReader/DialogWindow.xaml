@@ -14,6 +14,7 @@
         Icon="Images/Logo/logo-small.png"
         MinWidth="{Binding WindowMinimumWidth}"
         MinHeight="{Binding WindowMinimumHeight}"
+        MaxWidth="{Binding WindowMaximumWidth}"
         Title="{Binding Title}">
 
     <Window.Resources>

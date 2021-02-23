@@ -395,4 +395,8 @@
         </Setter>
     </Style>
 
+    <Style x:Key="IconText">
+        <Setter Property="Inline.FontFamily" Value="{StaticResource IconFontRegular}"/>
+    </Style>
+
 </ResourceDictionary>
