@@ -42,7 +42,7 @@ namespace OrderReader.Core
             CustomersHandler customers = IoC.Customers();
             customers.LoadCustomers();
 
-            // Check if the any of the lines contain a customer name
+            // Check if any of the lines contain a customer name
             foreach (string line in Lines)
             {
                 if (customers.HasCustomerOrderName(line)) return customers.GetCustomerByOrderName(line).Id;

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Data;
+using System.IO;
 
 namespace OrderReader.Core
 {
@@ -6,11 +7,13 @@ namespace OrderReader.Core
     {
         #region Private Enums
 
+        /// <summary>
+        /// In the future, make each customer processing logic a separate optional plugin
+        /// </summary>
         private enum CustomerNames
         {
             Keelings_Coop = 1,
-            Keelings = 2,
-            Lidl = 3
+            Lidl = 2
         }
 
         #endregion
@@ -21,6 +24,11 @@ namespace OrderReader.Core
         /// Lines of text that have been read from a PDF file
         /// </summary>
         private string[] LinesOfText = null;
+
+        /// <summary>
+        /// Data set which has been read from an Excel file
+        /// </summary>
+        private DataSet ExcelData = new DataSet();
 
         #endregion
 
@@ -70,54 +78,9 @@ namespace OrderReader.Core
                 switch (ext.ToLower())
                 {
                     case ".xlsx":
-                        // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "File Processing Error",
-                            Message = "Processing of Excel files has not been implemented yet.",
-                            ButtonText = "OK"
-                        });
-                        return false;
+                        return ProcessExcelFile();
                     case ".pdf":
-                        PDFImport importedFile = new PDFImport(FilePath);
-
-                        if (importedFile.GetCustomerId() == -1)
-                        {
-                            string errorMessage = $"Could not identify customer information in file {FileName}.\n" +
-                                "Please double check the PDF file to make sure it contains a valid order.\n";
-
-                            // Display error message to the user
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                            {
-                                Title = "File Processing Error",
-                                Message = errorMessage,
-                                ButtonText = "OK"
-                            });
-
-                            return false;
-                        }
-
-                        Customer customer = IoC.Customers().GetCustomerByID(importedFile.GetCustomerId());
-
-                        LinesOfText = importedFile.Lines;
-
-                        switch ((CustomerNames)customer.Id)
-                        {
-                            case CustomerNames.Keelings_Coop:
-                                KeelingsPDFParser.ParseOrder(LinesOfText, FileName, customer);
-                                break;
-                            default:
-                                // Display error message to the user
-                                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "File Processing Error",
-                                    Message = "Could not process order for this customer.",
-                                    ButtonText = "OK"
-                                });
-                                return false;
-                        }
-
-                        return true;
+                        return ProcessPDFFile();
                     default:
                         // Display error message to the user
                         IoC.UI.ShowMessage(new MessageBoxDialogViewModel
@@ -139,6 +102,108 @@ namespace OrderReader.Core
             });
 
             return false;
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        /// <summary>
+        /// Process an Excel file
+        /// </summary>
+        /// <returns>Whether or not processing was successful</returns>
+        private bool ProcessExcelFile()
+        {
+            ExcelImport importedExcelFile = new ExcelImport(FilePath);
+
+            int customerId = importedExcelFile.GetCustomerId();
+
+            if (customerId == -1)
+            {
+                string errorMessage = $"Could not identify customer information in file {FileName}\n" +
+                    "Please double check the Excel file to make sure it contains a valid order.\n";
+
+                // Display error message to the user
+                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "File Processing Error",
+                    Message = errorMessage,
+                    ButtonText = "OK"
+                });
+
+                return false;
+            }
+
+            Customer customer = IoC.Customers().GetCustomerByID(customerId);
+
+            ExcelData = importedExcelFile.ExcelData;
+
+            switch ((CustomerNames)customer.Id)
+            {
+                case CustomerNames.Lidl:
+                    LidlExcelParser.ParseOrder(ExcelData, FileName, customer);
+                    break;
+                default:
+                    // Display error message to the user
+                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    {
+                        Title = "File Processing Error",
+                        Message = "Could not process order for this customer.",
+                        ButtonText = "OK"
+                    });
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Process a PDF file
+        /// </summary>
+        /// <returns>Whether or not processing was successful</returns>
+        private bool ProcessPDFFile()
+        {
+            PDFImport importedPDFFile = new PDFImport(FilePath);
+
+            int customerId = importedPDFFile.GetCustomerId();
+
+            if (customerId == -1)
+            {
+                string errorMessage = $"Could not identify customer information in file {FileName}\n" +
+                    "Please double check the PDF file to make sure it contains a valid order.\n";
+
+                // Display error message to the user
+                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "File Processing Error",
+                    Message = errorMessage,
+                    ButtonText = "OK"
+                });
+
+                return false;
+            }
+
+            Customer customer = IoC.Customers().GetCustomerByID(customerId);
+
+            LinesOfText = importedPDFFile.Lines;
+
+            switch ((CustomerNames)customer.Id)
+            {
+                case CustomerNames.Keelings_Coop:
+                    KeelingsPDFParser.ParseOrder(LinesOfText, FileName, customer);
+                    break;
+                default:
+                    // Display error message to the user
+                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    {
+                        Title = "File Processing Error",
+                        Message = "Could not process order for this customer.",
+                        ButtonText = "OK"
+                    });
+                    return false;
+            }
+
+            return true;
         }
 
         #endregion

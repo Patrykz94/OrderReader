@@ -117,7 +117,7 @@ namespace OrderReader.Core
         }
 
         /// <summary>
-        /// Checks of the order passed in matches any of the orders already in the library
+        /// Checks if the order passed in matches any of the orders already in the library
         /// </summary>
         /// <param name="orderIn"><see cref="Order"/> object</param>
         /// <returns>Returns true or false</returns>
@@ -125,8 +125,27 @@ namespace OrderReader.Core
         {
             foreach (Order order in Orders)
             {
-                if (order == orderIn)
-                    return true;
+                if (order.OrderID == orderIn.OrderID &&
+                    order.OrderReference == orderIn.OrderReference &&
+                    order.DepotID == orderIn.DepotID &&
+                    order.Products.Count == orderIn.Products.Count)
+                {
+                    bool allProductsMatch = true;
+                    foreach (OrderProduct product1 in order.Products)
+                    {
+                        bool productMatches = false;
+                        foreach (OrderProduct product2 in orderIn.Products)
+                        {
+                            if (product1.ProductID == product2.ProductID && product1.Quantity == product2.Quantity)
+                            {
+                                productMatches = true;
+                                break;
+                            }
+                        }
+                        if (!productMatches) allProductsMatch = false;
+                    }
+                    if (allProductsMatch) return true;
+                }
             }
             return false;
         }
