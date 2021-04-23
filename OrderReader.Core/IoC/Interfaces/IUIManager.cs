@@ -12,6 +12,20 @@ namespace OrderReader.Core
         /// </summary>
         /// <param name="viewModel">The view model</param>
         /// <returns></returns>
-        Task ShowMessage(MessageBoxDialogViewModel viewModel);
+        Task<DialogResult> ShowMessage(MessageBoxDialogViewModel viewModel);
+
+        /// <summary>
+        /// Asks user a question with two possible answers
+        /// </summary>
+        /// <param name="viewModel">The view model</param>
+        /// <returns></returns>
+        Task<DialogResult> ShowMessage(YesNoBoxDialogViewModel viewModel);
+
+        /// <summary>
+        /// Ask user to drag and drop a file
+        /// </summary>
+        /// <param name="viewModel">The view model</param>
+        /// <returns></returns>
+        Task<string> ShowMessage(ConfigFileBoxDialogViewModel viewModel);
     }
 }

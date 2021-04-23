@@ -28,11 +28,14 @@ namespace OrderReader.Core
         /// NOTE: Must be called as soon as your application starts up to ensure all
         ///       services can be found
         /// </summary>
-        public static void Setup()
+        public static void SetupInitial()
         {
             // Bind all required view models
             BindViewModels();
+        }
 
+        public static void SetupFull()
+        {
             // Create the OrdersLibrary
             SetupOrdersLibrary();
 

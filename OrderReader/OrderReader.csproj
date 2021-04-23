@@ -72,6 +72,7 @@
       <HintPath>..\packages\PropertyChanged.Fody.3.3.2\lib\net40\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -117,6 +118,12 @@
     <Compile Include="DataValidation\ValidationRules\NotEmptyRule.cs" />
     <Compile Include="DependencyProperties\DropFilesBehaviourExtension.cs" />
     <Compile Include="Dialogs\BaseDialogUserControl.cs" />
+    <Compile Include="Dialogs\DialogConfigFileBox.xaml.cs">
+      <DependentUpon>DialogConfigFileBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DialogYesNoBox.xaml.cs">
+      <DependentUpon>DialogYesNoBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\DialogMessageBox.xaml.cs">
       <DependentUpon>DialogMessageBox.xaml</DependentUpon>
     </Compile>
@@ -136,6 +143,7 @@
     <Compile Include="ValueConverters\ApplicationPageValueConverter.cs" />
     <Compile Include="ValueConverters\BaseMultiValueConverter.cs" />
     <Compile Include="ValueConverters\BaseValueConverter.cs" />
+    <Compile Include="ValueConverters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="ValueConverters\IntegerToVisibilityConverter.cs" />
     <Compile Include="ValueConverters\BooleanToVisibilityConverter.cs" />
     <Compile Include="ValueConverters\InverseBooleanConverter.cs" />
@@ -161,6 +169,14 @@
     <Page Include="Controls\PageHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DialogConfigFileBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DialogYesNoBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\DialogMessageBox.xaml">
       <SubType>Designer</SubType>

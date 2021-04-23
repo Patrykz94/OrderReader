@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
@@ -12,6 +13,17 @@ namespace OrderReader.Core
     /// </summary>
     public class SqliteDataAccess
     {
+        public static Dictionary<string, string> LoadDefaultSettings()
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                // Get all customers from database and convert them to a list
+                Dictionary<string, string> output = cnn.Query("SELECT * FROM 'Settings'", new DynamicParameters()).ToDictionary(row => (string)row.Setting, row => (string)row.Value);
+
+                return output;
+            }
+        }
+
         /// <summary>
         /// Load all customers from the database
         /// </summary>
@@ -152,9 +164,48 @@ namespace OrderReader.Core
             }
         }
 
-        private static string LoadConnectionString(string id = "Development")
+        /// <summary>
+        /// A function that check if a connection can be made with the database
+        /// </summary>
+        /// <returns></returns>
+        public static bool TestConnection()
         {
-            return ConfigurationManager.ConnectionStrings[id].ConnectionString;
+            try
+            {
+                if (!HasConnectionString()) return false;
+
+                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                {
+                    // Get all customers from database and convert them to a list
+                    var custOutput = cnn.Query<Customer>("SELECT * FROM 'Customers'", new DynamicParameters()).ToList();
+                    if (custOutput.Count > 0) return true;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if the connection string exists
+        /// </summary>
+        /// <param name="key">Connection string ID</param>
+        /// <returns>True or false whether the connection string exists</returns>
+        public static bool HasConnectionString(string id = "default")
+        {
+            var con = ConfigurationManager.ConnectionStrings[id];
+            if (con == null) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Get the connection string
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private static string LoadConnectionString(string id = "default")
+        {
+            if (HasConnectionString(id)) return ConfigurationManager.ConnectionStrings[id].ConnectionString;
+            return "";
         }
     }
 }

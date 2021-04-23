@@ -133,7 +133,9 @@
     <Compile Include="DataModels\Orders\OrderWarning.cs" />
     <Compile Include="DataModels\PrintingManager.cs" />
     <Compile Include="DataModels\Settings.cs" />
+    <Compile Include="DataModels\AppConfiguration.cs" />
     <Compile Include="DataModels\UserSettings.cs" />
+    <Compile Include="Enums\DialogResult.cs" />
     <Compile Include="Expressions\ExpressionsHelpers.cs" />
     <Compile Include="IoC\Base\IoC.cs" />
     <Compile Include="IoC\Interfaces\IFilesDropped.cs" />
@@ -146,7 +148,11 @@
     <Compile Include="ViewModel\Base\RelayCommand.cs" />
     <Compile Include="ViewModel\Base\RelayParameterizedCommand.cs" />
     <Compile Include="ViewModel\Dialogs\BaseDialogViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\Design\ConfigFileBoxDialogDesignModel.cs" />
+    <Compile Include="ViewModel\Dialogs\Design\YesNoBoxDialogDesignModel.cs" />
     <Compile Include="ViewModel\Dialogs\Design\MessageBoxDialogDesignModel.cs" />
+    <Compile Include="ViewModel\Dialogs\ConfigFileBoxDialogViewModel.cs" />
+    <Compile Include="ViewModel\Dialogs\YesNoBoxDialogViewModel.cs" />
     <Compile Include="ViewModel\Dialogs\MessageBoxDialogViewModel.cs" />
     <Compile Include="ViewModel\Orders\OrderListItemViewModel.cs" />
     <Compile Include="ViewModel\Orders\OrderListViewModel.cs" />

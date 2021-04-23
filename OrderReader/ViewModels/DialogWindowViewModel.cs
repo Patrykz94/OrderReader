@@ -25,6 +25,12 @@ namespace OrderReader
         /// </summary>
         public double WindowMaximumWidth { get; set; } = 500.0;
 
+        /// <summary>
+        /// Controls if the close button should be enabled or not
+        /// Sometimes we may need to get an answer from the user and not allow them to just close the window
+        /// </summary>
+        public bool CloseButtonEnabled { get; set; } = false;
+
         #endregion
 
         #region Constructor

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace OrderReader.Core
@@ -55,8 +56,13 @@ namespace OrderReader.Core
         /// </summary>
         public UserSettings()
         {
-            UserCSVExportPath = Settings.DefaultExportPath;
-            UserPDFExportPath = Settings.DefaultExportPath;
+            Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
+
+            UserCSVExportPath = defaultSettings.ContainsKey("DefaultCSVExportPath") ? defaultSettings["DefaultCSVExportPath"] : Settings.DefaultExportPath;
+            if (UserCSVExportPath == null || UserCSVExportPath == "") UserCSVExportPath = Settings.DefaultExportPath;
+            UserPDFExportPath = defaultSettings.ContainsKey("DefaultPDFExportPath") ? defaultSettings["DefaultPDFExportPath"] : Settings.DefaultExportPath;
+            if (UserPDFExportPath == null || UserPDFExportPath == "") UserPDFExportPath = Settings.DefaultExportPath;
+            PreferredPrinterName = defaultSettings.ContainsKey("DefaultPrinter") ? defaultSettings["DefaultPrinter"] : null;
             ExportCSV = true;
             ExportPDF = true;
             PrintOrders = true;

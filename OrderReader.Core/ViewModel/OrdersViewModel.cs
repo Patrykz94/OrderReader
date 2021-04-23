@@ -41,12 +41,12 @@ namespace OrderReader.Core
         /// When a file is dropped, process the file
         /// </summary>
         /// <param name="files"></param>
-        public void OnFilesDropped(string[] files)
+        public async void OnFilesDropped(string[] files)
         {
             foreach (string file in files)
             {
                 FileImport fileImport = new FileImport(file);
-                fileImport.ProcessFile();
+                await fileImport.ProcessFileAsync();
             }
 
             // Once files have been processed, refresh the orders page

@@ -84,7 +84,7 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public static void ParseOrder(DataSet orderData, string fileName, Customer customer)
+        public static async void ParseOrderAsync(DataSet orderData, string fileName, Customer customer)
         {
             foreach (DataTable table in orderData.Tables)
             {
@@ -179,7 +179,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without depot \"{depotString.Value}\". You will need to add order for that depot manually.";
 
                                 // Display error message to the user
-                                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                                 {
                                     Title = "File Processing Error",
                                     Message = errorMessage,
@@ -210,7 +210,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without product \"{productString.Value}\". You will need to add that product to order manually if required.";
 
                                 // Display error message to the user
-                                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                                 {
                                     Title = "File Processing Error",
                                     Message = errorMessage,
@@ -233,7 +233,7 @@ namespace OrderReader.Core
                     errorMessage += "If you think this file has all the correct data, please contact Patryk Z.";
 
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "File Processing Error",
                         Message = errorMessage,
@@ -250,7 +250,7 @@ namespace OrderReader.Core
                             "\nThis file was not processed.";
 
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "File Processing Error",
                             Message = errorMessage,
@@ -269,7 +269,7 @@ namespace OrderReader.Core
                         }
 
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "Unusual Date Warning",
                             Message = errorMessage,
@@ -284,7 +284,7 @@ namespace OrderReader.Core
                             "Provisional orders usually end with \"01\" while full orders usually end with \"02\".";
 
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "Order Reference Warning",
                             Message = errorMessage,
@@ -304,7 +304,7 @@ namespace OrderReader.Core
                         errorMessage += "\nThis file was not processed.";
 
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "File Processing Error",
                             Message = errorMessage,
@@ -347,7 +347,7 @@ namespace OrderReader.Core
                                 string errorMessage = $"The order in file {fileName} for depot {order.DepotName} could not be processed. The same order already exists.";
 
                                 // Display error message to the user
-                                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                                 {
                                     Title = "Order Processing Error",
                                     Message = errorMessage,

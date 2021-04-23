@@ -9,7 +9,7 @@ namespace OrderReader.Core
     {
         #region Public Helpers
 
-        public static void ParseOrder(string[] orderText, string fileName, Customer customer)
+        public static async void ParseOrderAsync(string[] orderText, string fileName, Customer customer)
         {
             // Variables that will be required
             bool isAllDataFound = true;
@@ -100,7 +100,7 @@ namespace OrderReader.Core
                 isAllDataFound = false;
 
                 // Display error message to the user
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "File Processing Error",
                     Message = errorMessage,
@@ -118,7 +118,7 @@ namespace OrderReader.Core
                     isAllDataFound = false;
                     
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "File Processing Error",
                         Message = errorMessage,
@@ -133,7 +133,7 @@ namespace OrderReader.Core
                     warnings.Add(new OrderWarning(OrderWarning.WarningType.UnusualDate, errorMessage));
 
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "Unusual Date Warning",
                         Message = errorMessage,
@@ -161,7 +161,7 @@ namespace OrderReader.Core
                             warnings.Add(new OrderWarning(OrderWarning.WarningType.UnknownProduct, errorMessage));
 
                             // Display error message to the user
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                             {
                                 Title = "Unknown Product Warning",
                                 Message = errorMessage,
@@ -177,7 +177,7 @@ namespace OrderReader.Core
                             isAllDataFound = false;
 
                             // Display error message to the user
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                             {
                                 Title = "Unknown Product Error",
                                 Message = errorMessage,
@@ -202,7 +202,7 @@ namespace OrderReader.Core
                             isAllDataFound = false;
 
                             // Display error message to the user
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                             {
                                 Title = "Order Processing Error",
                                 Message = errorMessage,
@@ -222,7 +222,7 @@ namespace OrderReader.Core
                     isAllDataFound = false;
 
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "Order Processing Error",
                         Message = errorMessage,
@@ -239,7 +239,7 @@ namespace OrderReader.Core
                     isAllDataFound = false;
 
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "Order Processing Error",
                         Message = errorMessage,
@@ -277,7 +277,7 @@ namespace OrderReader.Core
                             string errorMessage = $"The order in file {fileName} could not be processed. An order with the same reference number already exists.";
 
                             // Display error message to the user
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                             {
                                 Title = "Order Processing Error",
                                 Message = errorMessage,
@@ -296,9 +296,9 @@ namespace OrderReader.Core
                             "Please check the PDF file to see if all product quantities add up to the total amount. " +
                             "If they do, please contact Patryk Z.\n" +
                             "This file was not processed.";
-                        
+
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "Order Processing Error",
                             Message = errorMessage,

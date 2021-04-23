@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
 
@@ -83,8 +84,12 @@ namespace OrderReader.Core
         /// </summary>
         private void SaveSettings()
         {
-            if (UserSettings.UserCSVExportPath == "") UserSettings.UserCSVExportPath = Settings.DefaultExportPath;
-            if (UserSettings.UserPDFExportPath == "") UserSettings.UserPDFExportPath = Settings.DefaultExportPath;
+            Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
+
+            if (UserSettings.UserCSVExportPath == "") UserSettings.UserCSVExportPath = defaultSettings.ContainsKey("DefaultCSVExportPath") ? defaultSettings["DefaultCSVExportPath"] : Settings.DefaultExportPath;
+            if (UserSettings.UserCSVExportPath == "" || UserSettings.UserCSVExportPath == null) UserSettings.UserCSVExportPath = Settings.DefaultExportPath;
+            if (UserSettings.UserPDFExportPath == "") UserSettings.UserPDFExportPath = defaultSettings.ContainsKey("DefaultPDFExportPath") ? defaultSettings["DefaultPDFExportPath"] : Settings.DefaultExportPath;
+            if (UserSettings.UserPDFExportPath == "" || UserSettings.UserPDFExportPath == null) UserSettings.UserPDFExportPath = Settings.DefaultExportPath;
             if (!Directory.Exists(UserSettings.UserCSVExportPath)) Directory.CreateDirectory(UserSettings.UserCSVExportPath);
             if (!Directory.Exists(UserSettings.UserPDFExportPath)) Directory.CreateDirectory(UserSettings.UserPDFExportPath);
             
@@ -99,7 +104,10 @@ namespace OrderReader.Core
         {
             UserSettings = Settings.LoadSettings();
 
-            if (UserSettings.PreferredPrinterName == null) UserSettings.PreferredPrinterName = PrintingManager.DefaultPrinter;
+            if (UserSettings.PreferredPrinterName == null)
+                UserSettings.PreferredPrinterName = PrintingManager.DefaultPrinter;
+            else if (!PrintersList.Contains(UserSettings.PreferredPrinterName))
+                UserSettings.PreferredPrinterName = PrintingManager.DefaultPrinter;
 
             for (int i = 0; i < PrintersList.Count; i++)
             {

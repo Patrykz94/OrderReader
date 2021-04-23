@@ -45,6 +45,9 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
+        /// <summary>
+        /// Create the required directories
+        /// </summary>
         public static void Initialize()
         {
             if (!Directory.Exists(AppDataPath)) Directory.CreateDirectory(AppDataPath);
@@ -83,6 +86,26 @@ namespace OrderReader.Core
             {
                 serializer.Serialize(writer, settings);
             }
+        }
+
+        /// <summary>
+        /// Load configuration from file
+        /// </summary>
+        /// <returns><see cref="AppConfiguration"/> object</returns>
+        public static AppConfiguration LoadConfigs(string filePath = "")
+        {
+            if (File.Exists(filePath))
+            {
+                XmlSerializer deserializer = new XmlSerializer(typeof(AppConfiguration));
+
+                using (TextReader reader = new StreamReader(filePath))
+                {
+                    object obj = deserializer.Deserialize(reader);
+                    return (AppConfiguration)obj;
+                }
+            }
+
+            return new AppConfiguration();
         }
 
         #endregion

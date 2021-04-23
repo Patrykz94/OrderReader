@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
@@ -66,7 +67,7 @@ namespace OrderReader.Core
         /// Process the file
         /// </summary>
         /// <returns>True or False whether the file was processed successfully</returns>
-        public bool ProcessFile()
+        public async Task<bool> ProcessFileAsync()
         {
             // TODO: Every time we return false, we should display an error message stating what went wrong
 
@@ -78,12 +79,12 @@ namespace OrderReader.Core
                 switch (ext.ToLower())
                 {
                     case ".xlsx":
-                        return ProcessExcelFile();
+                        return await ProcessExcelFileAsync();
                     case ".pdf":
-                        return ProcessPDFFile();
+                        return await ProcessPDFFileAsync();
                     default:
                         // Display error message to the user
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "File Processing Error",
                             Message = "Unsupported file type.",
@@ -94,7 +95,7 @@ namespace OrderReader.Core
             }
 
             // Display error message to the user
-            IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
             {
                 Title = "File Processing Error",
                 Message = "Could not process this file.",
@@ -112,7 +113,7 @@ namespace OrderReader.Core
         /// Process an Excel file
         /// </summary>
         /// <returns>Whether or not processing was successful</returns>
-        private bool ProcessExcelFile()
+        private async Task<bool> ProcessExcelFileAsync()
         {
             ExcelImport importedExcelFile = new ExcelImport(FilePath);
 
@@ -124,7 +125,7 @@ namespace OrderReader.Core
                     "Please double check the Excel file to make sure it contains a valid order.\n";
 
                 // Display error message to the user
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "File Processing Error",
                     Message = errorMessage,
@@ -141,11 +142,11 @@ namespace OrderReader.Core
             switch ((CustomerNames)customer.Id)
             {
                 case CustomerNames.Lidl:
-                    LidlExcelParser.ParseOrder(ExcelData, FileName, customer);
+                    LidlExcelParser.ParseOrderAsync(ExcelData, FileName, customer);
                     break;
                 default:
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "File Processing Error",
                         Message = "Could not process order for this customer.",
@@ -161,7 +162,7 @@ namespace OrderReader.Core
         /// Process a PDF file
         /// </summary>
         /// <returns>Whether or not processing was successful</returns>
-        private bool ProcessPDFFile()
+        private async Task<bool> ProcessPDFFileAsync()
         {
             PDFImport importedPDFFile = new PDFImport(FilePath);
 
@@ -173,7 +174,7 @@ namespace OrderReader.Core
                     "Please double check the PDF file to make sure it contains a valid order.\n";
 
                 // Display error message to the user
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "File Processing Error",
                     Message = errorMessage,
@@ -190,11 +191,11 @@ namespace OrderReader.Core
             switch ((CustomerNames)customer.Id)
             {
                 case CustomerNames.Keelings_Coop:
-                    KeelingsPDFParser.ParseOrder(LinesOfText, FileName, customer);
+                    KeelingsPDFParser.ParseOrderAsync(LinesOfText, FileName, customer);
                     break;
                 default:
                     // Display error message to the user
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "File Processing Error",
                         Message = "Could not process order for this customer.",

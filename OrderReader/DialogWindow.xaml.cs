@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using OrderReader.Core;
+using System.Windows;
 
 namespace OrderReader
 {
@@ -33,6 +34,17 @@ namespace OrderReader
                 DataContext = mViewModel;
             }
         }
+
+        /// <summary>
+        /// Dialog result that will be returned by a dialog window
+        /// </summary>
+        public DialogResult DialogResult { get; set; } = DialogResult.None;
+
+        /// <summary>
+        /// An alternative result which will be returned for some dialog boxes
+        /// e.g. a DragDropBox
+        /// </summary>
+        public string StringResult { get; set; } = default;
 
         #endregion
 

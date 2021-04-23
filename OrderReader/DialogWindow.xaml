@@ -94,7 +94,8 @@
                                                         Visibility="Collapsed"/>
                                                 <Button Command="{Binding CloseCommand}"
                                                         Style="{StaticResource WindowCloseButton}"
-                                                        Content="{StaticResource IconWindowClose}"/>
+                                                        Content="{StaticResource IconWindowClose}"
+                                                        Visibility="{Binding CloseButtonEnabled, Converter={local:BooleanToVisibilityConverter}, ConverterParameter=CollapseReversed}" />
                                             </StackPanel>
 
                                         </Grid>
