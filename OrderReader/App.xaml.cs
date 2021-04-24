@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Configuration;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using OrderReader.Core;
@@ -45,6 +48,10 @@ namespace OrderReader
 
             // Initialize the settings class which creates all required directories
             Settings.Initialize();
+
+            // Check if there are any saved settings and if so, restore them
+            RestoreSettings();
+            ConfigurationManager.RefreshSection("connectionStrings");
         }
 
         /// <summary>
@@ -97,6 +104,11 @@ namespace OrderReader
             IoC.SetupFull();
         }
 
+        /// <summary>
+        /// Update the config file if required
+        /// </summary>
+        /// <param name="filePath">The path to the new config file</param>
+        /// <returns></returns>
         private async Task UpdateConfigFile(string filePath)
         {
             if (filePath == default)
@@ -137,6 +149,65 @@ namespace OrderReader
                     Environment.Exit(0);
                 }
             }
+        }
+
+        /// <summary>
+        /// Restore our settings backup if any.
+        /// Used to persist settings across updates.
+        /// </summary>
+        private static async void RestoreSettings()
+        {
+            //Restore settings after application update
+            string destFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
+            string sourceFile = Settings.ConfigFile;
+            // Check if we have settings that we need to restore
+            if (!File.Exists(sourceFile))
+            {
+                // Nothing we need to do
+                return;
+            }
+            // Create directory as needed
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+            }
+            catch (Exception ex)
+            {
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "Config Restore Error",
+                    Message = $"Failed to create a config directory:\n\n{ex.Message}"
+                });
+            }
+
+            // Copy our backup file in place 
+            try
+            {
+                File.Copy(sourceFile, destFile, true);
+            }
+            catch (Exception ex)
+            {
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "Config Restore Error",
+                    Message = $"Failed to copy the backup config file:\n\n{ex.Message}"
+                });
+            }
+
+            // Delete backup file
+            try
+            {
+                File.Delete(sourceFile);
+            }
+            catch (Exception ex)
+            {
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "Config Restore Error",
+                    Message = $"Failed to deleted the backup config file:\n\n{ex.Message}"
+                });
+            }
+
         }
     }
 }

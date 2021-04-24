@@ -37,6 +37,11 @@ namespace OrderReader.Core
         public static string SettingsFile { get; } = Path.GetFullPath(Path.Combine(SettingsPath, @"settings.xml"));
 
         /// <summary>
+        /// The full path of the backup config file
+        /// </summary>
+        public static string ConfigFile { get; } = Path.GetFullPath(Path.Combine(SettingsPath, @"backup.Config"));
+
+        /// <summary>
         /// The default export location for CSV files. This will be created and used if the user doesn't specify a custom location
         /// </summary>
         public static string DefaultExportPath { get; } = Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"FileExport"));

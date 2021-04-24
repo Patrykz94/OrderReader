@@ -1,6 +1,13 @@
-﻿using System.Windows;
+﻿using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using OrderReader.Core;
+using Squirrel;
 
 namespace OrderReader
 {
@@ -125,6 +132,16 @@ namespace OrderReader
         /// </summary>
         public bool DimmableOverlayVisible { get; set; }
 
+        /// <summary>
+        /// The current version of the application
+        /// </summary>
+        public string CurrentVersion { get; set; }
+
+        /// <summary>
+        /// If a new update has been installed, this field will be updated
+        /// </summary>
+        public string UpdatedVersion { get; set; } = default;
+
         #endregion
 
         #region Commands
@@ -209,6 +226,16 @@ namespace OrderReader
                 // Fire off resize events
                 WindowResized();
             };
+
+            // Get the current version of our app
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            CurrentVersion = $" v{ versionInfo.FileVersion }";
+
+            #if !DEBUG
+            // Check for updates
+            CheckForUpdates();
+            #endif
         }
 
         #endregion
@@ -237,6 +264,63 @@ namespace OrderReader
             OnPropertyChanged(nameof(OuterMarginSizeThickness));
             OnPropertyChanged(nameof(WindowRadius));
             OnPropertyChanged(nameof(WindowCornerRadius));
+        }
+
+        /// <summary>
+        /// Function that will check for updates and update the aplication
+        /// </summary>
+        private async void CheckForUpdates()
+        {
+            // TODO: Do this in a better way
+            while(!SqliteDataAccess.TestConnection())
+            {
+                await Task.Delay(1000);
+            }
+
+            var defaultSettings = SqliteDataAccess.LoadDefaultSettings();
+
+            if (defaultSettings.ContainsKey("UpdateLocation"))
+            {
+                string updateLocation = defaultSettings["UpdateLocation"];
+                if (Directory.Exists(updateLocation))
+                {
+                    using (var manager = new UpdateManager(updateLocation))
+                    {
+                        var updateInfo = await manager.CheckForUpdate();
+
+                        if (updateInfo.ReleasesToApply.Count > 0)
+                        {
+                            var installedUpdates = await manager.UpdateApp();
+
+                            await BackupSettings();
+
+                            UpdatedVersion = installedUpdates.Version.ToString();
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Make a backup of our settings.
+        /// Used to persist settings across updates.
+        /// </summary>
+        private static async Task BackupSettings()
+        {
+            try
+            {
+                string settingsFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
+                string destination = Settings.ConfigFile;
+                File.Copy(settingsFile, destination, true);
+            }
+            catch (Exception ex)
+            {
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "Config Backup Error",
+                    Message = $"Failed to backup the config file:\n\n{ex.Message}"
+                });
+            }
         }
 
         #endregion

@@ -82,4 +82,10 @@
     <Color x:Key="Control.OrderButton.Hover">#30aa30</Color>
     <SolidColorBrush x:Key="Control.OrderButton.HoverBrush" Color="{StaticResource Control.OrderButton.Hover}"/>
 
+    <Color x:Key="Control.UpdateNotice.Background">#4a4a4a</Color>
+    <SolidColorBrush x:Key="Control.UpdateNotice.BackgroundBrush" Color="{StaticResource Control.UpdateNotice.Background}"/>
+
+    <Color x:Key="Control.UpdateNotice.Foreground">#cccccc</Color>
+    <SolidColorBrush x:Key="Control.UpdateNotice.ForegroundBrush" Color="{StaticResource Control.UpdateNotice.Foreground}"/>
+
 </ResourceDictionary>

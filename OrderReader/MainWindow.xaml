@@ -94,7 +94,10 @@
                                             <!-- Title -->
                                             <Viewbox>
                                                 <Border Margin="14">
-                                                    <TextBlock Foreground="{StaticResource ForegroundDarkBrush}" FontFamily="{StaticResource FontMain}" Text="Order Reader"/>
+                                                    <TextBlock Foreground="{StaticResource ForegroundDarkBrush}" FontFamily="{StaticResource FontMain}">
+                                                        <Run Text="Order Reader"/>
+                                                        <Run Text="{Binding CurrentVersion}"/>
+                                                    </TextBlock>
                                                 </Border>
                                             </Viewbox>
 

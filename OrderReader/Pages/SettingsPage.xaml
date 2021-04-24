@@ -171,19 +171,23 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0">
                             <TextBlock FontSize="{StaticResource FontSizeAboveAverage}"
-                                           HorizontalAlignment="Center"
-                                           Text="Application Appearance Settings"/>
+                                       HorizontalAlignment="Center"
+                                       Text="Application Appearance Settings"/>
 
                             <TextBlock FontSize="{StaticResource FontSizeSmall}"
-                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
-                                           HorizontalAlignment="Center" Margin="0 0 0 10"
-                                           Text="Cheng colorz n shit, yo"/>
+                                       Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                       HorizontalAlignment="Center" Margin="0 0 0 10"
+                                       Text="Change how the application appears"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1">
-                            <TextBlock Text="Nothing to see here..."
-                                           FontSize="{StaticResource FontSizeAboveAverage}"
-                                           Foreground="{StaticResource ForegroundLessDarkBrush}"
-                                           HorizontalAlignment="Center"/>
+                            <TextBlock Text="Nothing to see here right now."
+                                       FontSize="{StaticResource FontSizeAboveAverage}"
+                                       Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Maybe in the future..."
+                                       FontSize="{StaticResource FontSizeAboveAverage}"
+                                       Foreground="{StaticResource ForegroundLessDarkBrush}"
+                                       HorizontalAlignment="Center"/>
                         </StackPanel>
                         <Button Grid.Row="2" Content="Save Settings" IsEnabled="False"/>
                     </Grid>
