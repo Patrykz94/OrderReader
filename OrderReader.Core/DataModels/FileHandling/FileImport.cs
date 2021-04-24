@@ -69,8 +69,6 @@ namespace OrderReader.Core
         /// <returns>True or False whether the file was processed successfully</returns>
         public async Task<bool> ProcessFileAsync()
         {
-            // TODO: Every time we return false, we should display an error message stating what went wrong
-
             // Make sure the file exists
             if (File.Exists(FilePath))
             {
@@ -121,7 +119,7 @@ namespace OrderReader.Core
 
             if (customerId == -1)
             {
-                string errorMessage = $"Could not identify customer information in file {FileName}\n" +
+                string errorMessage = $"Could not identify customer information in file {FileName}\n\n" +
                     "Please double check the Excel file to make sure it contains a valid order.\n";
 
                 // Display error message to the user
@@ -170,7 +168,7 @@ namespace OrderReader.Core
 
             if (customerId == -1)
             {
-                string errorMessage = $"Could not identify customer information in file {FileName}\n" +
+                string errorMessage = $"Could not identify customer information in file {FileName}\n\n" +
                     "Please double check the PDF file to make sure it contains a valid order.\n";
 
                 // Display error message to the user

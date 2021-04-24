@@ -115,7 +115,7 @@ namespace OrderReader.Core
 
             // Command definitions
             ProcessCommand = new RelayCommand(ProcessOrder);
-            DeleteCommand = new RelayCommand(DeleteOrder);
+            DeleteCommand = new RelayCommand(() => { DeleteOrder(); });
         }
 
         #endregion
@@ -239,16 +239,26 @@ namespace OrderReader.Core
 
             if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(this);
 
-            // Once processed, remove the order
-            DeleteOrder();
+            // Once processed, remove the order without requiring confirmation
+            DeleteOrder(false);
         }
 
         /// <summary>
         /// Delete the current order by removing it from orders library and then reloading the page
         /// </summary>
-        private void DeleteOrder()
+        private async void DeleteOrder(bool promptUser = true)
         {
-            // TODO: ask user to confirm whether this order should be removed.
+            /// Prompt user to confirm whether this order should be removed.
+            if (promptUser)
+            {
+                var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
+                {
+                    Title = "Confirm Deleting Order",
+                    Question = "Are you sure you want to delete this order?"
+                });
+
+                if (result == DialogResult.No) return;
+            }
             // Need to create a confirmation message box with multiple possible answers
             if (OrdersList.Contains(this)) OrdersList.Remove(this);
             // Remove the orders first

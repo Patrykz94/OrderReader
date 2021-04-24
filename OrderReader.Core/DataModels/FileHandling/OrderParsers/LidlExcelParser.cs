@@ -84,6 +84,12 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
+        /// <summary>
+        /// A function that reads the order and extracts all required information
+        /// </summary>
+        /// <param name="orderData">The data that we should read from</param>
+        /// <param name="fileName">Name of the order file</param>
+        /// <param name="customer">Customer associated with this order</param>
         public static async void ParseOrderAsync(DataSet orderData, string fileName, Customer customer)
         {
             foreach (DataTable table in orderData.Tables)
@@ -279,17 +285,21 @@ namespace OrderReader.Core
 
                     if (orderReference.EndsWith("01"))
                     {
-                        // TODO: Make this a question and process depending on answer
-                        string errorMessage = $"Order reference {orderReference} in file {fileName} indicates that this is a provisional order.\n" +
-                            "Provisional orders usually end with \"01\" while full orders usually end with \"02\".";
+                        string errorMessage = $"Order reference {orderReference} in file {fileName} indicates that this is a provisional order.\n\n" +
+                            "Provisional orders usually end with \"01\" while full orders usually end with \"02\".\n\n" +
+                            "Would you like to process this order anyway?";
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
                         {
                             Title = "Order Reference Warning",
-                            Message = errorMessage,
-                            ButtonText = "OK"
+                            Question = errorMessage
                         });
+
+                        if (result == DialogResult.No)
+                        {
+                            return;
+                        }
                     }
 
                     // Display all the cells that could not be read from

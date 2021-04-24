@@ -30,7 +30,7 @@ namespace OrderReader.Core
             List<OrderProduct> products = new List<OrderProduct>();
 
             // Product code specification
-            int productCodeLength = 7;
+            int productCodeMinLength = 7;
 
             // Iterate over the lines to find required data
             foreach (string line in orderText)
@@ -67,22 +67,36 @@ namespace OrderReader.Core
                 }
 
                 // Look for products
-                if (line.Length > productCodeLength && line.Substring(0, productCodeLength).All(char.IsDigit) && char.IsWhiteSpace(line, productCodeLength))
+                if (line.Length > productCodeMinLength)
                 {
-                    int qtyAtIndex = 0;
-                    for (int i = line.Length - 1; i > 0; i--)
+
+                    int strLength = 0;
+                    for (int c = 0; c < line.Length; c++)
                     {
-                        if (char.IsWhiteSpace(line, i))
+                        if (char.IsWhiteSpace(line, c))
                         {
-                            qtyAtIndex = i + 1;
+                            strLength = c;
                             break;
                         }
                     }
 
-                    string productNumber = line.Substring(0, productCodeLength);
-                    string productQuantity = line.Substring(qtyAtIndex, line.Length - qtyAtIndex);
+                    if (strLength >= productCodeMinLength && line.Substring(0, strLength).All(char.IsDigit))
+                    {
+                        int qtyAtIndex = 0;
+                        for (int i = line.Length - 1; i > 0; i--)
+                        {
+                            if (char.IsWhiteSpace(line, i))
+                            {
+                                qtyAtIndex = i + 1;
+                                break;
+                            }
+                        }
 
-                    productStrings.Add(productNumber, productQuantity);
+                        string productNumber = line.Substring(0, strLength);
+                        string productQuantity = line.Substring(qtyAtIndex, line.Length - qtyAtIndex);
+
+                        productStrings.Add(productNumber, productQuantity);
+                    }
                 }
             }
 
