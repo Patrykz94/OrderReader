@@ -49,7 +49,7 @@ namespace OrderReader.Core
 
             if (lines.Count > 0)
             {
-                DateTime time = DateTime.UtcNow;
+                DateTime time = DateTime.Now;
                 string pcName = Environment.MachineName;
                 string fileName = $"order_{pcName}_{time.Year}_{time.Month}_{time.Day}_{time.Hour}_{time.Minute}_{time.Second}_{orderId}.csv";
 

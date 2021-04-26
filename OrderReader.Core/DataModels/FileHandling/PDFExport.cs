@@ -18,10 +18,11 @@ namespace OrderReader.Core
         {
             DataTable ordersTable = orders.OrdersTable;
             ordersTable.Columns.Add(new DataColumn("Sales Order"));
+            ordersTable.Columns.Add(new DataColumn("Pal"));
             ordersTable.Columns.Add(new DataColumn("Lorry Number"));
 
             // Create the file name
-            DateTime time = DateTime.UtcNow;
+            DateTime time = DateTime.Now;
             string pcName = Environment.MachineName;
             string fileName = $"OrderReaderExport_{pcName}_{time.Year}_{time.Month}_{time.Day}_{time.Hour}_{time.Minute}_{time.Second}_{orders.OrderID}.pdf";
             // Load the user settings
