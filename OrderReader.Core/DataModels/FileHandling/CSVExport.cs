@@ -51,7 +51,8 @@ namespace OrderReader.Core
             {
                 DateTime time = DateTime.Now;
                 string pcName = Environment.MachineName;
-                string fileName = $"order_{pcName}_{time.Year}_{time.Month}_{time.Day}_{time.Hour}_{time.Minute}_{time.Second}_{orderId}.csv";
+                string customerName = IoC.Customers().GetCustomerByID(orders[0].CustomerID).CSVName;
+                string fileName = $"order_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orderId}_{customerName}.csv";
 
                 UserSettings settings = Settings.LoadSettings();
 

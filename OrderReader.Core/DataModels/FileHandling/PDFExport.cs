@@ -24,7 +24,8 @@ namespace OrderReader.Core
             // Create the file name
             DateTime time = DateTime.Now;
             string pcName = Environment.MachineName;
-            string fileName = $"OrderReaderExport_{pcName}_{time.Year}_{time.Month}_{time.Day}_{time.Hour}_{time.Minute}_{time.Second}_{orders.OrderID}.pdf";
+            string customerName = IoC.Customers().GetCustomerByID(orders.Orders[0].CustomerID).CSVName;
+            string fileName = $"OrderReaderExport_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orders.OrderID}_{customerName}.pdf";
             // Load the user settings
             UserSettings settings = Settings.LoadSettings();
             string tempFilePath = System.IO.Path.Combine(Settings.TempFilesPath, fileName);
