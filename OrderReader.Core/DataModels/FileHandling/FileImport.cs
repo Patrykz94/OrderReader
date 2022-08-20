@@ -1,86 +1,31 @@
-﻿using System.Data;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
-    public class FileImport
+    public static class FileImport
     {
-        #region Private Enums
-
-        /// <summary>
-        /// In the future, make each customer processing logic a separate optional plugin
-        /// </summary>
-        private enum CustomerNames
-        {
-            Keelings_Coop = 1,
-            LidlOld = 2,
-            Lidl = 3
-        }
-
-        #endregion
-
-        #region Private Members
-
-        /// <summary>
-        /// Lines of text that have been read from a PDF file
-        /// </summary>
-        private string[] LinesOfText = null;
-
-        /// <summary>
-        /// Data set which has been read from an Excel file
-        /// </summary>
-        private DataSet ExcelData = new DataSet();
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// The path to the file we are working on
-        /// </summary>
-        public string FilePath { get; private set; }
-
-        /// <summary>
-        /// The name of the file we are working on
-        /// </summary>
-        public string FileName { get; private set; }
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="filePath"></param>
-        public FileImport(string filePath)
-        {
-            FilePath = filePath;
-            FileName = Path.GetFileName(FilePath);
-        }
-
-        #endregion
-
         #region Public Helpers
 
         /// <summary>
-        /// Process the file
+        /// Start processing this file
         /// </summary>
-        /// <returns>True or False whether the file was processed successfully</returns>
-        public async Task<bool> ProcessFileAsync()
+        /// <param name="filePath">A path to the file that we want to process</param>
+        /// <returns>True or false whether the file could be processed</returns>
+        public static async Task<bool> ProcessFileAsync(string filePath)
         {
             // Make sure the file exists
-            if (File.Exists(FilePath))
+            if (File.Exists(filePath))
             {
                 // Determine what file extension we are dealing with and call appropriate import class
-                string ext = Path.GetExtension(FilePath);
-                switch (ext.ToLower())
+                string fileExtension = Path.GetExtension(filePath);
+
+                switch (fileExtension.ToLower())
                 {
                     case ".xlsx":
-                        return await ProcessExcelFileAsync();
+                        return await ReadExcelFileAsync(filePath);
                     case ".pdf":
-                        return await ProcessPDFFileAsync();
+                        return await ReadPDFFileAsync(filePath);
                     default:
                         // Display error message to the user
                         await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
@@ -111,102 +56,25 @@ namespace OrderReader.Core
         /// <summary>
         /// Process an Excel file
         /// </summary>
+        /// <param name="filePath">A path to the file that we want to process</param>
         /// <returns>Whether or not processing was successful</returns>
-        private async Task<bool> ProcessExcelFileAsync()
+        private static async Task<bool> ReadExcelFileAsync(string filePath)
         {
-            ExcelImport importedExcelFile = new ExcelImport(FilePath);
+            ExcelImport excelImporter = new ExcelImport(filePath);
 
-            int customerId = importedExcelFile.GetCustomerId();
-
-            if (customerId == -1)
-            {
-                string errorMessage = $"Could not identify customer information in file {FileName}\n\n" +
-                    "Please double check the Excel file to make sure it contains a valid order.\n";
-
-                // Display error message to the user
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "File Processing Error",
-                    Message = errorMessage,
-                    ButtonText = "OK"
-                });
-
-                return false;
-            }
-
-            Customer customer = IoC.Customers().GetCustomerByID(customerId);
-
-            ExcelData = importedExcelFile.ExcelData;
-
-            switch ((CustomerNames)customer.Id)
-            {
-                case CustomerNames.LidlOld:
-                    LidlExcelParser.ParseOrderAsync(ExcelData, FileName, customer);
-                    break;
-                case CustomerNames.Lidl:
-                    LidlNewExcelParser.ParseOrderAsync(ExcelData, FileName, customer);
-                    break;
-                default:
-                    // Display error message to the user
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "File Processing Error",
-                        Message = "Could not process order for this customer.",
-                        ButtonText = "OK"
-                    });
-                    return false;
-            }
-
-            return true;
+            return await excelImporter.ProcessFileAsync();
         }
 
         /// <summary>
-        /// Process a PDF file
+        /// Read a PDF file
         /// </summary>
+        /// <param name="filePath">A path to the file that we want to process</param>
         /// <returns>Whether or not processing was successful</returns>
-        private async Task<bool> ProcessPDFFileAsync()
+        private static async Task<bool> ReadPDFFileAsync(string filePath)
         {
-            PDFImport importedPDFFile = new PDFImport(FilePath);
+            PDFImport pdfImporter = new PDFImport(filePath);
 
-            int customerId = importedPDFFile.GetCustomerId();
-
-            if (customerId == -1)
-            {
-                string errorMessage = $"Could not identify customer information in file {FileName}\n\n" +
-                    "Please double check the PDF file to make sure it contains a valid order.\n";
-
-                // Display error message to the user
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "File Processing Error",
-                    Message = errorMessage,
-                    ButtonText = "OK"
-                });
-
-                return false;
-            }
-
-            Customer customer = IoC.Customers().GetCustomerByID(customerId);
-
-            LinesOfText = importedPDFFile.Lines;
-
-            switch ((CustomerNames)customer.Id)
-            {
-                case CustomerNames.Keelings_Coop:
-                    KeelingsPDFParser.ParseOrderAsync(LinesOfText, FileName, customer);
-                    break;
-                default:
-                    // Display error message to the user
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "File Processing Error",
-                        Message = "Could not process order for this customer.",
-                        ButtonText = "OK"
-                    });
-                    return false;
-            }
-
-            return true;
+            return await pdfImporter.ProcessFileAsync();
         }
 
         #endregion

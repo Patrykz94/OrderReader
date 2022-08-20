@@ -1,11 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
-    public static class LidlExcelParser
+    public class LidlExcelParser : IParseOrder
     {
+        #region Private Variables
+
+        /// <summary>
+        /// Where in a table string array we can find the column count
+        /// </summary>
+        private static readonly int tableColumntCountPosition = 0;
+
+        /// <summary>
+        /// Where in a table string array we can find the row count
+        /// </summary>
+        private static readonly int tableRowCountPosition = 1;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The file extention that this parser works with
+        /// </summary>
+        public string FileExtension { get; } = ".xlsx";
+
+        #endregion
+
         #region Private Structs
 
         /// <summary>
@@ -84,17 +108,37 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
+        public Customer GetCustmer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+        {
+            foreach (KeyValuePair<string, string[]> valuePair in orderText)
+            {
+                string CellA1 = GetCell(new Cell("A1"), valuePair.Value);
+                string CellB1 = GetCell(new Cell("B1"), valuePair.Value);
+
+                if (customers.HasCustomerOrderName(CellA1 + CellB1))
+                {
+                    return customers.GetCustomerByOrderName(CellA1 + CellB1);
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// A function that reads the order and extracts all required information
         /// </summary>
-        /// <param name="orderData">The data that we should read from</param>
+        /// <param name="orderText">The data that we should read from</param>
         /// <param name="fileName">Name of the order file</param>
         /// <param name="customer">Customer associated with this order</param>
-        public static async void ParseOrderAsync(DataSet orderData, string fileName, Customer customer)
+        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer)
         {
-            foreach (DataTable table in orderData.Tables)
+            foreach (string[] table in orderText.Values)
             {
                 // TODO: Future improvement: consolidate errors of the same type together and display at once
+
+                // Table information
+                int columnCount = int.Parse(table[tableColumntCountPosition]);
+                int rowCount = int.Parse(table[tableRowCountPosition]);
 
                 // Variables that will be required
                 Dictionary<int, List<OrderWarning>> depotWarnings = new Dictionary<int, List<OrderWarning>>();
@@ -119,8 +163,8 @@ namespace OrderReader.Core
                 int productRowStart = 3;
                 int depotRow = 2;
                 int depotColStart = 5;
-                int depotColEnd = table.Columns.Count - 1;
-                int refCol = table.Columns.Count;
+                int depotColEnd = columnCount - 1;
+                int refCol = columnCount;
 
                 // Extract the data
                 dateString = GetCell(dateCell, table);
@@ -380,30 +424,40 @@ namespace OrderReader.Core
         #region Private Helpers
 
         /// <summary>
-        /// Selects the cell from a table
+        /// Selects the cell from a text based table
         /// </summary>
         /// <param name="column">Column number (starting at index 1)</param>
         /// <param name="row">Row number (starting at index 1)</param>
-        /// <param name="table">A <see cref="DataTable"/> from which we want to get the cell value</param>
+        /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
         /// <returns>Cell value string or null</returns>
-        private static string GetCell(int column, int row, DataTable table)
+        private static string GetCell(int column, int row, string[] tableText)
         {
             string result = null;
+
+            int columnCount = int.Parse(tableText[tableColumntCountPosition]);
+            int rowCount = int.Parse(tableText[tableRowCountPosition]);
+
             int c = column - 1;
             int r = row - 1;
 
-            if (column > 0 && column <= table.Columns.Count && row > 0 && row <= table.Rows.Count)
+            if (column > 0 && column <= columnCount && row > 0 && row <= rowCount)
             {
-                result = table.Rows[r][c].ToString();
+                result = tableText[c + r * columnCount + 2];
                 if (result == "") result = null;
             }
 
             return result;
         }
 
-        private static string GetCell(Cell cell, DataTable table)
+        /// <summary>
+        /// Selects the cell from a text based table
+        /// </summary>
+        /// <param name="cell">A <see cref="Cell"/> object</param>
+        /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
+        /// <returns></returns>
+        private static string GetCell(Cell cell, string[] tableText)
         {
-            return GetCell(cell.column, cell.row, table);
+            return GetCell(cell.column, cell.row, tableText);
         }
 
         #endregion

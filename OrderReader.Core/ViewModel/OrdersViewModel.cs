@@ -45,8 +45,7 @@ namespace OrderReader.Core
         {
             foreach (string file in files)
             {
-                FileImport fileImport = new FileImport(file);
-                await fileImport.ProcessFileAsync();
+                await FileImport.ProcessFileAsync(file);
             }
 
             // Once files have been processed, refresh the orders page

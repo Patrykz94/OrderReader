@@ -2,18 +2,30 @@
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
-    public class PDFImport
+    public class PDFImport : IFileImport
     {
-        #region Public Properties
+        #region Private Variables
 
         /// <summary>
-        /// All text extracted from a PDF file, separated by lines
+        /// All text extracted from a PDF file, separated by lines and pages
         /// </summary>
-        public string[] Lines { get; private set; }
+        private readonly Dictionary<string, string[]> orderText;
+
+        /// <summary>
+        /// The extension of the file that we are working on
+        /// </summary>
+        private readonly string fileExtension;
+
+        /// <summary>
+        /// Name of the file that we are working on including extension
+        /// </summary>
+        private readonly string fileName;
 
         #endregion
 
@@ -25,31 +37,50 @@ namespace OrderReader.Core
         /// <param name="filePath"></param>
         public PDFImport(string filePath)
         {
-            Lines = ReadAllLines(filePath);
+            fileExtension = Path.GetExtension(filePath).ToLower();
+            fileName = Path.GetFileName(filePath);
+            orderText = ReadAllLines(filePath);
         }
 
         #endregion
 
         #region Public Helpers
 
-        /// <summary>
-        /// Get the name of customer from an order file
-        /// </summary>
-        /// <returns>Name of customer or <see cref="null"/></returns>
-        public int GetCustomerId()
+        public async Task<bool> ProcessFileAsync()
         {
-            // Load the customers
+            // List of available processors - TODO: Populate this list automatically
+            List<IParseOrder> orderParsers = new List<IParseOrder>();
+            orderParsers.Add(new KeelingsPDFParser());
+
             CustomersHandler customers = IoC.Customers();
             customers.LoadCustomers();
 
-            // Check if any of the lines contain a customer name
-            foreach (string line in Lines)
+            foreach (IParseOrder parser in orderParsers)
             {
-                if (customers.HasCustomerOrderName(line)) return customers.GetCustomerByOrderName(line).Id;
+                if (parser.FileExtension == fileExtension)
+                {
+                    Customer customer = parser.GetCustmer(orderText, customers);
+
+                    if (customer != null)
+                    {
+                        await parser.ParseOrderAsync(orderText, fileName, customer);
+                        return true;
+                    }
+                }
             }
 
-            // If nothing was found, return -1
-            return -1;
+            string errorMessage = $"Could not identify customer information in file {fileName}\n\n" +
+                    "Please double check the PDF file to make sure it contains a valid order.\n";
+
+            // Display error message to the user
+            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+            {
+                Title = "File Processing Error",
+                Message = errorMessage,
+                ButtonText = "OK"
+            });
+
+            return false;
         }
 
         #endregion
@@ -61,41 +92,41 @@ namespace OrderReader.Core
         /// </summary>
         /// <param name="filePath">The location of PDF file to read from</param>
         /// <returns>Array of <see cref="string"/> each containing a single line</returns>
-        private string[] ReadAllLines(string filePath)
+        private Dictionary<string, string[]> ReadAllLines(string filePath)
         {
             // Create the return array first
-            string[] lines = {""};
+            Dictionary<string, string[]> text = new Dictionary<string, string[]>();
 
             // Make sure the file exists
             if (File.Exists(filePath))
             {
-                // Make sure we are looking at a PDF file
-                string ext = Path.GetExtension(filePath);
-                if (ext.ToLower() == ".pdf")
-                {
-                    string allExtractedText = "";
+                List<string> allExtractedText = new List<string>();
 
-                    // Load the PDF file and extract all text
-                    using (PdfReader reader = new PdfReader(filePath))
+                // Load the PDF file and extract all text
+                using (PdfReader reader = new PdfReader(filePath))
+                {
+                    using (PdfDocument doc = new PdfDocument(reader))
                     {
-                        using (PdfDocument doc = new PdfDocument(reader))
+                        for (int page = 1; page <= doc.GetNumberOfPages(); page++)
                         {
-                            for (int page = 1; page <= doc.GetNumberOfPages(); page++)
-                            {
-                                ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-                                allExtractedText = string.Concat(allExtractedText, PdfTextExtractor.GetTextFromPage(doc.GetPage(page), strategy));
-                            }
+                            ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                            string extractedText = "";
+                            extractedText = string.Concat(extractedText, PdfTextExtractor.GetTextFromPage(doc.GetPage(page), strategy));
+                            allExtractedText.Add(extractedText);
                         }
                     }
+                }
 
-                    lines = allExtractedText.Split(
+                for (int i = 0; i < allExtractedText.Count; i++)
+                {
+                    text.Add((i + 1).ToString(), allExtractedText[i].Split(
                         new[] { "\r\n", "\r", "\n" },
                         StringSplitOptions.None
-                    );
+                    ));
                 }
             }
 
-            return lines;
+            return text;
         }
 
         #endregion

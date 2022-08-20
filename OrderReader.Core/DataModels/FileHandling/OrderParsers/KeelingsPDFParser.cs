@@ -3,15 +3,48 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
-    public static class KeelingsPDFParser
+    public class KeelingsPDFParser : IParseOrder
     {
+        #region Public Properties
+
+        /// <summary>
+        /// The file extention that this parser works with
+        /// </summary>
+        public string FileExtension { get; } = ".pdf";
+
+        #endregion
+
         #region Public Helpers
 
-        public static async void ParseOrderAsync(string[] orderText, string fileName, Customer customer)
+        public Customer GetCustmer(Dictionary<string, string[]> orderText, CustomersHandler customers)
         {
+            foreach (KeyValuePair<string, string[]> valuePair in orderText)
+            {
+                // Check if any of the lines contain a customer name
+                foreach (string line in valuePair.Value)
+                {
+                    if (customers.HasCustomerOrderName(line)) return customers.GetCustomerByOrderName(line);
+                }
+            }
+
+            return null;
+        }
+
+        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer)
+        {
+            // A string array that will contain strings from all pages
+            string[] allOrderText = { "" };
+
+            // Convert the Dictionary to a single string array
+            foreach (KeyValuePair<string,string[]> valuePair in orderText)
+            {
+                allOrderText = allOrderText.Concat(valuePair.Value).ToArray();
+            }
+
             // Variables that will be required
             bool isAllDataFound = true;
             double unknownProductQuantity = 0.0;
@@ -34,7 +67,7 @@ namespace OrderReader.Core
             int productCodeMinLength = 7;
 
             // Iterate over the lines to find required data
-            foreach (string line in orderText)
+            foreach (string line in allOrderText)
             {
                 // Look for depot name if not already found
                 if (depotString == null)
