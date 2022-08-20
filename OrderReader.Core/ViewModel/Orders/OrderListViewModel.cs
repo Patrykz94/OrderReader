@@ -96,6 +96,7 @@ namespace OrderReader.Core
                                 if (!OrderVM.HasOrder(o))
                                 {
                                     OrderVM.Orders.Add(o);
+                                    OrderVM.SortOrders();
                                     OrderVM.ReloadTable();
                                 }
                             }

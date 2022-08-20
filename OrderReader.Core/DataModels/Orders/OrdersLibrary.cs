@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OrderReader.Core
 {
@@ -61,7 +61,7 @@ namespace OrderReader.Core
         }
 
         /// <summary>
-        /// Get a list of orders with the specified order ID
+        /// Get a list of orders with the specified order ID, sorted by depot name
         /// </summary>
         /// <param name="orderId">The ID of this order</param>
         /// <returns>An <see cref="ObservableCollection{T}"/> of <see cref="Order"/> objects</returns>
@@ -74,7 +74,8 @@ namespace OrderReader.Core
                 if (order.OrderID == orderId) AllOrders.Add(order);
             }
 
-            return AllOrders;
+            // Before returning the orders, sort them by the depot name
+            return new ObservableCollection<Order>(AllOrders.OrderBy(o => o.DepotName));
         }
 
         /// <summary>

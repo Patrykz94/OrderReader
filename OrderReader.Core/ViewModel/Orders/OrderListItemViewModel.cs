@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Linq;
 using System.Windows.Input;
 
 namespace OrderReader.Core
@@ -150,23 +151,23 @@ namespace OrderReader.Core
             tempTable.Columns.Add("PO Number", typeof(string));
 
             // Add product columns
-            // First make a list of all unique product ID's in those orders
-            Dictionary<int, string> uniqueProducts = new Dictionary<int, string>();
+            // First make a list of all unique products in those orders
+            SortedDictionary<string, int> uniqueProducts = new SortedDictionary<string,int>();
             foreach (Order order in Orders)
             {
                 foreach (OrderProduct product in order.Products)
                 {
-                    if (!uniqueProducts.ContainsKey(product.ProductID))
+                    if (!uniqueProducts.ContainsKey(product.ProductName))
                     {
-                        uniqueProducts.Add(product.ProductID, product.ProductName);
+                        uniqueProducts.Add(product.ProductName, product.ProductID);
                     }
                 }
             }
 
-            // Then create columns for each of the product IDs and name them with the product names
-            foreach (int id in uniqueProducts.Keys)
+            // Then create columns for each product and name them with the product names
+            foreach (string name in uniqueProducts.Keys)
             {
-                tempTable.Columns.Add(uniqueProducts[id], typeof(string));
+                tempTable.Columns.Add(name, typeof(string));
             }
 
             // Add total column
@@ -180,9 +181,9 @@ namespace OrderReader.Core
                 row["Depot"] = order.DepotName;
                 row["PO Number"] = order.OrderReference;
 
-                foreach (int productID in uniqueProducts.Keys)
+                foreach (string productName in uniqueProducts.Keys)
                 {
-                    row[uniqueProducts[productID]] = order.GetQuantityOfProduct(productID);
+                    row[productName] = order.GetQuantityOfProduct(uniqueProducts[productName]);
                 }
 
                 row["Total"] = order.GetTotalProductQuantity();
@@ -196,14 +197,14 @@ namespace OrderReader.Core
             totalRow["Depot"] = "";
             totalRow["PO Number"] = "Total";
 
-            foreach (int productID in uniqueProducts.Keys)
+            foreach (string productName in uniqueProducts.Keys)
             {
                 double total = 0.0;
                 foreach (Order order in Orders)
                 {
-                    total += order.GetQuantityOfProduct(productID);
+                    total += order.GetQuantityOfProduct(uniqueProducts[productName]);
                 }
-                totalRow[uniqueProducts[productID]] = total;
+                totalRow[productName] = total;
             }
 
             double totalProducts = 0.0;
@@ -220,6 +221,14 @@ namespace OrderReader.Core
             OrdersTable = tempTable;
             OnPropertyChanged(nameof(OrdersView));
             OnPropertyChanged(nameof(WarningsList));
+        }
+
+        /// <summary>
+        /// Sorts the orders alphabetically by the depot name
+        /// </summary>
+        public void SortOrders()
+        {
+            Orders = new ObservableCollection<Order>(Orders.OrderBy(o => o.DepotName));
         }
 
         #endregion

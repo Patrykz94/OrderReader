@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OrderReader.Core
 {
@@ -108,6 +109,7 @@ namespace OrderReader.Core
 
             // If same product is not on this order yet, add it to the list
             Products.Add(new OrderProduct(CustomerID, productId, quantity));
+            SortProducts();
         }
 
         /// <summary>
@@ -132,6 +134,7 @@ namespace OrderReader.Core
 
                 // If same product is not on this order yet, add it to the list
                 Products.Add(product);
+                SortProducts();
             }
         }
 
@@ -197,6 +200,14 @@ namespace OrderReader.Core
             if (IoC.Customers().HasCustomer(CustomerID))
                 return IoC.Customers().GetCustomerByID(CustomerID).HasDepot(DepotID) ? IoC.Customers().GetCustomerByID(CustomerID).GetDepot(DepotID).Name : $"Depot not found [ID - {DepotID}]";
             return $"Customer not found [ID - {DepotID}]";
+        }
+
+        /// <summary>
+        /// Sort the products alphabetically by name
+        /// </summary>
+        private void SortProducts()
+        {
+            Products = new ObservableCollection<OrderProduct>(Products.OrderBy(p => p.ProductName));
         }
 
         #endregion
