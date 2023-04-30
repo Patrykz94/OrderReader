@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace OrderReader.Core
 {
@@ -82,20 +83,16 @@ namespace OrderReader.Core
 
                     if (strLength >= productCodeMinLength && line.Substring(0, strLength).All(char.IsDigit))
                     {
-                        int qtyAtIndex = 0;
-                        for (int i = line.Length - 1; i > 0; i--)
+                        string pattern = @"[\d,]+\.\d{2}";
+                        Match match = Regex.Match(line, pattern);
+
+                        if (match.Success)
                         {
-                            if (char.IsWhiteSpace(line, i))
-                            {
-                                qtyAtIndex = i + 1;
-                                break;
-                            }
+                            string productNumber = line.Substring(0, strLength);
+                            string productQuantity = match.Value;
+
+                            productStrings.Add(productNumber, productQuantity);
                         }
-
-                        string productNumber = line.Substring(0, strLength);
-                        string productQuantity = line.Substring(qtyAtIndex, line.Length - qtyAtIndex);
-
-                        productStrings.Add(productNumber, productQuantity);
                     }
                 }
             }
