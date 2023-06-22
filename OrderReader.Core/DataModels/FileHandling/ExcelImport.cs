@@ -50,6 +50,17 @@ namespace OrderReader.Core
                     return customers.GetCustomerByOrderName(CellA1 + CellB1).Id;
                 }
             }
+
+            foreach (DataTable table in ExcelData.Tables)
+            {
+                string CellD1 = table.Rows[0][3].ToString();
+
+                if (customers.HasCustomerOrderName(CellD1))
+                {
+                    return customers.GetCustomerByOrderName(CellD1).Id;
+                }
+            }
+
             return -1;
         }
 

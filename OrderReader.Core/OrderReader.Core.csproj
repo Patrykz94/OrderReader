@@ -124,6 +124,7 @@
     <Compile Include="DataModels\FileHandling\ExcelImport.cs" />
     <Compile Include="DataModels\FileHandling\FileImport.cs" />
     <Compile Include="DataModels\FileHandling\OrderParsers\KeelingsPDFParser.cs" />
+    <Compile Include="DataModels\FileHandling\OrderParsers\LidlNewExcelParser.cs" />
     <Compile Include="DataModels\FileHandling\OrderParsers\LidlExcelParser.cs" />
     <Compile Include="DataModels\FileHandling\PDFExport.cs" />
     <Compile Include="DataModels\FileHandling\PDFImport.cs" />

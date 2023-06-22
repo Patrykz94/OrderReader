@@ -14,7 +14,8 @@ namespace OrderReader.Core
         private enum CustomerNames
         {
             Keelings_Coop = 1,
-            Lidl = 2
+            LidlOld = 2,
+            Lidl = 3
         }
 
         #endregion
@@ -139,8 +140,11 @@ namespace OrderReader.Core
 
             switch ((CustomerNames)customer.Id)
             {
-                case CustomerNames.Lidl:
+                case CustomerNames.LidlOld:
                     LidlExcelParser.ParseOrderAsync(ExcelData, FileName, customer);
+                    break;
+                case CustomerNames.Lidl:
+                    LidlNewExcelParser.ParseOrderAsync(ExcelData, FileName, customer);
                     break;
                 default:
                     // Display error message to the user
