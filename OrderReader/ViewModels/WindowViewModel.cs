@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Serialization;
 using OrderReader.Core;
 using Squirrel;
 
@@ -232,10 +233,10 @@ namespace OrderReader
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             CurrentVersion = $" v{ versionInfo.FileVersion }";
 
-            #if !DEBUG
+#if !DEBUG
             // Check for updates
             CheckForUpdates();
-            #endif
+#endif
         }
 
         #endregion
@@ -302,19 +303,33 @@ namespace OrderReader
         }
 
         /// <summary>
-        /// Make a backup of our settings.
-        /// Used to persist settings across updates.
+        /// Make a backup of our configs.
+        /// Used to persist configuration settings, like connection strings, across updates.
         /// </summary>
         private static async Task BackupSettings()
         {
             try
             {
-                string settingsFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
-                string destination = Settings.ConfigFile;
-                File.Copy(settingsFile, destination, true);
+                var con = ConfigurationManager.ConnectionStrings["default"];
+                if (con != null)
+                {
+                    AppConfiguration appConfig = new AppConfiguration
+                    {
+                        DataBaseConnectionString = con.ConnectionString,
+                        DataBaseProviderName = con.ProviderName
+                    };
+
+                    XmlSerializer serializer = new XmlSerializer(typeof(AppConfiguration));
+
+                    using (TextWriter writer = new StreamWriter(Core.Settings.ConfigFile))
+                    {
+                        serializer.Serialize(writer, appConfig);
+                    }
+                }
             }
             catch (Exception ex)
             {
+                // If an error occurs, we just want to show the error message, instead of crashing the application
                 await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "Config Backup Error",

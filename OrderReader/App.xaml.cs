@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using OrderReader.Core;
+using Squirrel;
 
 namespace OrderReader
 {
@@ -13,6 +13,8 @@ namespace OrderReader
     /// </summary>
     public partial class App : Application
     {
+        #region Startup Events
+
         /// <summary>
         /// Custom startup so we load our IoC immediately before anything else
         /// </summary>
@@ -35,11 +37,18 @@ namespace OrderReader
             Current.MainWindow.Show();
         }
 
+        #endregion
+
+        #region Startup Functions
+
         /// <summary>
         /// First part of configuring our application
         /// </summary>
         private void StartApplicationSetup()
         {
+            // Run Squirrel first, as the app may exit after these run
+            SquirrelAwareApp.HandleEvents(onInitialInstall: OnAppInstall, onAppUninstall: OnAppUninstall, onEveryRun: OnAppRun);
+
             // Setup IoC
             IoC.SetupInitial();
 
@@ -51,7 +60,6 @@ namespace OrderReader
 
             // Check if there are any saved settings and if so, restore them
             RestoreSettings();
-            ConfigurationManager.RefreshSection("connectionStrings");
         }
 
         /// <summary>
@@ -109,11 +117,11 @@ namespace OrderReader
         /// </summary>
         /// <param name="filePath">The path to the new config file</param>
         /// <returns></returns>
-        private async Task UpdateConfigFile(string filePath)
+        private async Task UpdateConfigFile(string filePath, bool exitOnError = true)
         {
             if (filePath == default)
             {
-                Environment.Exit(0);
+                if (exitOnError) Environment.Exit(0);
             }
             else
             {
@@ -130,11 +138,11 @@ namespace OrderReader
                         await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                         {
                             Title = "Configuration Error",
-                            Message = "Could not read configuration data form the provided file.\n\nApplication will now terminate.",
+                            Message = $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
                             ButtonText = "Exit"
                         });
 
-                        Environment.Exit(0);
+                        if (exitOnError) Environment.Exit(0);
                     }
                 }
                 catch (Exception ex)
@@ -142,11 +150,11 @@ namespace OrderReader
                     await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                     {
                         Title = "Configuration Error",
-                        Message = $"Could not process the configuration file provided:\n\n{ex.Message}\n\nApplication will now terminate.",
+                        Message = $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
                         ButtonText = "Exit"
                     });
 
-                    Environment.Exit(0);
+                    if (exitOnError) Environment.Exit(0);
                 }
             }
         }
@@ -155,59 +163,53 @@ namespace OrderReader
         /// Restore our settings backup if any.
         /// Used to persist settings across updates.
         /// </summary>
-        private static async void RestoreSettings()
+        private async void RestoreSettings()
         {
-            //Restore settings after application update
-            string destFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None).FilePath;
-            string sourceFile = Settings.ConfigFile;
             // Check if we have settings that we need to restore
-            if (!File.Exists(sourceFile))
+            if (!File.Exists(Settings.ConfigFile))
             {
-                // Nothing we need to do
+                // Nothing to do
                 return;
             }
-            // Create directory as needed
-            try
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-            }
-            catch (Exception ex)
-            {
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Config Restore Error",
-                    Message = $"Failed to create a config directory:\n\n{ex.Message}"
-                });
-            }
 
-            // Copy our backup file in place 
-            try
-            {
-                File.Copy(sourceFile, destFile, true);
-            }
-            catch (Exception ex)
-            {
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Config Restore Error",
-                    Message = $"Failed to copy the backup config file:\n\n{ex.Message}"
-                });
-            }
+            // Update the current config file with the backup
+            await UpdateConfigFile(Settings.ConfigFile, false);
 
             // Delete backup file
             try
             {
-                File.Delete(sourceFile);
+                File.Delete(Settings.ConfigFile);
             }
             catch (Exception ex)
             {
                 await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "Config Restore Error",
-                    Message = $"Failed to deleted the backup config file:\n\n{ex.Message}"
+                    Message = $"Failed to delete the backup config file:\n\n{ex.Message}"
                 });
             }
 
         }
+
+        #endregion
+
+        #region Squirrel Functions
+
+        private static void OnAppInstall(SemanticVersion version, IAppTools tools)
+        {
+            tools.CreateShortcutForThisExe(ShortcutLocation.StartMenu | ShortcutLocation.Desktop);
+        }
+
+        private static void OnAppUninstall(SemanticVersion version, IAppTools tools)
+        {
+            tools.RemoveShortcutForThisExe(ShortcutLocation.StartMenu | ShortcutLocation.Desktop);
+        }
+
+        private static void OnAppRun(SemanticVersion version, IAppTools tools, bool firstRun)
+        {
+            tools.SetProcessAppUserModelId();
+        }
+
+        #endregion
     }
 }

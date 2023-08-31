@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace OrderReader.Core
@@ -101,13 +102,46 @@ namespace OrderReader.Core
         {
             if (File.Exists(filePath))
             {
-                XmlSerializer deserializer = new XmlSerializer(typeof(AppConfiguration));
-
-                using (TextReader reader = new StreamReader(filePath))
+                // Try to load the backup config in new format
+                try
                 {
-                    object obj = deserializer.Deserialize(reader);
-                    return (AppConfiguration)obj;
+                    XmlSerializer deserializer = new XmlSerializer(typeof(AppConfiguration));
+
+                    using (TextReader reader = new StreamReader(filePath))
+                    {
+                        object obj = deserializer.Deserialize(reader);
+                        return (AppConfiguration)obj;
+                    }
                 }
+                catch {}
+
+                // If that doesn't work, attempt to extract the information from the old file format
+                try
+                {
+                    // Load the XML file
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.Load(filePath);
+
+                    // Select the connection string node
+                    XmlNode connectionStringNode = xmlDoc.SelectSingleNode("/configuration/connectionStrings/add[@name='default']");
+
+                    if (connectionStringNode != null)
+                    {
+                        // Extract the connection string value
+                        string connectionString = connectionStringNode.Attributes["connectionString"]?.Value;
+                        string providerName = connectionStringNode.Attributes["providerName"]?.Value;
+
+                        // Create a new AppConfiguration object and initialize it with the extracted data
+                        AppConfiguration appConfig = new AppConfiguration
+                        {
+                            DataBaseConnectionString = connectionString,
+                            DataBaseProviderName = providerName
+                        };
+
+                        return appConfig;
+                    }
+                }
+                catch {}
             }
 
             return new AppConfiguration();
