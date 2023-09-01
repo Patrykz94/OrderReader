@@ -88,10 +88,10 @@ namespace OrderReader.Core
         #region Private Helpers
 
         /// <summary>
-        /// Extracts all text from PDF file and separates it by lines
+        /// Extracts all text from PDF file and separates it by pages and lines
         /// </summary>
         /// <param name="filePath">The location of PDF file to read from</param>
-        /// <returns>Array of <see cref="string"/> each containing a single line</returns>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of <see cref="string"/> and <see cref="T:string[]"/>, representing pages and lines of text</returns>
         private Dictionary<string, string[]> ReadAllLines(string filePath)
         {
             // Create the return array first
