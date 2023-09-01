@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace OrderReader.Core
@@ -115,7 +116,7 @@ namespace OrderReader.Core
             ReloadTable();
 
             // Command definitions
-            ProcessCommand = new RelayCommand(ProcessOrder);
+            ProcessCommand = new RelayCommand(() => { ProcessOrder(); });
             DeleteCommand = new RelayCommand(() => { DeleteOrder(); });
         }
 
@@ -238,18 +239,32 @@ namespace OrderReader.Core
         /// <summary>
         /// Process current order using settings specified by the user
         /// </summary>
-        private void ProcessOrder()
+        private async void ProcessOrder()
         {
             // Load the user settings
             UserSettings settings = Settings.LoadSettings();
 
-            // Perform all the order processing tasks based on users settings
-            if (settings.ExportCSV) CSVExport.ExportOrdersToCSV(OrderID);
+            try
+            {
 
-            if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(this);
+                // Perform all the order processing tasks based on users settings
+                if (settings.ExportCSV) await CSVExport.ExportOrdersToCSV(OrderID);
 
-            // Once processed, remove the order without requiring confirmation
-            DeleteOrder(false);
+                if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(this);
+
+                // Once processed, remove the order without requiring confirmation
+                DeleteOrder(false);
+            }
+            catch (Exception ex)
+            {
+                // If an error occurs, we want to show the error message
+                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                {
+                    Title = "Processing Error",
+                    Message = $"This order could not processed due to the following error:\n\n{ex.Message}",
+                    ButtonText = "OK"
+                });
+            }
         }
 
         /// <summary>

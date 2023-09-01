@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace OrderReader.Core
 {
@@ -15,7 +16,7 @@ namespace OrderReader.Core
         /// A function that will export the orders with provided order ID to a CSV file
         /// </summary>
         /// <param name="orderId">The orderID that is used to group orders together</param>
-        public static void ExportOrdersToCSV(string orderId)
+        public static async Task ExportOrdersToCSV(string orderId)
         {
             // Create a list of orders that we want to process and populate it
             ObservableCollection<Order> orders = IoC.Orders().GetAllOrdersWithID(orderId);
@@ -24,10 +25,11 @@ namespace OrderReader.Core
             if (orders.Count == 0) return;
 
             // Create a list of strings which will represent lines on csv files
-            List<string> lines = new List<string>();
-
-            // Add the row of headings
-            lines.Add("Customer,Branch,Required Date,Customer Reference,Product Code,Order Qty,Price,");
+            List<string> lines = new List<string>
+            {
+                // Add the row of headings
+                "Customer,Branch,Required Date,Customer Reference,Product Code,Order Qty,Price,"
+            };
 
             // Iterate over the list of orders that need to be printed
             foreach (Order order in orders)
@@ -56,11 +58,27 @@ namespace OrderReader.Core
 
                 UserSettings settings = Settings.LoadSettings();
 
-                // Before saving the file, make sure that the export path exists, if not then create it
-                if (!Directory.Exists(settings.UserCSVExportPath)) Directory.CreateDirectory(settings.UserCSVExportPath);
+                try
+                {
+                    // Before saving the file, make sure that the export path exists, if not then create it
+                    if (!Directory.Exists(settings.UserCSVExportPath)) Directory.CreateDirectory(settings.UserCSVExportPath);
 
-                // Create the file
-                File.WriteAllLines($"{ settings.UserCSVExportPath }\\{ fileName }", lines);
+                    // Create the file
+                    File.WriteAllLines($"{settings.UserCSVExportPath}\\{fileName}", lines);
+                }
+                catch (Exception ex)
+                {
+                    // If an error occurs, we want to show the error message
+                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    {
+                        Title = "CSV Export Error",
+                        Message = $"An error occured while trying to export the CSV file.\n" +
+                        $"Details of error:\n\n{ex.Message}" +
+                        $"\n\nThis order was not processed.",
+                        ButtonText = "OK"
+                    });
+                    throw;
+                }
             }
         }
     }

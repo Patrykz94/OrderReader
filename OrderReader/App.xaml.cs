@@ -185,7 +185,8 @@ namespace OrderReader
                 await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "Config Restore Error",
-                    Message = $"Failed to delete the backup config file:\n\n{ex.Message}"
+                    Message = $"Failed to delete the backup config file:\n\n{ex.Message}",
+                    ButtonText = "OK"
                 });
             }
 

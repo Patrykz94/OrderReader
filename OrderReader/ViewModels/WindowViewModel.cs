@@ -333,7 +333,8 @@ namespace OrderReader
                 await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
                 {
                     Title = "Config Backup Error",
-                    Message = $"Failed to backup the config file:\n\n{ex.Message}"
+                    Message = $"Failed to backup the config file:\n\n{ex.Message}",
+                    ButtonText = "OK"
                 });
             }
         }
