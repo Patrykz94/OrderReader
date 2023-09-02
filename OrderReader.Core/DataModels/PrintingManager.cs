@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PdfiumViewer;
+using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 
@@ -60,7 +61,7 @@ namespace OrderReader.Core
                 };
 
                 // Now print the PDF document
-                using (var document = PdfiumViewer.PdfDocument.Load(filePath))
+                using (var document = PdfDocument.Load(filePath))
                 {
                     using (var printDocument = document.CreatePrintDocument())
                     {

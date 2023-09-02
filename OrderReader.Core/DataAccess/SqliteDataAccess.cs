@@ -1,9 +1,9 @@
 ﻿using Dapper;
+using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
-using System.Data.SQLite;
 using System.Linq;
 
 namespace OrderReader.Core
@@ -15,7 +15,7 @@ namespace OrderReader.Core
     {
         public static Dictionary<string, string> LoadDefaultSettings()
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 // Get all customers from database and convert them to a list
                 Dictionary<string, string> output = cnn.Query("SELECT * FROM 'Settings'", new DynamicParameters()).ToDictionary(row => (string)row.Setting, row => (string)row.Value);
@@ -30,7 +30,7 @@ namespace OrderReader.Core
         /// <returns>A list of customers</returns>
         public static ObservableCollection<Customer> LoadCustomers()
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 // Get all customers from database and convert them to a list
                 var custOutput = cnn.Query<Customer>("SELECT * FROM 'Customers'", new DynamicParameters()).ToList();
@@ -76,7 +76,7 @@ namespace OrderReader.Core
         /// <param name="customer"></param>
         public static void UpdateCustomer(Customer customer)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE 'Customers' SET \"Name\" = @Name, \"CSVName\" = @CSVName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", customer);
             }
@@ -88,7 +88,7 @@ namespace OrderReader.Core
         /// <param name="depotId">An Id number of the depot</param>
         public static void RemoveDepot(int depotId)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 cnn.Execute($"DELETE FROM 'Depots' WHERE \"Id\" = {depotId}");
             }
@@ -102,7 +102,7 @@ namespace OrderReader.Core
         {
             Depot newDepot;
 
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 var result = cnn.Query<int>("INSERT INTO 'Depots' (CustomerId, Name, CSVName, OrderName) VALUES (@CustomerId, @Name, @CSVName, @OrderName); SELECT last_insert_rowid();", depot).ToList();
                 newDepot = cnn.QuerySingle<Depot>($"SELECT * FROM 'Depots' WHERE \"Id\" = {result[0]}", new DynamicParameters());
@@ -117,7 +117,7 @@ namespace OrderReader.Core
         /// <param name="depot"></param>
         public static void UpdateDepot(Depot depot)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE 'Depots' SET \"Name\" = @Name, \"CSVName\" = @CSVName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", depot);
             }
@@ -129,7 +129,7 @@ namespace OrderReader.Core
         /// <param name="productId">An Id number of the product</param>
         public static void RemoveProduct(int productId)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 cnn.Execute($"DELETE FROM 'Products' WHERE \"Id\" = {productId}");
             }
@@ -143,7 +143,7 @@ namespace OrderReader.Core
         {
             Product newProduct;
 
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 var result = cnn.Query<int>("INSERT INTO 'Products' (CustomerId, Name, CSVName, OrderName, Price) VALUES (@CustomerId, @Name, @CSVName, @OrderName, @Price); SELECT last_insert_rowid();", product).ToList();
                 newProduct = cnn.QuerySingle<Product>($"SELECT * FROM 'Products' WHERE \"Id\" = {result[0]}", new DynamicParameters());
@@ -158,7 +158,7 @@ namespace OrderReader.Core
         /// <param name="product"></param>
         public static void UpdateProduct(Product product)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE 'Products' SET \"Name\" = @Name, \"CSVName\" = @CSVName, \"OrderName\" = @OrderName, \"Price\" = @Price WHERE \"Id\" = @Id", product);
             }
@@ -174,10 +174,10 @@ namespace OrderReader.Core
             {
                 if (!HasConnectionString()) return false;
 
-                using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+                using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
                 {
                     // Get all customers from database and convert them to a list
-                    var custOutput = cnn.Query<Customer>("SELECT * FROM 'Customers'", new DynamicParameters()).ToList();
+                    var custOutput = cnn.Query<Customer>("SELECT * FROM Customers").ToList();
                     if (custOutput.Count > 0) return true;
                 }
             }

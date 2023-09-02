@@ -81,6 +81,8 @@ namespace OrderReader.Core
         {
             try
             {
+                ValidateConnectionString();
+
                 // Open the exe configuration file
                 Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 // Remove all existing connection strings (if any exist)
@@ -104,6 +106,19 @@ namespace OrderReader.Core
                 return false;
             }
             return true;
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        private void ValidateConnectionString()
+        {
+            // Remove the version number
+            if (DataBaseConnectionString.EndsWith("Version=3;"))
+            {
+                DataBaseConnectionString = DataBaseConnectionString[..^"Version=3;".Length];
+            }
         }
 
         #endregion
