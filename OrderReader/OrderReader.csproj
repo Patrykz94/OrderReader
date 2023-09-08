@@ -4,6 +4,7 @@
 		<TargetFramework>net7.0-windows</TargetFramework>
 		<AssemblyVersion>1.0.17</AssemblyVersion>
 		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Clowd.Squirrel" Version="2.9.42" />

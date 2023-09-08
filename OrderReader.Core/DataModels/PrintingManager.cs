@@ -1,4 +1,4 @@
-﻿using PdfiumViewer;
+﻿using Spire.Pdf;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
@@ -47,29 +47,17 @@ namespace OrderReader.Core
             // Print the file
             try
             {
-                // Create printer settings for our printers
-                PrinterSettings printerSettings = new PrinterSettings
+                // Load the PDF file to print
+                using (var document = new PdfDocument(filePath))
                 {
-                    PrinterName = PrinterAvailable(settings.PreferredPrinterName) ? settings.PreferredPrinterName : DefaultPrinter,
-                    Copies = (short)settings.PrintingCopies
-                };
+                    // Adjust the print settings
+                    document.PrintSettings.PrinterName = PrinterAvailable(settings.PreferredPrinterName) ? settings.PreferredPrinterName : DefaultPrinter;
+                    document.PrintSettings.Copies = (short)settings.PrintingCopies;
+                    document.PrintSettings.PrintController = new StandardPrintController();
+                    document.PrintSettings.SetPaperMargins(0,0,0,0);
 
-                // Create page settings
-                PageSettings pageSettings = new PageSettings
-                {
-                    Margins = new Margins(0, 0, 0, 0)
-                };
-
-                // Now print the PDF document
-                using (var document = PdfDocument.Load(filePath))
-                {
-                    using (var printDocument = document.CreatePrintDocument())
-                    {
-                        printDocument.PrinterSettings = printerSettings;
-                        printDocument.DefaultPageSettings = pageSettings;
-                        printDocument.PrintController = new StandardPrintController();
-                        printDocument.Print();
-                    }
+                    // Print the document
+                    document.Print();
                 }
 
                 return true;
