@@ -1,0 +1,204 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Navigation Button -->
+    <Style TargetType="{x:Type RadioButton}" x:Key="NavButton" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
+        <Setter Property="Margin" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Name="backgroundBorder" Grid.ColumnSpan="2"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                Opacity="0.1"
+                                CornerRadius="8"
+                                Margin="5"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding Tag}"
+                                   FontFamily="{StaticResource IconFontSolid}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Margin="20 20 0 20"
+                                   FontSize="{TemplateBinding FontSize}"/>
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Margin="0 20"
+                                   FontSize="{TemplateBinding FontSize}"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource NavButtonActive.Brush}"/>
+                            <Setter TargetName="backgroundBorder" Property="Opacity" Value="0.15"/>
+                        </Trigger>
+
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource NavButtonActive.Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Default Button -->
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSize.Large}"/>
+        <Setter Property="Padding" Value="10 5"/>
+        <Setter Property="Margin" Value="5"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="5">
+                        <Grid>
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock"/>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
+                    
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource ControlLight.Brush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource ControlDark.Brush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource ControlDisabled.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource AccentTextSecondary.Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Toggle Button -->
+    <Style TargetType="{x:Type ToggleButton}">
+        <Setter Property="Margin" Value="5"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{TemplateBinding Content}"/>
+
+                        <Border x:Name="slider" Grid.Column="1"
+                                Background="{DynamicResource ControlDisabled.Brush}"
+                                Height="20"
+                                CornerRadius="10"
+                                Margin="2 0"/>
+                        <Border x:Name="handle" Grid.Column="1"
+                                Background="{DynamicResource ControlAlternative.Brush}"
+                                BorderBrush="{DynamicResource ControlDisabled.Brush}"
+                                BorderThickness="1"
+                                Height="24"
+                                Width="24"
+                                CornerRadius="12"
+                                HorizontalAlignment="Left"
+                                SnapsToDevicePixels="True"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="HorizontalAlignment" TargetName="handle" Value="Right"/>
+                            <Setter Property="Background" TargetName="slider" Value="{DynamicResource Control.Brush}"/>
+                            <Setter Property="BorderBrush" TargetName="handle" Value="{DynamicResource Control.Brush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="handle" Value="{DynamicResource ControlDisabledAlternative.Brush}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="False"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="slider" Value="{DynamicResource ControlDark.Brush}"/>
+                            <Setter Property="BorderBrush" TargetName="handle" Value="{DynamicResource ControlDisabled.Brush}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Checkbox Button -->
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSize.Regular}"/>
+        <Setter Property="Margin" Value="5"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Text="{TemplateBinding Content}"/>
+
+                        <Border Grid.Column="1"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Width="26" Height="26"
+                                CornerRadius="5"
+                                Background="{TemplateBinding Background}">
+                            <TextBlock x:Name="checkMark" Grid.Column="1"
+                                       Visibility="Collapsed"
+                                       FontFamily="{StaticResource IconFontRegular}"
+                                       Text="{StaticResource IconCheckMark}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{TemplateBinding BorderBrush}"
+                                       Focusable="False"/>
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Visibility" TargetName="checkMark" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource ControlDisabled.Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>
