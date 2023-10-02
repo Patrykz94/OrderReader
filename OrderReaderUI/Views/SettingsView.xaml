@@ -6,16 +6,90 @@
              xmlns:local="clr-namespace:OrderReaderUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid>
-        <Border Margin="150"
-                Background="White" CornerRadius="10">
-            <StackPanel Width="250" VerticalAlignment="Center">
-                <CheckBox Content="Check Box"/>
-                <ToggleButton Content="Toggle Button"/>
-                <Label Content="Label"/>
-                <TextBox Text="Text Box"/>
-                <Button Content="Button"/>
+    
+    <TabControl Margin="20">
+        
+        <TabItem Header="Processing">
+            <StackPanel>
+                
+                <TextBlock Text="Order Processing Settings" Style="{DynamicResource HeaderText}"/>
+                <TextBlock Text="Decide how orders are being processed" Margin="5 -5 5 5"
+                       HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                <!-- CSV file settings -->
+                <TextBlock Text="CSV File Export" FontSize="{StaticResource FontSize.Large}"/>
+                <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                A CSV file containing all details of an order can be generated.
+                This file can then be used to process the order further by an ERP system.
+                </TextBlock>
+                <ToggleButton Name="ExportCSV" Content="Export a CSV file" Width="300" HorizontalAlignment="Left"/>
+                <Label Content="CSV file export location"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*" MinWidth="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Name="PathCSV" IsEnabled="{Binding CanPathCSV}" Text="CSV Path..."/>
+                    <Button Name="BrowseCSV" Content="Browse" Grid.Column="1"/>
+                </Grid>
+
+                <Border Style="{DynamicResource Divider}"/>
+
+                <!-- PDF file settings -->
+                <TextBlock Text="PDF File Export" FontSize="{StaticResource FontSize.Large}"/>
+                <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                A PDF can be generated containing the order in a table form. This could be stored for future reference.
+                </TextBlock>
+                <ToggleButton Name="ExportPDF" Content="Export a PDF file" Width="300" HorizontalAlignment="Left"/>
+                <Label Content="PDF file export location"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*" MinWidth="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Name="PathPDF" IsEnabled="{Binding CanPathPDF}" Text="PDF Path..."/>
+                    <Button Name="BrowsePDF" Content="Browse" Grid.Column="1"/>
+                </Grid>
+
+                <Border Style="{DynamicResource Divider}"/>
+
+                <!-- Printing settings -->
+                <TextBlock Text="Printing Settings" FontSize="{StaticResource FontSize.Large}"/>
+                <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                A document can be printed containing the summary of orders.
+                </TextBlock>
+                <ToggleButton Name="PrintOrders" Content="Print order summary" Width="300" HorizontalAlignment="Left"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*" MinWidth="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <Label Content="Preferred printer"/>
+                        <ComboBox Name="Printers" IsEnabled="{Binding CanPrinters}" Text="PDF Path..."/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <Label Content="Copies to print"/>
+                        <TextBox Name="Copies" IsEnabled="{Binding CanCopies}" Text="1"/>
+                    </StackPanel>
+                </Grid>
+
             </StackPanel>
-        </Border>
-    </Grid>
+        </TabItem>
+        
+        <TabItem Header="Appearance">
+            <TextBlock>Appearance</TextBlock>
+        </TabItem>
+        
+        <TabControl.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource ShadowBrush}" Opacity="0.1"/>
+        </TabControl.Effect>
+    </TabControl>
+    
 </UserControl>

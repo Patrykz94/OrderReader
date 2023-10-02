@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using OrderReaderUI.Helpers;
 using OrderReaderUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ public class Bootstrapper : BootstrapperBase
         Initialize();
 
         LogManager.GetLog = type => new DebugLog(type);
+
+        AppInitialization.Initialize();
     }
 
     protected override async void OnStartup(object sender, StartupEventArgs e)

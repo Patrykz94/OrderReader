@@ -6,13 +6,14 @@
         xmlns:local="clr-namespace:OrderReaderUI.Views"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        MinHeight="600" MinWidth="1000"
-        Title="ShellView" Height="600" Width="1000">
+        WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MinHeight="600" MinWidth="1100"
+        Title="ShellView" Height="600" Width="1100">
+
     <WindowChrome.WindowChrome>
-        <WindowChrome ResizeBorderThickness="5" />
+        <WindowChrome GlassFrameThickness="1" CaptionHeight="0" CornerRadius="0"/>
     </WindowChrome.WindowChrome>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -96,7 +97,7 @@
         <!-- Column 2 - Page Content -->
 
         <Border Grid.Column="1"
-                Background="{DynamicResource BackgroundMain}"/>
+                Background="{DynamicResource BackgroundMain.Gradient}"/>
 
         <ContentControl x:Name="ActiveItem" Grid.Column="1"/>
 

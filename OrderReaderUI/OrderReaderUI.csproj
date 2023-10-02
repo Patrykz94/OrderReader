@@ -6,6 +6,7 @@
 	<AssemblyVersion>1.0.17</AssemblyVersion>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,8 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OrderReader.Core\OrderReader.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

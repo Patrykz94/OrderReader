@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style TargetType="{x:Type Border}" x:Key="Divider">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource FormDivider.Gradient}"/>
+        <Setter Property="Margin" Value="0 15 0 15"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+    <Style TargetType="{x:Type Border}" x:Key="SolidHorizontalDivider">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Background" Value="{DynamicResource FormDivider.Brush}"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+    
+    <Style TargetType="{x:Type Border}" x:Key="SolidVerticalDivider">
+        <Setter Property="Width" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="Background" Value="{DynamicResource FormDivider.Brush}"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+    </Style>
+
+</ResourceDictionary>

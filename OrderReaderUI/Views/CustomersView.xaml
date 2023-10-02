@@ -6,18 +6,115 @@
              xmlns:local="clr-namespace:OrderReaderUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
+
     <Grid>
-        <Border Margin="150"
-                Background="White" CornerRadius="10">
-            <TextBlock Text="customer stuff goes here..."
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Left"
-                       FontSize="{DynamicResource FontSize.Title}"
-                       Foreground="#aaa">
-                <TextBlock.RenderTransform>
-                    <RotateTransform Angle="45"/>
-                </TextBlock.RenderTransform>
-            </TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Background="White" Margin="20 20 20 0" Padding="5" CornerRadius="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition MinWidth="250"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Text="Customer Selection:" FontSize="{StaticResource FontSize.Large}" FontWeight="Medium"/>
+                <ComboBox Grid.Column="2" x:Name="Customers">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Grid.Column="3" x:Name="LoadCustomers"
+                        Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                        FontFamily="{StaticResource IconFontRegular}" Padding="10"/>
+            </Grid>
+            
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource ShadowBrush}" Opacity="0.1"/>
+            </Border.Effect>
         </Border>
+
+        <TabControl Margin="20" Grid.Row="1">
+            <TabItem Header="Customer">
+                <StackPanel>
+                    <TextBlock Text="Customer Information" Style="{DynamicResource HeaderText}"/>
+                    <TextBlock Text="View and manage information about customers" Margin="5 -5 5 5"
+                               HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                    <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                    <!-- Customer Details -->
+                    <TextBlock Text="Customer Details" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Details about this customer that are used to identify it on order files and tranlsate it to the exported CSV/PDF files.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Name"/>
+                            <TextBox Text="{Binding SelectedCustomer.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Name in CSV files"/>
+                            <TextBox Text="{Binding SelectedCustomer.CSVName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <Label Content="Name on order files"/>
+                            <TextBox Text="{Binding SelectedCustomer.OrderName, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <Label Content=""/>
+                            <Button Content="Update Customer"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+
+                    <!-- Other Info -->
+                    <TextBlock Text="Other Information" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Other information about the selected customer.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Number of depots"/>
+                            <TextBlock Text="{Binding SelectedCustomer.Depots.Count}" FontWeight="Medium"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Number of products"/>
+                            <TextBlock Text="{Binding SelectedCustomer.Products.Count}" FontWeight="Medium"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Depots">
+                <TextBlock>Depots</TextBlock>
+            </TabItem>
+            <TabItem Header="Products">
+                <TextBlock>Products</TextBlock>
+            </TabItem>
+            
+            <TabControl.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource ShadowBrush}" Opacity="0.1"/>
+            </TabControl.Effect>
+        </TabControl>
     </Grid>
+
 </UserControl>
+ 

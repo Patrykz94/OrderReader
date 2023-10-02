@@ -20,17 +20,17 @@ namespace OrderReader.Core
         /// <summary>
         /// Name of the customer, this is what's displayed in the application UI
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The name that will appear on the CSV file
         /// </summary>
-        public string CSVName { get; private set; }
+        public string CSVName { get; set; }
 
         /// <summary>
         /// The name that will appear on the orders that we are reading from
         /// </summary>
-        public string OrderName { get; private set; }
+        public string OrderName { get; set; }
 
         /// <summary>
         /// List of depots for this customer

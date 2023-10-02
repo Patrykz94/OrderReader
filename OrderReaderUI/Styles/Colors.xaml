@@ -2,9 +2,25 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Application Theme Colors -->
-    <SolidColorBrush x:Key="BackgroundMain" Color="#e5e5e5"/>
+    <SolidColorBrush x:Key="BackgroundMain.Brush" Color="#e5e5e5"/>
+    <LinearGradientBrush x:Key="BackgroundMain.Gradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#fafafa" Offset="0.0"/>
+        <GradientStop Color="#dfdfdf" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="Shadow.Brush" Color="#000"/>
 
     <!-- Text Colors -->
-    <SolidColorBrush x:Key="ForegroundMain" Color="#2e2e2e"/>
+    <SolidColorBrush x:Key="ForegroundMain.Brush" Color="#2e2e2e"/>
+    <SolidColorBrush x:Key="ForegroundLight.Brush" Color="#4a4a4a"/>
+    
+    <!-- Layout Colors -->
+    <SolidColorBrush x:Key="FormDivider.Brush" Color="#ccc"/>
+    <LinearGradientBrush x:Key="FormDivider.Gradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="Transparent" Offset="0.0"/>
+        <GradientStop Color="#ccc" Offset="0.1"/>
+        <GradientStop Color="#ccc" Offset="0.9"/>
+        <GradientStop Color="Transparent" Offset="1.0"/>
+    </LinearGradientBrush>
 
 </ResourceDictionary>
