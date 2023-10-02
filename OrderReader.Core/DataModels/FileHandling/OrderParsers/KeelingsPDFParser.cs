@@ -76,9 +76,9 @@ namespace OrderReader.Core
                     // Look for order reference if not already found
                     if (orderReference == null)
                     {
-                        string orderReferenceTitle = " Customer Ref:";
-                        if (lines[i].EndsWith(orderReferenceTitle))
-                            orderReference = lines[i].Substring(0, lines[i].Length - orderReferenceTitle.Length);  
+                        string orderReferenceTitle = "Supplier PO Number:";
+                        if (lines[i] == orderReferenceTitle && lines.Length > i + 4)
+                            orderReference = lines[i+4];  
                     }
 
                     // Look for delivery date if not already found
