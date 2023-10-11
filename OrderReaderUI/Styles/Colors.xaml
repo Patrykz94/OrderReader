@@ -13,7 +13,8 @@
     <!-- Text Colors -->
     <SolidColorBrush x:Key="ForegroundMain.Brush" Color="#2e2e2e"/>
     <SolidColorBrush x:Key="ForegroundLight.Brush" Color="#4a4a4a"/>
-    
+    <SolidColorBrush x:Key="Foreground.Placeholder.Brush" Color="#bbb"/>
+
     <!-- Layout Colors -->
     <SolidColorBrush x:Key="FormDivider.Brush" Color="#ccc"/>
     <LinearGradientBrush x:Key="FormDivider.Gradient" StartPoint="0,0" EndPoint="1,1">

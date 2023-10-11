@@ -24,7 +24,7 @@
                                 Background="{TemplateBinding Background}"
                                 Opacity="0.1"
                                 CornerRadius="8"
-                                Margin="5"/>
+                                Margin="10 5"/>
 
                         <TextBlock Grid.Column="0"
                                    Foreground="{TemplateBinding Foreground}"

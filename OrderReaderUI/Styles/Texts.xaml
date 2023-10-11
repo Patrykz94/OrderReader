@@ -2,13 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Default Text Block -->
-    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}">
+    <Style TargetType="{x:Type TextBlock}" x:Key="defaultTextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
         <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Regular}"/>
         <Setter Property="Padding" Value="5 0"/>
         <Setter Property="Margin" Value="5 0"/>
     </Style>
+    
+    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource defaultTextBlock}"/>
 
     <!-- Header Text Block -->
     <Style TargetType="{x:Type TextBlock}" x:Key="HeaderText" BasedOn="{StaticResource BaseTextBlockStyle}">
@@ -68,7 +70,26 @@
                     <Border BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="5">
-                        <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Focusable="True" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" Focusable="True" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+
+                            <TextBlock Text="{TemplateBinding Tag}"
+                                       VerticalAlignment="Center"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="{DynamicResource Foreground.Placeholder.Brush}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="Margin" Value="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </Border>
 
                     <ControlTemplate.Triggers>

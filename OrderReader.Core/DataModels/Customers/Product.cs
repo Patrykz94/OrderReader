@@ -20,22 +20,22 @@
         /// <summary>
         /// This is the name of the product that will be displayed in the application
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// The name that will appear on the CSV file
         /// </summary>
-        public string CSVName { get; private set; }
+        public string CSVName { get; set; }
 
         /// <summary>
         /// The name that will appear on the orders that we are reading from
         /// </summary>
-        public string OrderName { get; private set; }
+        public string OrderName { get; set; }
 
         /// <summary>
         /// The price of this product
         /// </summary>
-        public decimal Price { get; private set; }
+        public decimal Price { get; set; }
 
         #endregion
 
