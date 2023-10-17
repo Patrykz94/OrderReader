@@ -9,7 +9,8 @@
                     <local:Bootstrapper x:Key="Bootstrapper"/>
                 </ResourceDictionary>
                 <ResourceDictionary Source="Styles/Colors.xaml"/>
-                <ResourceDictionary Source="Styles/Accents/Orange.xaml"/>
+                <ResourceDictionary Source="Styles/Themes/Light.xaml"/>
+                <ResourceDictionary Source="Styles/Accents/Red.xaml"/>
                 <ResourceDictionary Source="Styles/Fonts.xaml"/>
                 <ResourceDictionary Source="Styles/Texts.xaml"/>
                 <ResourceDictionary Source="Styles/Buttons.xaml"/>

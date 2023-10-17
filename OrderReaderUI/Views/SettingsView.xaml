@@ -4,9 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OrderReaderUI.Views"
+             xmlns:cal="http://www.caliburnproject.org" xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
+             xmlns:val="clr-namespace:OrderReaderUI.ValueConverters"
+             d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    
+
+    <UserControl.Resources>
+        <val:StringToBoolConverter x:Key="StringToBoolConverter" />
+    </UserControl.Resources>
+
     <TabControl Margin="20">
         
         <TabItem Header="Processing">
@@ -19,7 +26,16 @@
                 <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
 
                 <!-- CSV file settings -->
-                <TextBlock Text="CSV File Export" FontSize="{StaticResource FontSize.Large}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="CSV File Export" FontSize="{StaticResource FontSize.Large}"/>
+                    <Button x:Name="ReloadCSVSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            Margin="5 0" Grid.Column="1"/>
+                </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
                 A CSV file containing all details of an order can be generated.
                 This file can then be used to process the order further by an ERP system.
@@ -39,7 +55,16 @@
                 <Border Style="{DynamicResource Divider}"/>
 
                 <!-- PDF file settings -->
-                <TextBlock Text="PDF File Export" FontSize="{StaticResource FontSize.Large}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="PDF File Export" FontSize="{StaticResource FontSize.Large}"/>
+                    <Button x:Name="ReloadPDFSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            Margin="5 0" Grid.Column="1"/>
+                </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
                 A PDF can be generated containing the order in a table form. This could be stored for future reference.
                 </TextBlock>
@@ -58,7 +83,16 @@
                 <Border Style="{DynamicResource Divider}"/>
 
                 <!-- Printing settings -->
-                <TextBlock Text="Printing Settings" FontSize="{StaticResource FontSize.Large}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Printing Settings" FontSize="{StaticResource FontSize.Large}"/>
+                    <Button x:Name="ReloadPrintingSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            Margin="5 0" Grid.Column="1"/>
+                </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
                 A document can be printed containing the summary of orders.
                 </TextBlock>
@@ -84,11 +118,153 @@
         </TabItem>
         
         <TabItem Header="Appearance">
-            <TextBlock>Appearance</TextBlock>
+            <StackPanel>
+                <TextBlock Text="Visual Appearance Settings" Style="{DynamicResource HeaderText}"/>
+                <TextBlock Text="Change the application's colour schemes" Margin="5 -5 5 5"
+                           HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+                
+                <!-- Theme Selection -->
+                <TextBlock Text="Themes" FontSize="{StaticResource FontSize.Large}"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Clipping path for the grid -->
+                    <Path Name="clipPathLeft" Fill="White" Visibility="Hidden">
+                        <Path.Data>
+                            <PathGeometry>
+                                <PathFigure StartPoint="0,0">
+                                    <LineSegment Point="150,0"/>
+                                    <LineSegment Point="0,100"/>
+                                </PathFigure>
+                            </PathGeometry>
+                        </Path.Data>
+                    </Path>
+                    
+                    <Path Name="clipPathRight" Fill="White" Visibility="Hidden">
+                        <Path.Data>
+                            <PathGeometry>
+                                <PathFigure StartPoint="150,0">
+                                    <LineSegment Point="150,150"/>
+                                    <LineSegment Point="0,100"/>
+                                </PathFigure>
+                            </PathGeometry>
+                        </Path.Data>
+                    </Path>
+
+                    <RadioButton Grid.Column="0" IsChecked="{Binding SelectedTheme, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Auto}"
+                                 Style="{StaticResource ThemeButton}"
+                                 Tag="Auto">
+                        <Grid x:Name="ClippingGrid" SizeChanged="Grid_SizeChanged">
+                            <Border Clip="{Binding ElementName=clipPathLeft, Path=Data}" Background="{StaticResource LightTheme.Background.Brush}" CornerRadius="7">
+                                <Border Background="{StaticResource LightTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource LightTheme.Shadow.Color}" Opacity="0.1"/>
+                                    </Border.Effect>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Header Text" Foreground="{StaticResource LightTheme.Foreground.Brush}" Style="{DynamicResource HeaderText}" FontSize="24"/>
+                                        <TextBlock Text="Regular Text" Foreground="{StaticResource LightTheme.Foreground.Secondary.Brush}" FontSize="20"/>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                            <Border Clip="{Binding ElementName=clipPathRight, Path=Data}" Background="{StaticResource DarkTheme.Background.Brush}" CornerRadius="7">
+                                <Border Background="{StaticResource DarkTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource DarkTheme.Shadow.Color}" Opacity="0.1"/>
+                                    </Border.Effect>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Header Text" Foreground="{StaticResource DarkTheme.Foreground.Brush}" Style="{DynamicResource HeaderText}" FontSize="24"/>
+                                        <TextBlock Text="Regular Text" Foreground="{StaticResource DarkTheme.Foreground.Secondary.Brush}" FontSize="20"/>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Grid>
+                    </RadioButton>
+                    <RadioButton Grid.Column="1" IsChecked="{Binding SelectedTheme, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Light}"
+                                 Style="{StaticResource ThemeButton}"
+                                 Tag="Light">
+                        <Grid>
+                            <Border Background="{StaticResource LightTheme.Background.Brush}" CornerRadius="7">
+                                <Border Background="{StaticResource LightTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource LightTheme.Shadow.Color}" Opacity="0.1"/>
+                                    </Border.Effect>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Header Text" Foreground="{StaticResource LightTheme.Foreground.Brush}" Style="{DynamicResource HeaderText}" FontSize="24"/>
+                                        <TextBlock Text="Regular Text" Foreground="{StaticResource LightTheme.Foreground.Secondary.Brush}" FontSize="20"/>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Grid>
+                    </RadioButton>
+                    <RadioButton Grid.Column="2" IsChecked="{Binding SelectedTheme, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Dark}"
+                                 Style="{StaticResource ThemeButton}"
+                                 Tag="Dark">
+                        <Grid>
+                            <Border Background="{StaticResource DarkTheme.Background.Brush}" CornerRadius="7">
+                                <Border Background="{StaticResource DarkTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource DarkTheme.Shadow.Color}" Opacity="0.1"/>
+                                    </Border.Effect>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Header Text" Foreground="{StaticResource DarkTheme.Foreground.Brush}" Style="{DynamicResource HeaderText}" FontSize="24"/>
+                                        <TextBlock Text="Regular Text" Foreground="{StaticResource DarkTheme.Foreground.Secondary.Brush}" FontSize="20"/>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Grid>
+                    </RadioButton>
+                </Grid>
+
+                <Border Style="{DynamicResource Divider}"/>
+
+                <!-- Accent Colour Selection -->
+                <TextBlock Text="Accents" FontSize="{StaticResource FontSize.Large}"/>
+
+                <UniformGrid Columns="2">
+
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Grey}"
+                                 Background="{StaticResource AccentGray.Background.Brush}"
+                                 Foreground="{StaticResource AccentGray.Foreground.Brush}">
+                        Grey
+                    </RadioButton>
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Green}"
+                                 Background="{StaticResource AccentGreen.Background.Brush}"
+                                 Foreground="{StaticResource AccentGreen.Foreground.Brush}">
+                        Green
+                    </RadioButton>
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Red}"
+                                 Background="{StaticResource AccentRed.Background.Brush}"
+                                 Foreground="{StaticResource AccentRed.Foreground.Brush}">
+                        Red
+                    </RadioButton>
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Blue}"
+                                 Background="{StaticResource AccentBlue.Background.Brush}"
+                                 Foreground="{StaticResource AccentBlue.Foreground.Brush}">
+                        Blue
+                    </RadioButton>
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Purple}"
+                                 Background="{StaticResource AccentPurple.Background.Brush}"
+                                 Foreground="{StaticResource AccentPurple.Foreground.Brush}">
+                        Purple
+                    </RadioButton>
+                    <RadioButton Style="{DynamicResource AccentButton}" IsChecked="{Binding SelectedAccent, Mode=TwoWay, Converter={x:Static val:StringToBoolConverter.Instance}, ConverterParameter=Yellow}"
+                                 Background="{StaticResource AccentYellow.Background.Brush}"
+                                 Foreground="{StaticResource AccentYellow.Foreground.Brush}">
+                        Yellow
+                    </RadioButton>
+                </UniformGrid>
+            </StackPanel>
         </TabItem>
         
         <TabControl.Effect>
-            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource ShadowBrush}" Opacity="0.1"/>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
         </TabControl.Effect>
     </TabControl>
     

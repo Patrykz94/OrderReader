@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:OrderReaderUI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <Border Background="White" CornerRadius="10" Margin="20" Padding="10">
+    <Border Background="{DynamicResource Background.Panel.Brush}" CornerRadius="10" Margin="20" Padding="10">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource ShadowBrush}" Opacity="0.1"/>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
         </Border.Effect>
 
         <TextBlock Text="orders n' shit goes here..."

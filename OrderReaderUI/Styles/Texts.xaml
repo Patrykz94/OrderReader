@@ -3,7 +3,7 @@
 
     <!-- Default Text Block -->
     <Style TargetType="{x:Type TextBlock}" x:Key="defaultTextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Regular}"/>
         <Setter Property="Padding" Value="5 0"/>
@@ -14,7 +14,7 @@
 
     <!-- Header Text Block -->
     <Style TargetType="{x:Type TextBlock}" x:Key="HeaderText" BasedOn="{StaticResource BaseTextBlockStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Title}"/>
         <Setter Property="FontWeight" Value="Medium"/>
@@ -25,7 +25,7 @@
 
     <!-- Label Text Block -->
     <Style TargetType="{x:Type TextBlock}" x:Key="Label" BasedOn="{StaticResource BaseTextBlockStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}"/>
         <Setter Property="Margin" Value="5 10 0 0"/>
@@ -34,7 +34,7 @@
 
     <!-- Label -->
     <Style TargetType="{x:Type Label}" BasedOn="{StaticResource BaseStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Small}"/>
         <Setter Property="Margin" Value="5 10 0 0"/>
@@ -54,12 +54,13 @@
 
     <!-- Text Box -->
     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseStyle}">
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="FontFamily" Value="SegoeUI"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Regular}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Control.Brush}"/>
         <Setter Property="SelectionBrush" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Padding" Value="5"/>
         <Setter Property="Margin" Value="5"/>

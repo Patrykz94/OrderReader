@@ -13,26 +13,26 @@
     </LinearGradientBrush>
 
     <!-- Navigation Buttons -->
-    <Color x:Key="NavButtonActive.Color">#fff</Color>
-    <SolidColorBrush x:Key="NavButtonActive.Brush" Color="{DynamicResource NavButtonActive.Color}"/>
+    <Color x:Key="NavButton.Hover.Color">#fff</Color>
+    <SolidColorBrush x:Key="NavButton.Hover.Brush" Color="{StaticResource NavButton.Hover.Color}"/>
 
-    <LinearGradientBrush x:Key="NavPanelLine.Brush" StartPoint="0,0" EndPoint="1,1">
+    <LinearGradientBrush x:Key="NavPanel.Line.Brush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="Transparent" Offset="0.0"/>
-        <GradientStop Color="#fff" Offset="0.5"/>
+        <GradientStop Color="#ffffff" Offset="0.5"/>
         <GradientStop Color="Transparent" Offset="1.0"/>
     </LinearGradientBrush>
 
     <!-- Text Colors On Accent-->
-    <Color x:Key="AccentTextMain.Color">#f0f0f0</Color>
-    <Color x:Key="AccentTextSecondary.Color">#c8c8c8</Color>
-    
-    <SolidColorBrush x:Key="AccentTextMain.Brush" Color="{DynamicResource AccentTextMain.Color}"/>
-    <SolidColorBrush x:Key="AccentTextSecondary.Brush" Color="{DynamicResource AccentTextSecondary.Color}"/>
+    <Color x:Key="Accent.Foreground.Color">#f0f0f0</Color>
+    <Color x:Key="Accent.Foreground.Secondary.Color">#c8c8c8</Color>
+
+    <SolidColorBrush x:Key="Accent.Foreground.Brush" Color="{DynamicResource Accent.Foreground.Color}"/>
+    <SolidColorBrush x:Key="Accent.Foreground.Secondary.Brush" Color="{DynamicResource Accent.Foreground.Secondary.Color}"/>
     
     <!-- Default Controls -->
 
-    <Color x:Key="Control.Color">#f23d34</Color>
-    <Color x:Key="ControlLight.Color">#ff4d36</Color>
+    <Color x:Key="Control.Color">#007fff</Color>
+    <Color x:Key="ControlLight.Color">#3e8ede</Color>
     <Color x:Key="ControlDark.Color">#bf3029</Color>
     <Color x:Key="ControlDisabled.Color">#777</Color>
     <Color x:Key="ControlDisabledAlternative.Color">#aaa</Color>
@@ -44,7 +44,7 @@
     <SolidColorBrush x:Key="ControlDisabled.Brush" Color="{DynamicResource ControlDisabled.Color}"/>
     <SolidColorBrush x:Key="ControlDisabledAlternative.Brush" Color="{DynamicResource ControlDisabledAlternative.Color}"/>
     <SolidColorBrush x:Key="ControlAlternative.Brush" Color="{DynamicResource ControlAlternative.Color}"/>
-    <SolidColorBrush x:Key="ControlDisabledText.Brush" Color="{DynamicResource AccentTextSecondary.Color}"/>
+    <SolidColorBrush x:Key="ControlDisabledText.Brush" Color="{DynamicResource Accent.Foreground.Secondary.Color}"/>
 
     <Color x:Key="Button.Color">#f23d34</Color>
     <Color x:Key="ButtonHover.Color">#ff4d36</Color>
@@ -55,6 +55,6 @@
     <SolidColorBrush x:Key="ButtonHover.Brush" Color="{DynamicResource ButtonHover.Color}"/>
     <SolidColorBrush x:Key="ButtonPressed.Brush" Color="{DynamicResource ButtonPressed.Color}"/>
     <SolidColorBrush x:Key="ButtonDisabled.Brush" Color="{DynamicResource ButtonDisabled.Color}"/>
-    <SolidColorBrush x:Key="ButtonDisabledText.Brush" Color="{DynamicResource AccentTextSecondary.Color}"/>
+    <SolidColorBrush x:Key="ButtonDisabledText.Brush" Color="{DynamicResource Accent.Foreground.Secondary.Color}"/>
 
 </ResourceDictionary>

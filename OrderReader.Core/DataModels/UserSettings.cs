@@ -47,6 +47,16 @@ namespace OrderReader.Core
         /// </summary>
         public int PrintingCopies { get; set; }
 
+        /// <summary>
+        /// Name of the theme to use
+        /// </summary>
+        public string Theme { get; set; }
+
+        /// <summary>
+        /// Name of the accent colour to use
+        /// </summary>
+        public string Accent { get; set; }
+
         #endregion
 
         #region Constructor
@@ -67,6 +77,8 @@ namespace OrderReader.Core
             ExportPDF = true;
             PrintOrders = true;
             PrintingCopies = 1;
+            Theme = "Auto";
+            Accent = "Red";
         }
 
         /// <summary>
@@ -84,6 +96,8 @@ namespace OrderReader.Core
             PrintOrders = (bool)info.GetValue("PrintOrders", typeof(bool));
             PreferredPrinterName = (string)info.GetValue("SelectedPrinterName", typeof(string));
             PrintingCopies = (int)info.GetValue("PrintingCopies", typeof(int));
+            Theme = (string)info.GetValue("Theme", typeof(string));
+            Accent = (string)info.GetValue("Accent", typeof(string));
         }
 
         #endregion
@@ -104,6 +118,8 @@ namespace OrderReader.Core
             info.AddValue("PrintOrders", PrintOrders);
             info.AddValue("SelectedPrinterName", PreferredPrinterName);
             info.AddValue("PrintingCopies", PrintingCopies);
+            info.AddValue("Theme", Theme);
+            info.AddValue("Accent", Accent);
         }
 
         #endregion

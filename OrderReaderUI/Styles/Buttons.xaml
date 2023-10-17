@@ -4,7 +4,7 @@
     <!-- Navigation Button -->
     <Style TargetType="{x:Type RadioButton}" x:Key="NavButton" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
         <Setter Property="Margin" Value="0"/>
@@ -46,12 +46,151 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource NavButtonActive.Brush}"/>
+                            <Setter Property="Background" Value="{DynamicResource NavButton.Hover.Brush}"/>
                             <Setter TargetName="backgroundBorder" Property="Opacity" Value="0.15"/>
                         </Trigger>
 
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource NavButtonActive.Brush}"/>
+                            <Setter Property="Background" Value="{DynamicResource NavButton.Hover.Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Theme Selection Button -->
+    <Style TargetType="{x:Type RadioButton}" x:Key="ThemeButton" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Background" Value="{DynamicResource Background.Panel.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Margin" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Border Grid.RowSpan="2" x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="10"
+                            Margin="10 10">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.4"/>
+                        </Border.Effect>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0" ClipToBounds="True"
+                                    Margin="3" CornerRadius="7" BorderThickness="0" Height="100">
+                                <ContentPresenter SnapsToDevicePixels="True"/>
+                            </Border>
+                            
+                            <TextBlock Grid.Row="1"
+                                       Text="{TemplateBinding Tag}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       SnapsToDevicePixels="True"
+                                       Margin="0 5"
+                                       FontSize="{TemplateBinding FontSize}"/> 
+                        </Grid>
+
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource ControlLight.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
+                            <Setter Property="Effect" TargetName="border">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
+                            <Setter Property="Effect" TargetName="border">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="0.2"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Accent Selection Button -->
+    <Style TargetType="{x:Type RadioButton}" x:Key="AccentButton" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Margin" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Border Grid.RowSpan="2"
+                            BorderThickness="2"
+                            x:Name="border"
+                            BorderBrush="{DynamicResource Background.Panel.Brush}"
+                            Background="{DynamicResource Background.Panel.Brush}"
+                            CornerRadius="10"
+                            Margin="10 10">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.4"/>
+                        </Border.Effect>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Margin="10" CornerRadius="5" Height="50"
+                                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}">
+                                <TextBlock Text="Example" Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Foreground}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="{TemplateBinding Content}"
+                                       Foreground="{DynamicResource Foreground.Brush}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="{TemplateBinding FontSize}"/>
+                        </Grid>
+
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Effect" TargetName="border">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="1"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Effect" TargetName="border">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="1"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -62,7 +201,7 @@
     <!-- Default Button -->
     <Style TargetType="{x:Type Button}" x:Key="DefaultButton">
         <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
-        <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Large}"/>
         <Setter Property="Padding" Value="10 5"/>
         <Setter Property="Margin" Value="5"/>
@@ -92,7 +231,7 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="{DynamicResource ControlDisabled.Brush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource AccentTextSecondary.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Secondary.Brush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -108,7 +247,7 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="{DynamicResource ControlLight.Brush}"/>

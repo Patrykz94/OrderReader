@@ -6,7 +6,7 @@
         <Setter Property="Padding" Value="10"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource Background.Panel.Brush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabControl}">
@@ -70,7 +70,7 @@
     
     <Style TargetType="{x:Type TabItem}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundMain.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontSize" Value="{StaticResource FontSize.Large}"/>
         <Setter Property="Margin" Value="0"/>
@@ -95,11 +95,11 @@
                         <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource ControlLight.Brush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource AccentTextMain.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="Gray"/>

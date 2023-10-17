@@ -1,8 +1,11 @@
 ﻿using Caliburn.Micro;
 using OrderReader.Core;
+using OrderReaderUI.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using WinForms = System.Windows.Forms;
 
 namespace OrderReaderUI.ViewModels;
@@ -71,8 +74,48 @@ public class SettingsViewModel : Screen
         }
     }
 
+    private string _selectedTheme;
+    public string SelectedTheme
+    {
+        get { return _selectedTheme; }
+        set
+        {
+            if (value != _selectedTheme)
+            {
+                ThemeManager.ChangeTheme(value);
+                _selectedTheme = value;
+                NotifyOfPropertyChange();
+            }
+        }
+    }
+
+    private string _selectedAccent;
+    public string SelectedAccent
+    {
+        get { return _selectedAccent; }
+        set
+        {
+            if (value != _selectedAccent)
+            {
+                ThemeManager.ChangeAccent(value);
+                _selectedAccent = value;
+                NotifyOfPropertyChange();
+            }
+        }
+    }
+
     public ObservableCollection<string> Printers => PrintingManager.InstalledPrinters;
-    public string SelectedPrinter { get; set; } = string.Empty;
+
+    private string _selectedPrinter = string.Empty;
+    public string SelectedPrinter
+    {
+        get => _selectedPrinter;
+        set
+        {
+            _selectedPrinter = value;
+            NotifyOfPropertyChange();
+        }
+    }
 
     private int _copies;
     public int Copies
@@ -131,6 +174,25 @@ public class SettingsViewModel : Screen
         }
     }
 
+    public void ReloadCSVSettings()
+    {
+        PathCSV = LoadDefaultSetting("DefaultCSVExportPath") ?? Settings.DefaultExportPath;
+    }
+
+    public void ReloadPDFSettings()
+    {
+        PathPDF = LoadDefaultSetting("DefaultPDFExportPath") ?? Settings.DefaultExportPath;
+    }
+
+    public void ReloadPrintingSettings()
+    {
+        string? defaultPrinter = LoadDefaultSetting("DefaultPrinter");
+        if (defaultPrinter == null || !Printers.Contains(defaultPrinter))
+            SelectedPrinter = PrintingManager.DefaultPrinter;
+        else
+            SelectedPrinter = defaultPrinter;
+    }
+
     #endregion
 
     #region Private Helpers
@@ -155,7 +217,10 @@ public class SettingsViewModel : Screen
             UserCSVExportPath = PathCSV,
             UserPDFExportPath = PathPDF,
             PreferredPrinterName = SelectedPrinter,
-            PrintingCopies = Copies
+            PrintingCopies = Copies,
+
+            Theme = SelectedTheme,
+            Accent = SelectedAccent
         };
 
         Settings.SaveSettings(settings);
@@ -174,8 +239,29 @@ public class SettingsViewModel : Screen
         SelectedPrinter = settings.PreferredPrinterName;
         Copies = settings.PrintingCopies;
 
+        SelectedTheme = settings.Theme;
+        SelectedAccent = settings.Accent;
+
         if (SelectedPrinter == null || !Printers.Contains(SelectedPrinter))
             SelectedPrinter = PrintingManager.DefaultPrinter;
+    }
+
+    private string? LoadDefaultSetting(string settingName)
+    {
+        Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
+
+        if (defaultSettings.ContainsKey(settingName)) { return defaultSettings[settingName]; }
+
+        return null;
+    }
+
+    protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+    {
+        if (close)
+        {
+            SaveSettings();
+        }
+        return base.OnDeactivateAsync(close, cancellationToken);
     }
 
     #endregion

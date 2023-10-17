@@ -55,7 +55,7 @@
                            Padding="5 0"
                            FontSize="{DynamicResource FontSize.Regular}"
                            FontWeight="Medium"
-                           Foreground="{DynamicResource AccentTextMain.Brush}"/>
+                           Foreground="{DynamicResource Accent.Foreground.Brush}"/>
                 <TextBlock Grid.Column="1" Grid.Row="1"
                            x:Name="CurrentVersion"
                            Text="Version Number"
@@ -63,10 +63,10 @@
                            HorizontalAlignment="Left"
                            Padding="5 0"
                            FontSize="{DynamicResource FontSize.Small}"
-                           Foreground="{DynamicResource AccentTextSecondary.Brush}"/>
+                           Foreground="{DynamicResource Accent.Foreground.Secondary.Brush}"/>
 
                 <Border Grid.ColumnSpan="2" Grid.Row="2"
-                        Height="1" Background="{DynamicResource NavPanelLine.Brush}"/>
+                        Height="1" Background="{DynamicResource NavPanel.Line.Brush}"/>
 
             </Grid>
             
@@ -97,7 +97,7 @@
         <!-- Column 2 - Page Content -->
 
         <Border Grid.Column="1"
-                Background="{DynamicResource BackgroundMain.Gradient}"/>
+                Background="{DynamicResource Background.Gradient}"/>
 
         <ContentControl x:Name="ActiveItem" Grid.Column="1"/>
 

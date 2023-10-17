@@ -1,27 +1,44 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Application Theme Colors -->
-    <SolidColorBrush x:Key="BackgroundMain.Brush" Color="#e5e5e5"/>
-    <LinearGradientBrush x:Key="BackgroundMain.Gradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#fafafa" Offset="0.0"/>
-        <GradientStop Color="#dfdfdf" Offset="1.0"/>
-    </LinearGradientBrush>
+    <!-- Theme Selection Colours -->
+    <SolidColorBrush x:Key="LightTheme.Background.Brush" Color="#e5e5e5"/>
+    <SolidColorBrush x:Key="LightTheme.Background.Panel.Brush" Color="#ffffff"/>
+    <SolidColorBrush x:Key="LightTheme.Foreground.Brush" Color="#2e2e2e"/>
+    <SolidColorBrush x:Key="LightTheme.Foreground.Secondary.Brush" Color="#4a4a4a"/>
+    <SolidColorBrush x:Key="LightTheme.Foreground.Placeholder.Brush" Color="#bbbbbb"/>
+    <Color x:Key="LightTheme.Shadow.Color">#000000</Color>
 
-    <SolidColorBrush x:Key="Shadow.Brush" Color="#000"/>
+    <SolidColorBrush x:Key="DarkTheme.Background.Brush" Color="#0d0d0d"/>
+    <SolidColorBrush x:Key="DarkTheme.Background.Panel.Brush" Color="#1e1e1e"/>
+    <SolidColorBrush x:Key="DarkTheme.Foreground.Brush" Color="#d1d1d1"/>
+    <SolidColorBrush x:Key="DarkTheme.Foreground.Secondary.Brush" Color="#b5b5b5"/>
+    <SolidColorBrush x:Key="DarkTheme.Foreground.Placeholder.Brush" Color="#444444"/>
+    <Color x:Key="DarkTheme.Shadow.Color">#aaaaaa</Color>
+    
+    <!-- Accent Selection Colours -->
+    <SolidColorBrush x:Key="AccentGray.Background.Brush" Color="#6a6a6a"/>
+    <SolidColorBrush x:Key="AccentGray.Background.Secondary.Brush" Color="#8f8f8f"/>
+    <SolidColorBrush x:Key="AccentGray.Foreground.Brush" Color="#ffffff"/>
+    
+    <SolidColorBrush x:Key="AccentGreen.Background.Brush" Color="#228b22"/>
+    <SolidColorBrush x:Key="AccentGreen.Background.Secondary.Brush" Color="#33b864"/>
+    <SolidColorBrush x:Key="AccentGreen.Foreground.Brush" Color="#ffffff"/>
 
-    <!-- Text Colors -->
-    <SolidColorBrush x:Key="ForegroundMain.Brush" Color="#2e2e2e"/>
-    <SolidColorBrush x:Key="ForegroundLight.Brush" Color="#4a4a4a"/>
-    <SolidColorBrush x:Key="Foreground.Placeholder.Brush" Color="#bbb"/>
+    <SolidColorBrush x:Key="AccentRed.Background.Brush" Color="#f23d34"/>
+    <SolidColorBrush x:Key="AccentRed.Background.Secondary.Brush" Color="#ff4d36"/>
+    <SolidColorBrush x:Key="AccentRed.Foreground.Brush" Color="#f0f0f0"/>
 
-    <!-- Layout Colors -->
-    <SolidColorBrush x:Key="FormDivider.Brush" Color="#ccc"/>
-    <LinearGradientBrush x:Key="FormDivider.Gradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="Transparent" Offset="0.0"/>
-        <GradientStop Color="#ccc" Offset="0.1"/>
-        <GradientStop Color="#ccc" Offset="0.9"/>
-        <GradientStop Color="Transparent" Offset="1.0"/>
-    </LinearGradientBrush>
+    <SolidColorBrush x:Key="AccentBlue.Background.Brush" Color="#007fff"/>
+    <SolidColorBrush x:Key="AccentBlue.Background.Secondary.Brush" Color="#3e8ede"/>
+    <SolidColorBrush x:Key="AccentBlue.Foreground.Brush" Color="#ffffff"/>
+
+    <SolidColorBrush x:Key="AccentPurple.Background.Brush" Color="#800080"/>
+    <SolidColorBrush x:Key="AccentPurple.Background.Secondary.Brush" Color="#bf40bf"/>
+    <SolidColorBrush x:Key="AccentPurple.Foreground.Brush" Color="#ffffff"/>
+
+    <SolidColorBrush x:Key="AccentYellow.Background.Brush" Color="#fff700"/>
+    <SolidColorBrush x:Key="AccentYellow.Background.Secondary.Brush" Color="#fdfd96"/>
+    <SolidColorBrush x:Key="AccentYellow.Foreground.Brush" Color="#000000"/>
 
 </ResourceDictionary>
