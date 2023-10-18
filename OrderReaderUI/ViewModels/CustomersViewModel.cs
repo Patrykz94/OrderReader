@@ -9,6 +9,9 @@ public class CustomersViewModel : Screen
 {
     #region Constructor
 
+    /// <summary>
+    /// Default constructor that loads the customers information from the database
+    /// </summary>
     public CustomersViewModel()
     {
         CustomersHandler = OrderReader.Core.IoC.Customers();
@@ -19,9 +22,15 @@ public class CustomersViewModel : Screen
 
     #region Properties
 
+    /// <summary>
+    /// The parent object that contains and manages all <see cref="Customer"/> objects
+    /// </summary>
     public CustomersHandler CustomersHandler { get; set; }
 
     private ObservableCollection<Customer> _customers;
+    /// <summary>
+    /// A list of all <see cref="Customer"/> objects from <see cref="CustomersHandler"/>
+    /// </summary>
     public ObservableCollection<Customer> Customers
     {
         get { return _customers; }
@@ -33,6 +42,9 @@ public class CustomersViewModel : Screen
     }
 
     private Customer _selectedCustomer;
+    /// <summary>
+    /// The <see cref="Customer"/> that is currently selected in the UI
+    /// </summary>
     public Customer SelectedCustomer
     {
         get { return _selectedCustomer; }
@@ -51,10 +63,37 @@ public class CustomersViewModel : Screen
             }
             
             NotifyOfPropertyChange(() => SelectedCustomer);
+            NotifyOfPropertyChange(() => HasSelectedCustomer);
+            NotifyOfPropertyChange(() => CanUpdateCustomer);
+        }
+    }
+
+    /// <summary>
+    /// Whether or not a <see cref="Customer"/> object has been selected in UI
+    /// </summary>
+    public bool HasSelectedCustomer
+    {
+        get
+        {
+            return SelectedCustomer != null;
+        }
+    }
+
+    /// <summary>
+    /// Whether or not a <see cref="Customer"/> object can be update via the UI
+    /// </summary>
+    public bool CanUpdateCustomer
+    {
+        get
+        {
+            return SelectedCustomer != null;
         }
     }
 
     private ObservableCollection<Depot> _depots;
+    /// <summary>
+    /// A list of all <see cref="Depot"/> objects belonging to the currently <see cref="SelectedCustomer"/> object
+    /// </summary>
     public ObservableCollection<Depot> Depots
     {
         get { return _depots; }
@@ -66,6 +105,9 @@ public class CustomersViewModel : Screen
     }
 
     private Depot _selectedDepot;
+    /// <summary>
+    /// The <see cref="Depot"/> object that is currently selected in the UI
+    /// </summary>
     public Depot SelectedDepot
     {
         get { return _selectedDepot; }
@@ -78,6 +120,9 @@ public class CustomersViewModel : Screen
         }
     }
 
+    /// <summary>
+    /// Whether or not a <see cref="Depot"/> object has been selected in UI
+    /// </summary>
     public bool HasSelectedDepot
     {
         get
@@ -85,16 +130,23 @@ public class CustomersViewModel : Screen
             return SelectedDepot != null;
         }
     }
+    
+    /// <summary>
+    /// Whether or not a <see cref="Depot"/> object can be update via the UI
+    /// </summary>
     public bool CanUpdateDepot
     {
         get
         {
-            // Add more data validation here
+            // TODO: Add more data validation here
             return SelectedDepot != null;
         }
     }
 
     private Depot _newDepot = new();
+    /// <summary>
+    /// An empty <see cref="Depot"/> object that the user can fill in with information when creating a new depot via the UI
+    /// </summary>
     public Depot NewDepot
     {
         get { return _newDepot; }
@@ -106,6 +158,9 @@ public class CustomersViewModel : Screen
     }
 
     private ObservableCollection<Product> _products;
+    /// <summary>
+    /// A list of all <see cref="Product"/> objects belonging to the currently <see cref="SelectedCustomer"/> object
+    /// </summary>
     public ObservableCollection<Product> Products
     {
         get { return _products; }
@@ -117,6 +172,9 @@ public class CustomersViewModel : Screen
     }
 
     private Product _selectedProduct;
+    /// <summary>
+    /// The <see cref="Product"/> object that is currently selected in the UI
+    /// </summary>
     public Product SelectedProduct
     {
         get { return _selectedProduct; }
@@ -130,6 +188,9 @@ public class CustomersViewModel : Screen
     }
 
     private Product _newProduct = new();
+    /// <summary>
+    /// An empty <see cref="Product"/> object that the user can fill in with information when creating a new product via the UI
+    /// </summary>
     public Product NewProduct
     {
         get { return _newProduct; }
@@ -140,6 +201,9 @@ public class CustomersViewModel : Screen
         }
     }
 
+    /// <summary>
+    /// Whether or not a <see cref="Product"/> object has been selected in UI
+    /// </summary>
     public bool HasSelectedProduct
     {
         get
@@ -147,11 +211,15 @@ public class CustomersViewModel : Screen
             return _selectedProduct != null;
         }
     }
+
+    /// <summary>
+    /// Whether or not a <see cref="Product"/> object can be update via the UI
+    /// </summary>
     public bool CanUpdateProduct
     {
         get
         {
-            // Add more data validation here
+            // TODO: Add more data validation here
             return SelectedProduct != null;
         }
     }
@@ -160,6 +228,10 @@ public class CustomersViewModel : Screen
 
     #region Public Functions
 
+    /// <summary>
+    /// Loads all <see cref="Customer"/>, <see cref="Depot"/> and <see cref="Product"/> information from the database
+    /// and makes sure that, whenever possible, the same <see cref="SelectedCustomer"/> as before stays selected after the reload
+    /// </summary>
     public void LoadCustomers()
     {
         int selectedCustomerID = SelectedCustomer?.Id ?? -1;
@@ -176,16 +248,33 @@ public class CustomersViewModel : Screen
         Products = SelectedCustomer.Products;
     }
 
+    /// <summary>
+    /// Updates the currently selected <see cref="Customer"/>'s information in the <see cref="CustomersHandler"/> and in the database to the new values
+    /// </summary>
+    public void UpdateCustomer()
+    {
+        // Do stuff here
+    }
+
+    /// <summary>
+    /// Updates the currently selected <see cref="Depot"/>'s information in the <see cref="CustomersHandler"/> and in the database to the new values
+    /// </summary>
     public void UpdateDepot()
     {
         // Do stuff here
     }
 
+    /// <summary>
+    /// Updates the currently selected <see cref="Product"/>'s information in the <see cref="CustomersHandler"/> and in the database to the new values
+    /// </summary>
     public void UpdateProduct()
     {
         // Do stuff here
     }
 
+    /// <summary>
+    /// Adds a new <see cref="Depot"/> to this <see cref="Customer"/>. Updates the <see cref="CustomersHandler"/> and the database.
+    /// </summary>
     public void AddDepot()
     {
         // VALIDATE SHIT!
@@ -193,6 +282,9 @@ public class CustomersViewModel : Screen
         NewDepot = new();
     }
 
+    /// <summary>
+    /// Adds a new <see cref="Product"/> to this <see cref="Customer"/>. Updates the <see cref="CustomersHandler"/> and the database.
+    /// </summary>
     public void AddProduct()
     {
         // VALIDATE SHIT!
