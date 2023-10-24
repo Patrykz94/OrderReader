@@ -507,19 +507,19 @@ namespace OrderReader.Core
             // First make sure that there isn't already a depot with exactly the same CSVName & OrderName combination
             if (!customer.SameDepotExists(depot))
             {
-                // Insert the depot into the database and get a new depot object with the new depot ID
-                Depot newDepot = SqliteDataAccess.AddDepot(depot);
+                //// Insert the depot into the database and get a new depot object with the new depot ID
+                //Depot newDepot = SqliteDataAccess.AddDepot(depot);
 
-                // If the new depot object is not null (so it was created successfully) add it to the depots list of our customer
-                if (newDepot != null)
-                {
-                    customer.AddDepot(newDepot);
+                //// If the new depot object is not null (so it was created successfully) add it to the depots list of our customer
+                //if (newDepot != null)
+                //{
+                //    customer.AddDepot(newDepot);
 
-                    // Clear data that was on the form
-                    NewDepotName = "";
-                    NewDepotCSVName = "";
-                    NewDepotOrderName = "";
-                }
+                //    // Clear data that was on the form
+                //    NewDepotName = "";
+                //    NewDepotCSVName = "";
+                //    NewDepotOrderName = "";
+                //}
             }
         }
 
@@ -548,20 +548,20 @@ namespace OrderReader.Core
             // First make sure that there isn't already a product with exactly the same CSVName & OrderName combination
             if (!customer.SameProductExists(product))
             {
-                // Insert the product into the database and get a new product object with the new product ID
-                Product newProduct = SqliteDataAccess.AddProduct(product);
+                //// Insert the product into the database and get a new product object with the new product ID
+                //Product newProduct = SqliteDataAccess.AddProduct(product);
 
-                // If the new product object is not null (so it was created successfully) add it to the products list of our customer
-                if (newProduct != null)
-                {
-                    customer.AddProduct(newProduct);
+                //// If the new product object is not null (so it was created successfully) add it to the products list of our customer
+                //if (newProduct != null)
+                //{
+                //    customer.AddProduct(newProduct);
 
-                    // Clear data that was on the form
-                    NewProductName = "";
-                    NewProductCSVName = "";
-                    NewProductOrderName = "";
-                    NewProductPrice = 0.0m;
-                }
+                //    // Clear data that was on the form
+                //    NewProductName = "";
+                //    NewProductCSVName = "";
+                //    NewProductOrderName = "";
+                //    NewProductPrice = 0.0m;
+                //}
             }
         }
 

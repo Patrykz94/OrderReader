@@ -34,5 +34,6 @@
     <!-- Other Icons -->
     <system:String x:Key="IconCheckMark">&#xf00c;</system:String>
     <system:String x:Key="IconReload">&#xf2f1;</system:String>
+    <system:String x:Key="IconDelete">&#xf2ed;</system:String>
     
 </ResourceDictionary>

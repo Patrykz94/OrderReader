@@ -61,20 +61,20 @@
 
                         <StackPanel>
                             <Label Content="Display Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.Name, UpdateSourceTrigger=PropertyChanged}"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}" Tag="Display Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
                         </StackPanel>
 
                         <StackPanel>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.CSVName, UpdateSourceTrigger=PropertyChanged}"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}" Tag="CSV Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.CSVName}" Tag="CSV Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
                         </StackPanel>
                         
                         <StackPanel>
                             <Label Content="Order Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.OrderName, UpdateSourceTrigger=PropertyChanged}"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}" Tag="Order Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.OrderName}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
                         </StackPanel>
                         
                         <StackPanel>
@@ -130,8 +130,8 @@
                         
                         <StackPanel Grid.Column="0" x:Name="DepotEditor">
                             <Label Content="Display Name"/>
-                            <TextBox Text="{Binding SelectedDepot.Name, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Display Name" IsEnabled="{Binding HasSelectedDepot}"/>
+                            <TextBox Text="{Binding SelectedDepot.Name}" Tag="Display Name"
+                                     IsEnabled="{Binding HasSelectedDepot}"/>
                             <Label Content="CSV Name"/>
                             <TextBox Text="{Binding SelectedDepot.CSVName}" Tag="CSV Name"
                                      IsEnabled="{Binding HasSelectedDepot}"/>
@@ -145,7 +145,15 @@
                             <ListBox x:Name="Depots">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                            <Button Command="{Binding DataContext.DeleteDepotCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                                    Style="{StaticResource ListBoxDeleteButton}" Grid.Column="1"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -211,8 +219,8 @@
 
                         <StackPanel Grid.Column="0" x:Name="ProductEditor">
                             <Label Content="Display Name"/>
-                            <TextBox Text="{Binding SelectedProduct.Name, UpdateSourceTrigger=PropertyChanged}"
-                                     Tag="Display Name" IsEnabled="{Binding HasSelectedProduct}"/>
+                            <TextBox Text="{Binding SelectedProduct.Name}" Tag="Display Name"
+                                     IsEnabled="{Binding HasSelectedProduct}"/>
                             <Label Content="CSV Name"/>
                             <TextBox Text="{Binding SelectedProduct.CSVName}" Tag="CSV Name"
                                      IsEnabled="{Binding HasSelectedProduct}"/>
@@ -229,7 +237,15 @@
                             <ListBox x:Name="Products">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                            <Button Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                                    Style="{StaticResource ListBoxDeleteButton}" Grid.Column="1"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>

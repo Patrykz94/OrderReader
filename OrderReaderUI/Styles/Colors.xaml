@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <SolidColorBrush x:Key="Waring.Background.Brush" Color="#ff0000"/>
+    <SolidColorBrush x:Key="Waring.Foreground.Brush" Color="#ffffff"/>
+
     <!-- Theme Selection Colours -->
     <SolidColorBrush x:Key="LightTheme.Background.Brush" Color="#e5e5e5"/>
     <SolidColorBrush x:Key="LightTheme.Background.Panel.Brush" Color="#ffffff"/>

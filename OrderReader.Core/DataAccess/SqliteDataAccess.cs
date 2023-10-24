@@ -95,20 +95,17 @@ namespace OrderReader.Core
         }
 
         /// <summary>
-        /// Add a new depot to the database
+        /// Adds a new depot to the database
         /// </summary>
         /// <param name="depot">A <see cref="Depot"/> object to be added</param>
-        public static Depot AddDepot(Depot depot)
+        /// <returns>A uniqie ID of the created depot</returns>
+        public static int AddDepot(Depot depot)
         {
-            Depot newDepot;
+            using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
 
-            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
-            {
-                var result = cnn.Query<int>("INSERT INTO 'Depots' (CustomerId, Name, CSVName, OrderName) VALUES (@CustomerId, @Name, @CSVName, @OrderName); SELECT last_insert_rowid();", depot).ToList();
-                newDepot = cnn.QuerySingle<Depot>($"SELECT * FROM 'Depots' WHERE \"Id\" = {result[0]}", new DynamicParameters());
-            }
+            int result = cnn.Query<int>("INSERT INTO 'Depots' (CustomerId, Name, CSVName, OrderName) VALUES (@CustomerId, @Name, @CSVName, @OrderName); SELECT last_insert_rowid();", depot).ToList().FirstOrDefault();
 
-            return newDepot;
+            return result;
         }
 
         /// <summary>
@@ -136,20 +133,17 @@ namespace OrderReader.Core
         }
 
         /// <summary>
-        /// Add a new product to the database
+        /// Adds a new product to the database
         /// </summary>
         /// <param name="product">A <see cref="Product"/> object to be added</param>
-        public static Product AddProduct(Product product)
+        /// <returns>A unique ID of the created product</returns>
+        public static int AddProduct(Product product)
         {
-            Product newProduct;
+            using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
 
-            using (IDbConnection cnn = new SqliteConnection(LoadConnectionString()))
-            {
-                var result = cnn.Query<int>("INSERT INTO 'Products' (CustomerId, Name, CSVName, OrderName, Price) VALUES (@CustomerId, @Name, @CSVName, @OrderName, @Price); SELECT last_insert_rowid();", product).ToList();
-                newProduct = cnn.QuerySingle<Product>($"SELECT * FROM 'Products' WHERE \"Id\" = {result[0]}", new DynamicParameters());
-            }
+            var result = cnn.Query<int>("INSERT INTO 'Products' (CustomerId, Name, CSVName, OrderName, Price) VALUES (@CustomerId, @Name, @CSVName, @OrderName, @Price); SELECT last_insert_rowid();", product).ToList().FirstOrDefault();
 
-            return newProduct;
+            return result;
         }
 
         /// <summary>

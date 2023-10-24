@@ -1,5 +1,8 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
+using OrderReader.Core;
 using OrderReaderUI.Helpers;
+using OrderReaderUI.Models;
 using OrderReaderUI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -21,6 +24,22 @@ public class Bootstrapper : BootstrapperBase
         AppInitialization.Initialize();
     }
 
+    private IMapper ConfigureAutomapper()
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<Product, ProductDisplayModel>();
+            cfg.CreateMap<Depot, DepotDisplayModel>();
+            cfg.CreateMap<Customer, CustomerDisplayModel>()
+                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products))
+                .ForMember(dest => dest.Depots, opt => opt.MapFrom(src => src.Depots));
+        });
+
+        var output = config.CreateMapper();
+
+        return output;
+    }
+
     protected override async void OnStartup(object sender, StartupEventArgs e)
     {
         await DisplayRootViewForAsync(typeof(ShellViewModel));
@@ -28,6 +47,8 @@ public class Bootstrapper : BootstrapperBase
 
     protected override void Configure()
     {
+        _container.Instance(ConfigureAutomapper());
+
         _container.Instance(_container);
 
         _container
