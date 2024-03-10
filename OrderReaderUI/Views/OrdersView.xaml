@@ -11,14 +11,18 @@
             <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
         </Border.Effect>
 
-        <TextBlock Text="orders n' shit goes here..."
+        <Grid>
+            <TextBlock Text="orders n' shit goes here..."
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    FontSize="{DynamicResource FontSize.Title}"
                    Foreground="#aaa">
-            <TextBlock.RenderTransform>
-                <RotateTransform Angle="45"/>
-            </TextBlock.RenderTransform>
-        </TextBlock>
+                <TextBlock.RenderTransform>
+                    <RotateTransform Angle="45"/>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+
+            <Button x:Name="ShowDialog" Width="200" Height="50" Content="Show Dialog"/>
+        </Grid>
     </Border>
 </UserControl>

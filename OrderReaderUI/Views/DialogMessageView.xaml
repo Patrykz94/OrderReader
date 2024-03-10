@@ -1,0 +1,41 @@
+﻿<Window x:Class="OrderReaderUI.Views.DialogMessageView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrderReaderUI.Views"
+        xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
+        d:DataContext="{d:DesignInstance Type=viewmodels:DialogMessageViewModel}"
+        mc:Ignorable="d"
+        SizeToContent="Height"
+        Width="500"
+        MinWidth="{Binding WindowMinWidth}" MinHeight="{Binding WindowMinHeight}"
+        MaxWidth="{Binding WindowMaxWidth}" MaxHeight="{Binding WindowMaxHeight}"
+        WindowStartupLocation="CenterOwner"
+        Title="{Binding Title, FallbackValue=Title}" Background="{DynamicResource Background.Gradient}">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="10" CaptionHeight="35" GlassFrameThickness="-1" CornerRadius="10"/>
+    </WindowChrome.WindowChrome>
+
+    <Border>
+        <StackPanel>
+            <TextBlock Text="{Binding Title, FallbackValue=Title}" HorizontalAlignment="Center"
+                       Margin="10 5 10 0" FontSize="{StaticResource FontSize.Regular}" FontWeight="Medium"/>
+            
+            <Border Background="{DynamicResource Background.Panel.Brush}"
+                    CornerRadius="10" Margin="10" Padding="10" Grid.Row="0" MaxHeight="400">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+                </Border.Effect>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="Message"
+                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                   TextWrapping="Wrap" TextAlignment="Center"/>
+                </ScrollViewer>
+            </Border>
+            <Button x:Name="OkButton" Grid.Row="1" Content="{Binding ButtonText, FallbackValue=OK}" Margin="10 0 10 10" Width="200"/>
+        </StackPanel>
+    </Border>
+</Window>
