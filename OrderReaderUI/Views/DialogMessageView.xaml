@@ -19,23 +19,38 @@
     </WindowChrome.WindowChrome>
 
     <Border>
-        <StackPanel>
-            <TextBlock Text="{Binding Title, FallbackValue=Title}" HorizontalAlignment="Center"
-                       Margin="10 5 10 0" FontSize="{StaticResource FontSize.Regular}" FontWeight="Medium"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             
-            <Border Background="{DynamicResource Background.Panel.Brush}"
-                    CornerRadius="10" Margin="10" Padding="10" Grid.Row="0" MaxHeight="400">
+            <!-- Dialog Title -->
+            <TextBlock Grid.Row="0" Text="{Binding Title, FallbackValue=Title}" HorizontalAlignment="Center"
+                       Margin="10 5 10 0" FontSize="{StaticResource FontSize.Regular}" FontWeight="Medium"/>
+
+            <!-- Dialog Content Holder -->
+            <Border Grid.Row="1" Background="{DynamicResource Background.Panel.Brush}"
+                    CornerRadius="10" Margin="10" Padding="5" MaxHeight="400">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
                 </Border.Effect>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    
+                    <!-- Dialog Content -->
                     <TextBlock x:Name="Message"
-                   VerticalAlignment="Center" HorizontalAlignment="Center"
-                   TextWrapping="Wrap" TextAlignment="Center"/>
+                               VerticalAlignment="Center" HorizontalAlignment="Center"
+                               TextWrapping="Wrap" TextAlignment="Center"/>
+                    
                 </ScrollViewer>
             </Border>
-            <Button x:Name="OkButton" Grid.Row="1" Content="{Binding ButtonText, FallbackValue=OK}" Margin="10 0 10 10" Width="200"/>
-        </StackPanel>
+            
+            <!-- Dialog Buttons -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="PrimaryButton" Content="{Binding PrimaryButtonText, FallbackValue=OK}" Margin="10 0 5 10" MinWidth="120"/>
+            </StackPanel>
+        </Grid>
     </Border>
 </Window>

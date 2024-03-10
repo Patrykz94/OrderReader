@@ -1,64 +1,42 @@
-﻿using Caliburn.Micro;
+﻿using OrderReaderUI.ViewModels.BaseViewModels;
 
 namespace OrderReaderUI.ViewModels
 {
-    public class DialogYesNoViewModel : Screen
+    public class DialogYesNoViewModel : DialogViewModelBase
     {
         #region Public Properties
-
-        public double WindowMaxWidth { get; private set; }
-        public double WindowMaxHeight { get; private set; }
-        public double WindowMinWidth { get; private set; }
-        public double WindowMinHeight { get; private set; }
-
-        public string Title { get; set; } = "Message";
-        public string Message { get; set; } = string.Empty;
-        public string YesButtonText { get; set; } = "Yes";
-        public string NoButtonText { get; set; } = "No";
+        public string SecondaryButtonText { get; set; }
 
         #endregion
 
-        #region Constructor
+        #region Constructors
 
         public DialogYesNoViewModel()
         {
-            Initialize();
+            PrimaryButtonText = "Yes";
+            SecondaryButtonText = "No";
         }
         
         public DialogYesNoViewModel(string message, string title = "Message", string yesButtonText = "Yes", string noButtonText = "No")
         {
             Message = message;
             Title = title;
-            YesButtonText = yesButtonText;
-            NoButtonText = noButtonText;
-
-            Initialize();
+            PrimaryButtonText = yesButtonText;
+            SecondaryButtonText = noButtonText;
         }
 
         #endregion
 
         #region Public Methods
 
-        public void YesButton()
+        public void PrimaryButton()
         {
-            TryCloseAsync(true);
+            Close(true);
         }
 
-        public void NoButton()
+        public void SecondaryButton()
         {
-            TryCloseAsync(false);
-        }
-
-        #endregion
-        
-        #region Private Methods
-
-        private void Initialize()
-        {
-            WindowMaxWidth = 600;
-            WindowMaxHeight = 500;
-            WindowMinWidth = 400;
-            WindowMinHeight = 150;
+            Close(false);
         }
 
         #endregion

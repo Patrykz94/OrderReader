@@ -1,43 +1,48 @@
-﻿using Caliburn.Micro;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using OrderReaderUI.ViewModels.BaseViewModels;
 
 namespace OrderReaderUI.ViewModels;
 
-public class DialogConfigFileViewModel : Screen
+public class DialogConfigFileViewModel : DialogViewModelBase
 {
+    #region Private Variables
+
+    private const string DefaultMessage = "To configure the application for your company, please either drop your configuration file here or browse for it:";
+
+    #endregion
+    
     #region Public Properties
 
-    public double WindowMaxWidth { get; private set; }
-    public double WindowMaxHeight { get; private set; }
-    public double WindowMinWidth { get; private set; }
-    public double WindowMinHeight { get; private set; }
-
-    public string Title { get; set; }
-    public string Message { get; set; } = "To configure the application for your company, please either drop your configuration file here or browse for it:";
-    public string OkButtonText { get; set; }
-    public string CancelButtonText { get; set; }
+    public string SecondaryButtonText { get; set; }
 
     public bool FileError { get; set; } = false;
     public string ConfigFileLocation { get; set; } = string.Empty;
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
-    public DialogConfigFileViewModel(string title = "Welcome", string okButtonText = "OK", string cancelButtonText = "Cancel")
+    public DialogConfigFileViewModel()
+    {
+        Title = "Welcome";
+        Message = DefaultMessage;
+        PrimaryButtonText = "Configure";
+        SecondaryButtonText = "Cancel";
+    }
+    
+    public DialogConfigFileViewModel(string title = "Welcome", string okButtonText = "Configure", string cancelButtonText = "Cancel")
     {
         Title = title;
-        OkButtonText = okButtonText;
-        CancelButtonText = cancelButtonText;
-
-        Initialize();
+        Message = DefaultMessage;
+        PrimaryButtonText = okButtonText;
+        SecondaryButtonText = cancelButtonText;
     }
 
     #endregion
 
     #region Public Methods
 
-    public void BrowseConfig()
+    public void BrowseButton()
     {
         OpenFileDialog dialog = new()
         {
@@ -50,26 +55,14 @@ public class DialogConfigFileViewModel : Screen
         }
     }
 
-    public void OkButton()
+    public void PrimaryButton()
     {
-        TryCloseAsync(true);
+        Close(true);
     }
 
-    public void CancelButton()
+    public void SecondaryButton()
     {
-        TryCloseAsync(false);
-    }
-
-    #endregion
-    
-    #region Private Methods
-
-    private void Initialize()
-    {
-        WindowMaxWidth = 600;
-        WindowMaxHeight = 500;
-        WindowMinWidth = 400;
-        WindowMinHeight = 240;
+        Close(false);
     }
 
     #endregion
