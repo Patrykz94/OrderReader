@@ -3,7 +3,6 @@ using OrderReaderUI.Helpers;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
 
 namespace OrderReaderUI.Views
@@ -21,13 +20,6 @@ namespace OrderReaderUI.Views
             // Check user settings to see which theme we should use
             UserSettings userSettings = OrderReader.Core.Settings.LoadSettings();
             ThemeManager.ChangeTheme(userSettings.Theme);
-            // add the accent colour setup as well
-            // ThemeManager.ChangeAccent(userSettings.Accent);
-        }
-
-        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DragMove();
         }
 
         protected override void OnSourceInitialized(EventArgs e)

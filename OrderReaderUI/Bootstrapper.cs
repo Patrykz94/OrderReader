@@ -20,8 +20,6 @@ public class Bootstrapper : BootstrapperBase
         Initialize();
 
         LogManager.GetLog = type => new DebugLog(type);
-
-        AppInitialization.Initialize();
     }
 
     private IMapper ConfigureAutomapper()
@@ -42,6 +40,21 @@ public class Bootstrapper : BootstrapperBase
 
     protected override async void OnStartup(object sender, StartupEventArgs e)
     {
+        // Temporarily prevent the app from shutting down as soon as the only window is closed
+        // This is because during the startup procedure, we may need to display message boxes.
+        // When a message box is closed, because that was the only window visible at the time,
+        // the whole application would be shut down as at that moment, there is nothing to display
+        var defaultShutdownMode = Application.Current.ShutdownMode;
+        Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        
+        // Go through the app initialisation phase, loading configs, database connections, etc.
+        var appInitialization = _container.GetInstance<AppInitialization>();
+        await appInitialization.Initialize();
+        
+        // Reset the shutdown mode back to default once the startup procedure is complete
+        Application.Current.ShutdownMode = defaultShutdownMode;
+        
+        // Display the shell view
         await DisplayRootViewForAsync(typeof(ShellViewModel));
     }
 
@@ -53,7 +66,8 @@ public class Bootstrapper : BootstrapperBase
 
         _container
             .Singleton<IWindowManager, WindowManager>()
-            .Singleton<IEventAggregator, EventAggregator>();
+            .Singleton<IEventAggregator, EventAggregator>()
+            .PerRequest<AppInitialization>();
 
         foreach (var assembly in SelectAssemblies())
         {

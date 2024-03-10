@@ -2,12 +2,20 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Caliburn.Micro;
 
 namespace OrderReaderUI.Helpers;
 
-public static class AppInitialization
+public class AppInitialization
 {
-    public static async void Initialize()
+    private readonly IWindowManager _windowManager;
+
+    public AppInitialization(IWindowManager windowManager)
+    {
+        _windowManager = windowManager;
+    }
+
+    public async Task Initialize()
     {
         // Initialize the settings class which creates all required directories
         Settings.Initialize();
@@ -64,7 +72,7 @@ public static class AppInitialization
     /// </summary>
     /// <param name="filePath">The path to the new config file</param>
     /// <returns></returns>
-    private static async Task UpdateConfigFile(string filePath, bool exitOnError = true)
+    private async Task UpdateConfigFile(string filePath, bool exitOnError = true)
     {
         if (filePath == default)
         {
@@ -110,7 +118,7 @@ public static class AppInitialization
     /// Restore our settings backup if any.
     /// Used to persist settings across updates.
     /// </summary>
-    private static async void RestoreSettings()
+    private async void RestoreSettings()
     {
         // Check if we have settings that we need to restore
         if (!File.Exists(Settings.ConfigFile))
