@@ -3,16 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OrderReaderUI.Views"
         xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
+        xmlns:dependencyProperties="clr-namespace:OrderReaderUI.DependencyProperties"
+        xmlns:valueConverters="clr-namespace:OrderReaderUI.ValueConverters"
         d:DataContext="{d:DesignInstance Type=viewmodels:DialogConfigFileViewModel}"
-        mc:Ignorable="d"
-        SizeToContent="Height"
-        Width="500"
+        mc:Ignorable="d" SizeToContent="Height" Width="500"
         MinWidth="{Binding WindowMinWidth}" MinHeight="{Binding WindowMinHeight}"
         MaxWidth="{Binding WindowMaxWidth}" MaxHeight="{Binding WindowMaxHeight}"
-        WindowStartupLocation="CenterOwner"
-        Title="{Binding Title, FallbackValue=Title}" Background="{DynamicResource Background.Gradient}">
+        WindowStartupLocation="CenterOwner" Title="{Binding Title, FallbackValue=Title}"
+        Background="{DynamicResource Background.Gradient}">
     
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="10" CaptionHeight="35" GlassFrameThickness="-1" CornerRadius="10"/>
@@ -32,7 +31,8 @@
 
             <!-- Dialog Content Holder -->
             <Border Grid.Row="1" Background="{DynamicResource Background.Panel.Brush}"
-                    CornerRadius="10" Margin="10" Padding="5" MaxHeight="400">
+                    CornerRadius="10" Margin="10" Padding="5" MaxHeight="400"
+                    dependencyProperties:DropFilesBehaviourExtension.IsEnabled="True">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
                 </Border.Effect>
@@ -61,11 +61,11 @@
                             <TextBlock x:Name="Message" Text="Drop Files below"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"
                                        TextWrapping="Wrap" TextAlignment="Center"/>
-                            <TextBlock Grid.Row="1">
+                            <TextBlock Grid.Row="1" Margin="5 20 5 0">
                                 <Run Text="File Path: "/>
                                 <Run Text="{Binding ConfigFileLocation}"/>
                             </TextBlock>
-                            <TextBlock Grid.Row="2" Foreground="Red" Text="Error Code"/>
+                            <TextBlock Grid.Row="2" x:Name="FileError" Foreground="Red" Visibility="{Binding HasError, Converter={x:Static valueConverters:BoolToVisibilityConverter.Instance}, ConverterParameter=CollapseReversed}"/>
                         </Grid>
                     </Border>
                     

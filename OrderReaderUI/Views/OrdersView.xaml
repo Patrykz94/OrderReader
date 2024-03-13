@@ -21,8 +21,6 @@
                     <RotateTransform Angle="45"/>
                 </TextBlock.RenderTransform>
             </TextBlock>
-
-            <Button x:Name="ShowDialog" Width="200" Height="50" Content="Show Dialog"/>
         </Grid>
     </Border>
 </UserControl>
