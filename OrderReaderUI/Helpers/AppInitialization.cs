@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using OrderReaderUI.ViewModels;
 
 namespace OrderReaderUI.Helpers;
 
@@ -26,41 +27,38 @@ public class AppInitialization
         // Check if app is configured
         if (!SqliteDataAccess.HasConnectionString())
         {
-            // Ask the user to drag and drop a file
-            //var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
-            //{
-            //    Title = "App Configuration",
-            //    Heading = "Welcome to Order Reader!",
-            //    Message = "To begin using this application, please drag and drop the configuration file provided with the download into the box below.",
-            //    CancelButtonText = "Exit"
-            //});
+            // Config File Dialog
+            var configDialog = new DialogConfigFileViewModel(secondaryButtonText: "Exit");
+            var configResult = await _windowManager.ShowDialogAsync(configDialog);
+            
+            // If user did not provide the file, exit the application
+            if (configResult != true) Environment.Exit(0);
 
-            string result = @"E:\Documents\Programming\OrderReader Resources\config.xml";
-
-            await UpdateConfigFile(result);
+            await UpdateConfigFile(configDialog.ConfigFileLocation);
         }
 
         // Test connection to the database
         if (!SqliteDataAccess.TestConnection())
         {
-            //var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
-            //{
-            //    Title = "Configuration Error",
-            //    Message = "Application could not access the database.\n\nThis could mean the database file was moved or renamed, or it could indicate a network issue.\n\nIf you have a new configuration file, please drop it into the box below.",
-            //    CancelButtonText = "Exit"
-            //});
+            // Config File Dialog
+            var configDialog = new DialogConfigFileViewModel("Configuration Error", secondaryButtonText: "Exit")
+            {
+                Message = "Application could not access the database.\n\nThis could mean the database file was moved or renamed, or it could indicate a network issue.\n\nIf you have a new configuration file, please drop it into the box below."
+            };
+            var configResult = await _windowManager.ShowDialogAsync(configDialog);
+            
+            // If user did not provide the file, exit the application
+            if (configResult != true) Environment.Exit(0);
 
-            //await UpdateConfigFile(result);
+            await UpdateConfigFile(configDialog.ConfigFileLocation);
 
             // Test the new configs file again
             if (!SqliteDataAccess.TestConnection())
             {
-                //await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                //{
-                //    Title = "Configuration Error",
-                //    Message = $"Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
-                //    ButtonText = "Exit"
-                //});
+                await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                    "Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
+                    "Configuration Error",
+                    "Exit"));
 
                 Environment.Exit(0);
             }
@@ -71,10 +69,10 @@ public class AppInitialization
     /// Update the config file if required
     /// </summary>
     /// <param name="filePath">The path to the new config file</param>
-    /// <returns></returns>
+    /// <param name="exitOnError">Whether the application should exit if an error is encountered</param>
     private async Task UpdateConfigFile(string filePath, bool exitOnError = true)
     {
-        if (filePath == default)
+        if (filePath == string.Empty)
         {
             if (exitOnError) Environment.Exit(0);
         }
@@ -83,31 +81,27 @@ public class AppInitialization
             // Attempt to load and update the configuration file
             try
             {
-                AppConfiguration appConfig = Settings.LoadConfigs(filePath);
+                var appConfig = Settings.LoadConfigs(filePath);
                 if (appConfig.HasConfigs())
                 {
                     appConfig.UpdateConfigs();
                 }
                 else
                 {
-                    //await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    //{
-                    //    Title = "Configuration Error",
-                    //    Message = $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                    //    ButtonText = "Exit"
-                    //});
+                    await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                            $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                            "Configuration Error",
+                            "Exit"));
 
                     if (exitOnError) Environment.Exit(0);
                 }
             }
             catch (Exception ex)
             {
-                //await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                //{
-                //    Title = "Configuration Error",
-                //    Message = $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                //    ButtonText = "Exit"
-                //});
+                await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                        $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                        "Configuration Error",
+                        "Exit"));
 
                 if (exitOnError) Environment.Exit(0);
             }
@@ -137,12 +131,9 @@ public class AppInitialization
         }
         catch (Exception ex)
         {
-            //await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-            //{
-            //    Title = "Config Restore Error",
-            //    Message = $"Failed to delete the backup config file:\n\n{ex.Message}",
-            //    ButtonText = "OK"
-            //});
+            await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                    $"Failed to delete the backup config file:\n\n{ex.Message}",
+                    "Config Restore Error"));
         }
 
     }
