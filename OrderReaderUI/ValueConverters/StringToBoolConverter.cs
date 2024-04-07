@@ -4,10 +4,9 @@ using System.Windows.Data;
 
 namespace OrderReaderUI.ValueConverters;
 
+[ValueConversion(typeof(string), typeof(bool))]
 public class StringToBoolConverter : IValueConverter
 {
-    public static readonly StringToBoolConverter Instance = new();
-
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value?.ToString() == parameter?.ToString();

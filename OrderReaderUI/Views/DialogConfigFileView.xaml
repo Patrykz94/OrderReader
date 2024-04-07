@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
         xmlns:dependencyProperties="clr-namespace:OrderReaderUI.DependencyProperties"
-        xmlns:valueConverters="clr-namespace:OrderReaderUI.ValueConverters"
         d:DataContext="{d:DesignInstance Type=viewmodels:DialogConfigFileViewModel}"
         mc:Ignorable="d" SizeToContent="Height" Width="500"
         MinWidth="{Binding WindowMinWidth}" MinHeight="{Binding WindowMinHeight}"
@@ -65,7 +64,8 @@
                                 <Run Text="File Path: "/>
                                 <Run Text="{Binding ConfigFileLocation}"/>
                             </TextBlock>
-                            <TextBlock Grid.Row="2" x:Name="FileError" Foreground="Red" Visibility="{Binding HasError, Converter={x:Static valueConverters:BoolToVisibilityConverter.Instance}, ConverterParameter=CollapseReversed}"/>
+                            <TextBlock Grid.Row="2" x:Name="FileError" Foreground="Red"
+                                       Visibility="{Binding HasError, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </Grid>
                     </Border>
                     
