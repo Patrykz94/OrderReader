@@ -20,7 +20,7 @@ public class ProductDisplayModel : INotifyPropertyChanged
             CallPropertyChanged(nameof(Name));
         }
     }
-    public string CSVName { get; set; } = string.Empty;
+    public string CsvName { get; set; } = string.Empty;
     public string OrderName { get; set; } = string.Empty;
     public decimal Price { get; set; } = 0m;
 
@@ -30,7 +30,7 @@ public class ProductDisplayModel : INotifyPropertyChanged
         Id = other.Id;
         CustomerId = other.CustomerId;
         Name = other.Name;
-        CSVName = other.CSVName;
+        CsvName = other.CsvName;
         OrderName = other.OrderName;
         Price = other.Price;
     }

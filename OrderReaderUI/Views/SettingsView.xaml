@@ -2,10 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OrderReaderUI.Views"
-             xmlns:cal="http://www.caliburnproject.org" xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
-             xmlns:val="clr-namespace:OrderReaderUI.ValueConverters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:SettingsViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
@@ -28,7 +26,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="CSV File Export" FontSize="{StaticResource FontSize.Large}"/>
-                    <Button x:Name="ReloadCSVSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                    <Button x:Name="ReloadCsvSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
                             FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
                             Margin="5 0" Grid.Column="1"/>
                 </Grid>
@@ -36,7 +34,7 @@
                 A CSV file containing all details of an order can be generated.
                 This file can then be used to process the order further by an ERP system.
                 </TextBlock>
-                <ToggleButton Name="ExportCSV" Content="Export a CSV file" Width="300" HorizontalAlignment="Left"/>
+                <ToggleButton Name="ExportCsv" Content="Export a CSV file" Width="300" HorizontalAlignment="Left"/>
                 <Label Content="CSV file export location"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -44,8 +42,8 @@
                         <ColumnDefinition Width="*" MinWidth="150"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Name="PathCSV" IsEnabled="{Binding CanPathCSV}" Text="CSV Path..."/>
-                    <Button Name="BrowseCSV" Content="Browse" Grid.Column="1"/>
+                    <TextBox Name="PathCsv" IsEnabled="{Binding CanPathCsv}" Text="CSV Path..."/>
+                    <Button Name="BrowseCsv" Content="Browse" Grid.Column="1"/>
                 </Grid>
 
                 <Border Style="{DynamicResource Divider}"/>
@@ -57,14 +55,14 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="PDF File Export" FontSize="{StaticResource FontSize.Large}"/>
-                    <Button x:Name="ReloadPDFSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                    <Button x:Name="ReloadPdfSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
                             FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
                             Margin="5 0" Grid.Column="1"/>
                 </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
                 A PDF can be generated containing the order in a table form. This could be stored for future reference.
                 </TextBlock>
-                <ToggleButton Name="ExportPDF" Content="Export a PDF file" Width="300" HorizontalAlignment="Left"/>
+                <ToggleButton Name="ExportPdf" Content="Export a PDF file" Width="300" HorizontalAlignment="Left"/>
                 <Label Content="PDF file export location"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -72,8 +70,8 @@
                         <ColumnDefinition Width="*" MinWidth="150"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBox Name="PathPDF" IsEnabled="{Binding CanPathPDF}" Text="PDF Path..."/>
-                    <Button Name="BrowsePDF" Content="Browse" Grid.Column="1"/>
+                    <TextBox Name="PathPdf" IsEnabled="{Binding CanPathPdf}" Text="PDF Path..."/>
+                    <Button Name="BrowsePdf" Content="Browse" Grid.Column="1"/>
                 </Grid>
 
                 <Border Style="{DynamicResource Divider}"/>
@@ -132,7 +130,7 @@
                     </Grid.ColumnDefinitions>
                     
                     <!-- Clipping path for the grid -->
-                    <Path Name="clipPathLeft" Fill="White" Visibility="Hidden">
+                    <Path Name="ClipPathLeft" Fill="White" Visibility="Hidden">
                         <Path.Data>
                             <PathGeometry>
                                 <PathFigure StartPoint="0,0">
@@ -143,7 +141,7 @@
                         </Path.Data>
                     </Path>
                     
-                    <Path Name="clipPathRight" Fill="White" Visibility="Hidden">
+                    <Path Grid.Column="0" Name="ClipPathRight" Fill="White" Visibility="Hidden">
                         <Path.Data>
                             <PathGeometry>
                                 <PathFigure StartPoint="150,0">
@@ -158,7 +156,7 @@
                                  Style="{StaticResource ThemeButton}"
                                  Tag="Auto">
                         <Grid x:Name="ClippingGrid" SizeChanged="Grid_SizeChanged">
-                            <Border Clip="{Binding ElementName=clipPathLeft, Path=Data}" Background="{StaticResource LightTheme.Background.Brush}" CornerRadius="7">
+                            <Border Clip="{Binding ElementName=ClipPathLeft, Path=Data}" Background="{StaticResource LightTheme.Background.Brush}" CornerRadius="7">
                                 <Border Background="{StaticResource LightTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource LightTheme.Shadow.Color}" Opacity="0.1"/>
@@ -169,7 +167,7 @@
                                     </StackPanel>
                                 </Border>
                             </Border>
-                            <Border Clip="{Binding ElementName=clipPathRight, Path=Data}" Background="{StaticResource DarkTheme.Background.Brush}" CornerRadius="7">
+                            <Border Clip="{Binding ElementName=ClipPathRight, Path=Data}" Background="{StaticResource DarkTheme.Background.Brush}" CornerRadius="7">
                                 <Border Background="{StaticResource DarkTheme.Background.Panel.Brush}" CornerRadius="5" Margin="5 15 5 15">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{StaticResource DarkTheme.Shadow.Color}" Opacity="0.1"/>

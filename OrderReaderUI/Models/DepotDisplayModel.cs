@@ -20,7 +20,7 @@ public class DepotDisplayModel : INotifyPropertyChanged
             CallPropertyChanged(nameof(Name));
         }
     }
-    public string CSVName { get; set; } = string.Empty;
+    public string CsvName { get; set; } = string.Empty;
     public string OrderName { get; set; } = string.Empty;
 
     public DepotDisplayModel() { }
@@ -29,7 +29,7 @@ public class DepotDisplayModel : INotifyPropertyChanged
         Id = other.Id;
         CustomerId = other.CustomerId;
         Name = other.Name;
-        CSVName = other.CSVName;
+        CsvName = other.CsvName;
         OrderName = other.OrderName;
     }
 

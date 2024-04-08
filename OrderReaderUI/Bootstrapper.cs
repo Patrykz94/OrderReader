@@ -67,6 +67,8 @@ public class Bootstrapper : BootstrapperBase
         _container
             .Singleton<IWindowManager, WindowManager>()
             .Singleton<IEventAggregator, EventAggregator>()
+            .Singleton<OrdersLibrary>()
+            .Singleton<CustomersHandler>()
             .PerRequest<AppInitialization>();
 
         foreach (var assembly in SelectAssemblies())

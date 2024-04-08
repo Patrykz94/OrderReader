@@ -17,6 +17,11 @@ public class CustomersViewModel : Screen
     /// </summary>
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// The parent object that contains and manages all <see cref="Customer"/> objects
+    /// </summary>
+    private CustomersHandler _customersHandler;
+
     #endregion
 
     #region Constructor
@@ -24,10 +29,10 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Default constructor that loads the customers information from the database
     /// </summary>
-    public CustomersViewModel(IMapper mapper)
+    public CustomersViewModel(IMapper mapper, CustomersHandler customersHandler)
     {
         _mapper = mapper;
-        CustomersHandler = OrderReader.Core.IoC.Customers();
+        _customersHandler = customersHandler;
         LoadCustomers();
 
         // Initialize Commands
@@ -39,18 +44,13 @@ public class CustomersViewModel : Screen
 
     #region Properties
 
-    /// <summary>
-    /// The parent object that contains and manages all <see cref="Customer"/> objects
-    /// </summary>
-    public CustomersHandler CustomersHandler { get; set; }
-
-    private ObservableCollection<CustomerDisplayModel> _customers;
+    private ObservableCollection<CustomerDisplayModel> _customers = [];
     /// <summary>
     /// A list of all <see cref="Customer"/> objects from <see cref="CustomersHandler"/>
     /// </summary>
     public ObservableCollection<CustomerDisplayModel> Customers
     {
-        get { return _customers; }
+        get => _customers;
         set
         {
             _customers = value;
@@ -58,13 +58,13 @@ public class CustomersViewModel : Screen
         }
     }
 
-    private CustomerDisplayModel _selectedCustomer;
+    private CustomerDisplayModel? _selectedCustomer;
     /// <summary>
     /// The <see cref="CustomerDisplayModel"/> that is currently selected in the UI
     /// </summary>
-    public CustomerDisplayModel SelectedCustomer
+    public CustomerDisplayModel? SelectedCustomer
     {
-        get { return _selectedCustomer; }
+        get => _selectedCustomer;
         set
         {
             _selectedCustomer = value;
@@ -86,7 +86,7 @@ public class CustomersViewModel : Screen
         }
     }
 
-    private CustomerDisplayModel _customerToEdit;
+    private CustomerDisplayModel? _customerToEdit;
     /// <summary>
     /// A copy of the <see cref="CustomerDisplayModel"/> object that is currently selected in the UI, that is safe for editing,
     /// without affecting the original Customer object. This had to be created as a separate property because,
@@ -96,12 +96,12 @@ public class CustomersViewModel : Screen
     /// This is not necessary for <see cref="SelectedDepot"/> or <see cref="SelectedProduct"/> properties, because they are only ever selected
     /// directly in the UI, so UI know which one was selected.
     /// </summary>
-    public CustomerDisplayModel CustomerToEdit
+    public CustomerDisplayModel? CustomerToEdit
     {
-        get { return _customerToEdit; }
-        set
+        get => _customerToEdit;
+        private set
         {
-            _customerToEdit = value != null ? new(value) : null!;
+            _customerToEdit = value != null ? new CustomerDisplayModel(value) : null;
 
             NotifyOfPropertyChange(() => CustomerToEdit);
             NotifyOfPropertyChange(() => CanUpdateCustomer);
@@ -111,13 +111,7 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Whether or not a <see cref="CustomerDisplayModel"/> object has been selected in UI
     /// </summary>
-    public bool HasSelectedCustomer
-    {
-        get
-        {
-            return SelectedCustomer != null;
-        }
-    }
+    public bool HasSelectedCustomer => SelectedCustomer != null;
 
     /// <summary>
     /// Whether or not a <see cref="CustomerDisplayModel"/> object can be update via the UI
@@ -133,13 +127,13 @@ public class CustomersViewModel : Screen
         }
     }
 
-    private ObservableCollection<DepotDisplayModel> _depots;
+    private ObservableCollection<DepotDisplayModel> _depots = [];
     /// <summary>
     /// A list of all <see cref="DepotDisplayModel"/> objects belonging to the currently <see cref="SelectedCustomer"/> object
     /// </summary>
     public ObservableCollection<DepotDisplayModel> Depots
     {
-        get { return _depots; }
+        get => _depots;
         set
         {
             _depots = value;
@@ -147,16 +141,16 @@ public class CustomersViewModel : Screen
         }
     }
 
-    private DepotDisplayModel _selectedDepot;
+    private DepotDisplayModel? _selectedDepot;
     /// <summary>
     /// The <see cref="DepotDisplayModel"/> object that is currently selected in the UI
     /// </summary>
-    public DepotDisplayModel SelectedDepot
+    public DepotDisplayModel? SelectedDepot
     {
-        get { return _selectedDepot; }
+        get => _selectedDepot;
         set
         {
-            _selectedDepot = value != null ? new(value) : null!;
+            _selectedDepot = value != null ? new DepotDisplayModel(value) : null;
             NotifyOfPropertyChange(() => SelectedDepot);
             NotifyOfPropertyChange(() => HasSelectedDepot);
             NotifyOfPropertyChange(() => CanUpdateDepot);
@@ -169,7 +163,7 @@ public class CustomersViewModel : Screen
     /// </summary>
     public DepotDisplayModel NewDepot
     {
-        get { return _newDepot; }
+        get => _newDepot;
         private set
         {
             _newDepot = value;
@@ -179,13 +173,7 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Whether or not a <see cref="DepotDisplayModel"/> object has been selected in UI
     /// </summary>
-    public bool HasSelectedDepot
-    {
-        get
-        {
-            return SelectedDepot != null;
-        }
-    }
+    public bool HasSelectedDepot => SelectedDepot != null;
 
     /// <summary>
     /// Whether or not a <see cref="DepotDisplayModel"/> object can be update via the UI
@@ -206,13 +194,13 @@ public class CustomersViewModel : Screen
     /// </summary>
     public ICommand DeleteDepotCommand { get; private set; }
 
-    private ObservableCollection<ProductDisplayModel> _products;
+    private ObservableCollection<ProductDisplayModel> _products = [];
     /// <summary>
     /// A list of all <see cref="ProductDisplayModel"/> objects belonging to the currently <see cref="SelectedCustomer"/> object
     /// </summary>
     public ObservableCollection<ProductDisplayModel> Products
     {
-        get { return _products; }
+        get => _products;
         set
         {
             _products = value;
@@ -220,16 +208,16 @@ public class CustomersViewModel : Screen
         }
     }
 
-    private ProductDisplayModel _selectedProduct;
+    private ProductDisplayModel? _selectedProduct;
     /// <summary>
     /// The <see cref="ProductDisplayModel"/> object that is currently selected in the UI
     /// </summary>
-    public ProductDisplayModel SelectedProduct
+    public ProductDisplayModel? SelectedProduct
     {
-        get { return _selectedProduct; }
+        get => _selectedProduct;
         set
         {
-            _selectedProduct = value != null ? new(value) : null!;
+            _selectedProduct = value != null ? new ProductDisplayModel(value) : null;
             NotifyOfPropertyChange(() => SelectedProduct);
             NotifyOfPropertyChange(() => HasSelectedProduct);
             NotifyOfPropertyChange(() => CanUpdateProduct);
@@ -237,13 +225,12 @@ public class CustomersViewModel : Screen
     }
 
     private ProductDisplayModel _newProduct = new();
-
     /// <summary>
     /// An empty <see cref="ProductDisplayModel"/> object that the user can fill in with information when creating a new product via the UI
     /// </summary>
     public ProductDisplayModel NewProduct
     {
-        get { return _newProduct; }
+        get => _newProduct;
         private set
         {
             _newProduct = value;
@@ -254,13 +241,7 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Whether or not a <see cref="ProductDisplayModel"/> object has been selected in UI
     /// </summary>
-    public bool HasSelectedProduct
-    {
-        get
-        {
-            return _selectedProduct != null;
-        }
-    }
+    public bool HasSelectedProduct => _selectedProduct != null;
 
     /// <summary>
     /// Whether or not a <see cref="ProductDisplayModel"/> object can be update via the UI
@@ -293,18 +274,18 @@ public class CustomersViewModel : Screen
     public void LoadCustomers()
     {
         // If customer is selected, save the Id so that we can reselect it after reloading customers
-        int selectedCustomerID = SelectedCustomer?.Id ?? -1;
+        var selectedCustomerId = SelectedCustomer?.Id ?? -1;
 
         // Load all customers from the database and map them over to their display models
-        CustomersHandler.LoadCustomers();
-        Customers = _mapper.Map<ObservableCollection<CustomerDisplayModel>>(CustomersHandler.Customers);
+        _customersHandler.LoadCustomers();
+        Customers = _mapper.Map<ObservableCollection<CustomerDisplayModel>>(_customersHandler.Customers);
 
         // Make sure we have some customers in the list
         if (Customers.Count == 0) return;
 
         // If we managed to save a selected customer Id before, reselect that customer now
-        if (CustomersHandler.HasCustomer(selectedCustomerID))
-            SelectedCustomer = Customers.Where(x => x.Id == selectedCustomerID).FirstOrDefault()!;
+        if (_customersHandler.HasCustomer(selectedCustomerId))
+            SelectedCustomer = Customers.FirstOrDefault(x => x.Id == selectedCustomerId)!;
         else
             SelectedCustomer = Customers.First();
 
@@ -318,17 +299,19 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void UpdateCustomer()
     {
+        if (CustomerToEdit is null || SelectedCustomer is null) return;
+        
         // Check if validation is passed
         if (!ValidateCustomer(CustomerToEdit)) return;
 
         // Update the selected customer display model
         SelectedCustomer.Name = CustomerToEdit.Name;
-        SelectedCustomer.CSVName = SelectedCustomer.CSVName;
+        SelectedCustomer.CsvName = SelectedCustomer.CsvName;
         SelectedCustomer.OrderName = SelectedCustomer.OrderName;
 
         // Update the corresponding customer model
-        Customer customerToUpdate = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
-        customerToUpdate.Update(CustomerToEdit.Name, CustomerToEdit.CSVName, CustomerToEdit.OrderName);
+        var customerToUpdate = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        customerToUpdate.Update(CustomerToEdit.Name, CustomerToEdit.CsvName, CustomerToEdit.OrderName);
 
         // Update the customer in the database
         SqliteDataAccess.UpdateCustomer(customerToUpdate);
@@ -339,26 +322,29 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void UpdateDepot()
     {
-        DepotDisplayModel depotDisplayModel = Depots.Where(x => x.Id == SelectedDepot.Id).FirstOrDefault()!;
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedDepot.CustomerId);
-        Depot depotToUpdate = CustomersHandler.GetCustomerByID(SelectedDepot.CustomerId).GetDepot(SelectedDepot.Id);
+        if (SelectedDepot is null) return;
+        
+        var depotDisplayModel = Depots.FirstOrDefault(x => x.Id == SelectedDepot.Id);
+        if (depotDisplayModel is null) return;
 
+        var depotToUpdate = _customersHandler.GetCustomerByID(SelectedDepot.CustomerId).GetDepot(SelectedDepot.Id);
+        
         // Check if validation is passed
         if (!ValidateDepot(SelectedDepot)) return;
 
         // Update the selected depot display model
         depotDisplayModel.Name = SelectedDepot.Name;
-        depotDisplayModel.CSVName = SelectedDepot.CSVName;
+        depotDisplayModel.CsvName = SelectedDepot.CsvName;
         depotDisplayModel.OrderName = SelectedDepot.OrderName;
 
         // Update the corresponding depot model
-        depotToUpdate.Update(SelectedDepot.Name, SelectedDepot.CSVName, SelectedDepot.OrderName);
+        depotToUpdate.Update(SelectedDepot.Name, SelectedDepot.CsvName, SelectedDepot.OrderName);
 
         // Update the depot in the database
         SqliteDataAccess.UpdateDepot(depotToUpdate);
 
         // Deselect the depot
-        SelectedDepot = null!;
+        SelectedDepot = null;
     }
 
     /// <summary>
@@ -366,21 +352,24 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void UpdateProduct()
     {
-        ProductDisplayModel productDisplayModel = Products.Where(x => x.Id == SelectedProduct.Id).FirstOrDefault()!;
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedProduct.CustomerId);
-        Product productToUpdate = customer.GetProduct(SelectedProduct.Id);
-
+        if (SelectedProduct is null) return;
+        
+        var productDisplayModel = Products.FirstOrDefault(x => x.Id == SelectedProduct.Id);
+        if (productDisplayModel is null) return;
+        
+        var productToUpdate = _customersHandler.GetCustomerByID(SelectedProduct.CustomerId).GetProduct(SelectedProduct.Id);
+        
         // Check if validation is passed
         if (!ValidateProduct(SelectedProduct)) return;
 
         // Update the selected product display model
         productDisplayModel.Name = SelectedProduct.Name;
-        productDisplayModel.CSVName = SelectedProduct.CSVName;
+        productDisplayModel.CsvName = SelectedProduct.CsvName;
         productDisplayModel.OrderName = SelectedProduct.OrderName;
         productDisplayModel.Price = SelectedProduct.Price;
 
         // Update the corresponding product model
-        productToUpdate.Update(SelectedProduct.Name, SelectedProduct.CSVName, SelectedProduct.OrderName, SelectedProduct.Price);
+        productToUpdate.Update(SelectedProduct.Name, SelectedProduct.CsvName, SelectedProduct.OrderName, SelectedProduct.Price);
 
         // Update the product in the database
         SqliteDataAccess.UpdateProduct(productToUpdate);
@@ -394,17 +383,19 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void AddDepot()
     {
+        if (SelectedCustomer is null) return;
+        
         // Get the selected customer object
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Check if validation is passed
         if (!ValidateDepot(NewDepot, true)) return;
 
         // Create a new depot for this customer
-        Depot newDepot = new(customer.Id, NewDepot.Name, NewDepot.CSVName, NewDepot.OrderName);
+        Depot newDepot = new(customer.Id, NewDepot.Name, NewDepot.CsvName, NewDepot.OrderName);
 
-        // Add the depot to the database and retrieve the uniqie ID
-        int depotId = SqliteDataAccess.AddDepot(newDepot);
+        // Add the depot to the database and retrieve the unique ID
+        var depotId = SqliteDataAccess.AddDepot(newDepot);
 
         // Update the ID of the depot and add it to the customer
         newDepot.UpdateID(depotId);
@@ -416,7 +407,7 @@ public class CustomersViewModel : Screen
         Depots.Add(NewDepot);
 
         // Clear the NewDepot object
-        NewDepot = new();
+        NewDepot = new DepotDisplayModel();
     }
 
     /// <summary>
@@ -424,17 +415,19 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void AddProduct()
     {
+        if (SelectedCustomer is null) return;
+        
         // Get the selected customer object
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Check if validation is passed
         if (!ValidateProduct(NewProduct, true)) return;
 
         // Create a new product for this customer
-        Product newProduct = new(customer.Id, NewProduct.Name, NewProduct.CSVName, NewProduct.OrderName, NewProduct.Price);
+        Product newProduct = new(customer.Id, NewProduct.Name, NewProduct.CsvName, NewProduct.OrderName, NewProduct.Price);
 
         // Add the product to the database and retrieve the unique ID
-        int productId = SqliteDataAccess.AddProduct(newProduct);
+        var productId = SqliteDataAccess.AddProduct(newProduct);
 
         // Update the ID of the product and add it to the customer
         newProduct.UpdateID(productId);
@@ -446,7 +439,7 @@ public class CustomersViewModel : Screen
         Products.Add(NewProduct);
 
         // Clear the NewProduct object
-        NewProduct = new();
+        NewProduct = new ProductDisplayModel();
     }
 
     /// <summary>
@@ -457,10 +450,10 @@ public class CustomersViewModel : Screen
         // TODO: Show a popup window asking the user if they are sure they want to delete this depot
 
         // Make sure a depot is selected
-        if (SelectedDepot == null) return;
+        if (SelectedDepot is null || SelectedCustomer is null) return;
 
         // Get selected customer
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Remove the depot from the database
         SqliteDataAccess.RemoveDepot(SelectedDepot.Id);
@@ -469,7 +462,7 @@ public class CustomersViewModel : Screen
         customer.DeleteDepot(SelectedDepot.Id);
 
         // Remove the depot from the list
-        Depots.Remove(Depots.Where(x => x.Id == SelectedDepot.Id).Single());
+        Depots.Remove(Depots.Single(x => x.Id == SelectedDepot.Id));
     }
 
     /// <summary>
@@ -480,10 +473,10 @@ public class CustomersViewModel : Screen
         // TODO: Show a popup window asking the user if they are sure they want to delete this product
 
         // Make sure a product is selected
-        if (SelectedProduct == null) return;
+        if (SelectedProduct is null || SelectedCustomer is null) return;
 
         // Get selected customer
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Remove the product from the database
         SqliteDataAccess.RemoveProduct(SelectedProduct.Id);
@@ -492,7 +485,7 @@ public class CustomersViewModel : Screen
         customer.DeleteProduct(SelectedProduct.Id);
 
         // Remove the product from the list
-        Products.Remove(Products.Where(x => x.Id == SelectedProduct.Id).Single());
+        Products.Remove(Products.Single(x => x.Id == SelectedProduct.Id));
     }
 
     #endregion
@@ -502,31 +495,34 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Validate the customer's new or edited details to make sure all checks are passed
     /// </summary>
+    /// <param name="customer">The customer that we want to validate</param>
     /// <param name="isNew">Whether or not this is a new customer</param>
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateCustomer(CustomerDisplayModel customer, bool isNew = false)
     {
         // Make sure all fields have the required number of characters
         if (customer.Name.Length is < 3 or > 50) return false;
-        if (customer.CSVName.Length is < 3 or > 50) return false;
+        if (customer.CsvName.Length is < 3 or > 50) return false;
         if (customer.OrderName.Length is < 3 or > 50) return false;
 
         if (isNew)
         {
             // Make sure both the name and order name are unique
-            if (CustomersHandler.HasCustomerName(customer.Name)) return false;
-            if (CustomersHandler.HasCustomerOrderName(customer.OrderName)) return false;
+            if (_customersHandler.HasCustomerName(customer.Name)) return false;
+            if (_customersHandler.HasCustomerOrderName(customer.OrderName)) return false;
         }
         else
         {
+            if (SelectedCustomer is null) return false;
+            
             // Make sure changes have actually been made
             if (customer.Name == SelectedCustomer.Name &&
-                customer.CSVName == SelectedCustomer.CSVName &&
+                customer.CsvName == SelectedCustomer.CsvName &&
                 customer.OrderName == SelectedCustomer.OrderName) return false;
 
             // Make sure both the name and order name are either the same as they were or they are unique
-            if (customer.Name != SelectedCustomer.Name && CustomersHandler.HasCustomerName(customer.Name)) return false;
-            if (customer.OrderName != SelectedCustomer.OrderName && CustomersHandler.HasCustomerOrderName(customer.OrderName)) return false;
+            if (customer.Name != SelectedCustomer.Name && _customersHandler.HasCustomerName(customer.Name)) return false;
+            if (customer.OrderName != SelectedCustomer.OrderName && _customersHandler.HasCustomerOrderName(customer.OrderName)) return false;
         }
 
         // Validation passed
@@ -536,16 +532,19 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Validate the depot's new or edited details to make sure all checks are passed
     /// </summary>
+    /// <param name="depot">The depot we want to validate</param>
     /// <param name="isNew">Whether or not this is a new depot</param>
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateDepot(DepotDisplayModel depot, bool isNew = false)
     {
+        if (SelectedCustomer is null) return false;
+        
         // Get the customer model
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Make sure all fields have the required number of characters
         if (depot.Name.Length is < 3 or > 50) return false;
-        if (depot.CSVName.Length is < 3 or > 50) return false;
+        if (depot.CsvName.Length is < 3 or > 50) return false;
         if (depot.OrderName.Length is < 3 or > 50) return false;
 
         if (isNew)
@@ -557,11 +556,11 @@ public class CustomersViewModel : Screen
         else
         {
             // Get the display model for comparison
-            DepotDisplayModel depotDisplayModel = Depots.Where(x => x.Id == depot.Id).FirstOrDefault()!;
+            var depotDisplayModel = Depots.FirstOrDefault(x => x.Id == depot.Id)!;
 
             // Make sure changes have actually been made
             if (depot.Name == depotDisplayModel.Name &&
-                depot.CSVName == depotDisplayModel.CSVName &&
+                depot.CsvName == depotDisplayModel.CsvName &&
                 depot.OrderName == depotDisplayModel.OrderName) return false;
 
             // Make sure both the name and order name are either the same as they were or they are unique
@@ -576,16 +575,19 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Validate the product's new or edited details to make sure all checks are passed
     /// </summary>
+    /// <param name="product">The Product we want to validate</param>
     /// <param name="isNew">Whether or not this is a new product</param>
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateProduct(ProductDisplayModel product, bool isNew = false)
     {
+        if (SelectedCustomer is null) return false;
+        
         // Get the customer model
-        Customer customer = CustomersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
         // Make sure all fields have the required number of characters
         if (product.Name.Length is < 3 or > 50) return false;
-        if (product.CSVName.Length is < 3 or > 50) return false;
+        if (product.CsvName.Length is < 3 or > 50) return false;
         if (product.OrderName.Length is < 3 or > 50) return false;
 
         // Make sure the price is within bounds
@@ -600,11 +602,11 @@ public class CustomersViewModel : Screen
         else
         {
             // Get the display model for comparison
-            ProductDisplayModel productDisplayModel = Products.Where(x => x.Id == product.Id).FirstOrDefault()!;
+            var productDisplayModel = Products.FirstOrDefault(x => x.Id == product.Id)!;
 
             // Make sure changes have actually been made
             if (product.Name == productDisplayModel.Name &&
-                product.CSVName == productDisplayModel.CSVName &&
+                product.CsvName == productDisplayModel.CsvName &&
                 product.OrderName == productDisplayModel.OrderName &&
                 product.Price == productDisplayModel.Price) return false;
 

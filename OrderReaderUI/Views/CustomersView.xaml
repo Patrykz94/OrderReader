@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OrderReaderUI.Views"
              xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
              d:DataContext="{d:DesignInstance Type=viewmodels:CustomersViewModel}"
              mc:Ignorable="d" 
@@ -67,7 +66,7 @@
 
                         <StackPanel>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding CustomerToEdit.CSVName}" Tag="CSV Name"
+                            <TextBox Text="{Binding CustomerToEdit.CsvName}" Tag="CSV Name"
                                      Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
                         </StackPanel>
                         
@@ -133,7 +132,7 @@
                             <TextBox Text="{Binding SelectedDepot.Name}" Tag="Display Name"
                                      IsEnabled="{Binding HasSelectedDepot}"/>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding SelectedDepot.CSVName}" Tag="CSV Name"
+                            <TextBox Text="{Binding SelectedDepot.CsvName}" Tag="CSV Name"
                                      IsEnabled="{Binding HasSelectedDepot}"/>
                             <Label Content="Order Name"/>
                             <TextBox Text="{Binding SelectedDepot.OrderName}" Tag="Order Name"
@@ -177,7 +176,7 @@
 
                         <StackPanel>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding NewDepot.CSVName}" Tag="CSV Name"
+                            <TextBox Text="{Binding NewDepot.CsvName}" Tag="CSV Name"
                                      Height="{Binding ActualHeight, ElementName=AddDepot}"/>
                         </StackPanel>
 
@@ -222,7 +221,7 @@
                             <TextBox Text="{Binding SelectedProduct.Name}" Tag="Display Name"
                                      IsEnabled="{Binding HasSelectedProduct}"/>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding SelectedProduct.CSVName}" Tag="CSV Name"
+                            <TextBox Text="{Binding SelectedProduct.CsvName}" Tag="CSV Name"
                                      IsEnabled="{Binding HasSelectedProduct}"/>
                             <Label Content="Order Name"/>
                             <TextBox Text="{Binding SelectedProduct.OrderName}" Tag="Order Name"
@@ -269,7 +268,7 @@
 
                         <StackPanel>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding NewProduct.CSVName}" Tag="CSV Name"
+                            <TextBox Text="{Binding NewProduct.CsvName}" Tag="CSV Name"
                                      Height="{Binding ActualHeight, ElementName=AddProduct}"/>
                         </StackPanel>
 

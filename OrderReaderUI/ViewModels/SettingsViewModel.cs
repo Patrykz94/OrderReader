@@ -14,28 +14,28 @@ public class SettingsViewModel : Screen
 {
     #region Properties
 
-    private bool _exportCSV;
-    public bool ExportCSV
+    private bool _exportCsv;
+    public bool ExportCsv
     {
-        get => _exportCSV;
+        get => _exportCsv;
         set {
-            _exportCSV = value;
+            _exportCsv = value;
             NotifyOfPropertyChange();
-            NotifyOfPropertyChange(() => CanPathCSV);
-            NotifyOfPropertyChange(() => CanBrowseCSV);
+            NotifyOfPropertyChange(() => CanPathCsv);
+            NotifyOfPropertyChange(() => CanBrowseCsv);
         }
     }
 
-    private bool _exportPDF;
-    public bool ExportPDF
+    private bool _exportPdf;
+    public bool ExportPdf
     { 
-        get => _exportPDF;
+        get => _exportPdf;
         set
         {
-            _exportPDF = value;
+            _exportPdf = value;
             NotifyOfPropertyChange();
-            NotifyOfPropertyChange(() => CanPathPDF);
-            NotifyOfPropertyChange(() => CanBrowsePDF);
+            NotifyOfPropertyChange(() => CanPathPdf);
+            NotifyOfPropertyChange(() => CanBrowsePdf);
         }
     }
 
@@ -52,55 +52,51 @@ public class SettingsViewModel : Screen
         }
     }
 
-    private string _pathCSV = string.Empty;
-    public string PathCSV
+    private string _pathCsv = string.Empty;
+    public string PathCsv
     {
-        get => _pathCSV;
+        get => _pathCsv;
         set
         {
-            _pathCSV = value;
+            _pathCsv = value;
             NotifyOfPropertyChange();
         }
     }
     
-    private string _pathPDF = string.Empty;
-    public string PathPDF
+    private string _pathPdf = string.Empty;
+    public string PathPdf
     {
-        get => _pathPDF;
+        get => _pathPdf;
         set
         {
-            _pathPDF = value;
+            _pathPdf = value;
             NotifyOfPropertyChange();
         }
     }
 
-    private string _selectedTheme;
+    private string _selectedTheme = "Light";
     public string SelectedTheme
     {
-        get { return _selectedTheme; }
+        get => _selectedTheme;
         set
         {
-            if (value != _selectedTheme)
-            {
-                ThemeManager.ChangeTheme(value);
-                _selectedTheme = value;
-                NotifyOfPropertyChange();
-            }
+            if (value == _selectedTheme) return;
+            ThemeManager.ChangeTheme(value);
+            _selectedTheme = value;
+            NotifyOfPropertyChange();
         }
     }
 
-    private string _selectedAccent;
+    private string _selectedAccent = "Red";
     public string SelectedAccent
     {
-        get { return _selectedAccent; }
+        get => _selectedAccent;
         set
         {
-            if (value != _selectedAccent)
-            {
-                ThemeManager.ChangeAccent(value);
-                _selectedAccent = value;
-                NotifyOfPropertyChange();
-            }
+            if (value == _selectedAccent) return;
+            ThemeManager.ChangeAccent(value);
+            _selectedAccent = value;
+            NotifyOfPropertyChange();
         }
     }
 
@@ -128,10 +124,10 @@ public class SettingsViewModel : Screen
         }
     }
 
-    public bool CanPathCSV => ExportCSV;
-    public bool CanBrowseCSV => ExportCSV;
-    public bool CanPathPDF => ExportPDF;
-    public bool CanBrowsePDF => ExportPDF;
+    public bool CanPathCsv => ExportCsv;
+    public bool CanBrowseCsv => ExportCsv;
+    public bool CanPathPdf => ExportPdf;
+    public bool CanBrowsePdf => ExportPdf;
     public bool CanPrinters => PrintOrders;
     public bool CanCopies => PrintOrders;
 
@@ -148,45 +144,45 @@ public class SettingsViewModel : Screen
 
     #region Public Functions
 
-    public void BrowseCSV()
+    public void BrowseCsv()
     {
         WinForms.FolderBrowserDialog folderBrowserDialog = new()
         {
-            InitialDirectory = PathCSV
+            InitialDirectory = PathCsv
         };
-        WinForms.DialogResult result = folderBrowserDialog.ShowDialog();
+        var result = folderBrowserDialog.ShowDialog();
         if (result == WinForms.DialogResult.OK)
         {
-            PathCSV = folderBrowserDialog.SelectedPath;
+            PathCsv = folderBrowserDialog.SelectedPath;
         }
     }
 
-    public void BrowsePDF()
+    public void BrowsePdf()
     {
         WinForms.FolderBrowserDialog folderBrowserDialog = new()
         {
-            InitialDirectory = PathPDF
+            InitialDirectory = PathPdf
         };
-        WinForms.DialogResult result = folderBrowserDialog.ShowDialog();
+        var result = folderBrowserDialog.ShowDialog();
         if (result == WinForms.DialogResult.OK)
         {
-            PathPDF = folderBrowserDialog.SelectedPath;
+            PathPdf = folderBrowserDialog.SelectedPath;
         }
     }
 
-    public void ReloadCSVSettings()
+    public void ReloadCsvSettings()
     {
-        PathCSV = LoadDefaultSetting("DefaultCSVExportPath") ?? Settings.DefaultExportPath;
+        PathCsv = LoadDefaultSetting("DefaultCSVExportPath") ?? Settings.DefaultExportPath;
     }
 
-    public void ReloadPDFSettings()
+    public void ReloadPdfSettings()
     {
-        PathPDF = LoadDefaultSetting("DefaultPDFExportPath") ?? Settings.DefaultExportPath;
+        PathPdf = LoadDefaultSetting("DefaultPDFExportPath") ?? Settings.DefaultExportPath;
     }
 
     public void ReloadPrintingSettings()
     {
-        string? defaultPrinter = LoadDefaultSetting("DefaultPrinter");
+        var defaultPrinter = LoadDefaultSetting("DefaultPrinter");
         if (defaultPrinter == null || !Printers.Contains(defaultPrinter))
             SelectedPrinter = PrintingManager.DefaultPrinter;
         else
@@ -201,21 +197,21 @@ public class SettingsViewModel : Screen
     {
         Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
 
-        if (PathCSV == "") PathCSV = defaultSettings.ContainsKey("DefaultCSVExportPath") ? defaultSettings["DefaultCSVExportPath"] : Settings.DefaultExportPath;
-        if (PathCSV == "" || PathCSV == null) PathCSV = Settings.DefaultExportPath;
-        if (PathPDF == "") PathPDF = defaultSettings.ContainsKey("DefaultPDFExportPath") ? defaultSettings["DefaultPDFExportPath"] : Settings.DefaultExportPath;
-        if (PathPDF == "" || PathPDF == null) PathPDF = Settings.DefaultExportPath;
-        if (!Directory.Exists(PathCSV)) Directory.CreateDirectory(PathCSV);
-        if (!Directory.Exists(PathPDF)) Directory.CreateDirectory(PathPDF);
+        if (PathCsv == string.Empty) PathCsv = defaultSettings.TryGetValue("DefaultCSVExportPath", out var value) ? value : Settings.DefaultExportPath;
+        if (string.IsNullOrEmpty(PathCsv)) PathCsv = Settings.DefaultExportPath;
+        if (PathPdf == string.Empty) PathPdf = defaultSettings.TryGetValue("DefaultPDFExportPath", out var value) ? value : Settings.DefaultExportPath;
+        if (string.IsNullOrEmpty(PathPdf)) PathPdf = Settings.DefaultExportPath;
+        if (!Directory.Exists(PathCsv)) Directory.CreateDirectory(PathCsv);
+        if (!Directory.Exists(PathPdf)) Directory.CreateDirectory(PathPdf);
 
         UserSettings settings = new()
         {
-            ExportCSV = ExportCSV,
-            ExportPDF = ExportPDF,
+            ExportCSV = ExportCsv,
+            ExportPDF = ExportPdf,
             PrintOrders = PrintOrders,
 
-            UserCSVExportPath = PathCSV,
-            UserPDFExportPath = PathPDF,
+            UserCSVExportPath = PathCsv,
+            UserPDFExportPath = PathPdf,
             PreferredPrinterName = SelectedPrinter,
             PrintingCopies = Copies,
 
@@ -228,14 +224,14 @@ public class SettingsViewModel : Screen
 
     private void LoadSettings()
     {
-        UserSettings settings = Settings.LoadSettings();
+        var settings = Settings.LoadSettings();
 
-        ExportCSV = settings.ExportCSV;
-        ExportPDF = settings.ExportPDF;
+        ExportCsv = settings.ExportCSV;
+        ExportPdf = settings.ExportPDF;
         PrintOrders = settings.PrintOrders;
 
-        PathCSV = settings.UserCSVExportPath;
-        PathPDF = settings.UserPDFExportPath;
+        PathCsv = settings.UserCSVExportPath;
+        PathPdf = settings.UserPDFExportPath;
         SelectedPrinter = settings.PreferredPrinterName;
         Copies = settings.PrintingCopies;
 
@@ -250,17 +246,13 @@ public class SettingsViewModel : Screen
     {
         Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
 
-        if (defaultSettings.ContainsKey(settingName)) { return defaultSettings[settingName]; }
-
-        return null;
+        return defaultSettings.TryGetValue(settingName, out var value) ? value : null;
     }
 
     protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
     {
-        if (close)
-        {
-            SaveSettings();
-        }
+        if (close) SaveSettings();
+        
         return base.OnDeactivateAsync(close, cancellationToken);
     }
 

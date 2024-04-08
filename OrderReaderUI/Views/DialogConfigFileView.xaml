@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:OrderReaderUI.ViewModels"
-        xmlns:dependencyProperties="clr-namespace:OrderReaderUI.DependencyProperties"
+        xmlns:dp="clr-namespace:OrderReaderUI.DependencyProperties"
         d:DataContext="{d:DesignInstance Type=viewmodels:DialogConfigFileViewModel}"
         mc:Ignorable="d" SizeToContent="Height" Width="500"
         MinWidth="{Binding WindowMinWidth}" MinHeight="{Binding WindowMinHeight}"
@@ -31,7 +31,7 @@
             <!-- Dialog Content Holder -->
             <Border Grid.Row="1" Background="{DynamicResource Background.Panel.Brush}"
                     CornerRadius="10" Margin="10" Padding="5" MaxHeight="400"
-                    dependencyProperties:DropFilesBehaviourExtension.IsEnabled="True">
+                    dp:DropFilesBehaviourExtension.IsEnabled="True">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
                 </Border.Effect>

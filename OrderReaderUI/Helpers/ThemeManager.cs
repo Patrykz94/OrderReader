@@ -10,8 +10,8 @@ public class ThemeManager
 {
     #region Private Memebers
 
-    private static readonly List<string> _themeList = new() { "Light", "Dark" };
-    private static readonly List<string> _accentList = new() { "Grey", "Green", "Red", "Blue", "Purple", "Yellow" };
+    private static readonly List<string> ThemeList = ["Light", "Dark"];
+    private static readonly List<string> AccentList = ["Grey", "Green", "Red", "Blue", "Purple", "Yellow"];
 
     #endregion
 
@@ -20,48 +20,36 @@ public class ThemeManager
     public static bool ChangeTheme(string themeName)
     {
         if (themeName == "Auto")
-        {
-            if (IsOSLightTheme())
-                themeName = "Light";
-            else
-                themeName = "Dark";
-        }
+            themeName = IsOsLightTheme() ? "Light" : "Dark";
 
-        if (_themeList.Contains(themeName))
-        {
-            if (themeName != GetCurrentTheme())
-            {
-                Uri uri = new($"Styles/Themes/{themeName}.xaml", UriKind.Relative);
+        if (!ThemeList.Contains(themeName)) return false;
 
-                SetTheme(uri);
-                return true;
-            }
-        }
+        if (themeName == GetCurrentTheme()) return false;
+        
+        Uri uri = new($"Styles/Themes/{themeName}.xaml", UriKind.Relative);
 
-        return false;
+        SetTheme(uri);
+        return true;
     }
 
     public static bool ChangeAccent(string accentName)
     {
-        if (_accentList.Contains(accentName))
-        {
-            if (accentName != GetCurrentAccent())
-            {
-                Uri uri = new($"Styles/Accents/{accentName}.xaml", UriKind.Relative);
+        if (!AccentList.Contains(accentName)) return false;
 
-                SetAccent(uri);
-                return true;
-            }
-        }
+        if (accentName == GetCurrentAccent()) return false;
+        
+        Uri uri = new($"Styles/Accents/{accentName}.xaml", UriKind.Relative);
 
-        return false;
+        SetAccent(uri);
+        return true;
+
     }
 
-    public static bool IsOSLightTheme()
+    public static bool IsOsLightTheme()
     {
         using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
         var value = key?.GetValue("AppsUseLightTheme");
-        return value is int i && i > 0;
+        return value is > 0;
     }
 
     #endregion
@@ -73,11 +61,9 @@ public class ThemeManager
         var resources = Application.Current.Resources.MergedDictionaries;
         foreach (var resourceItem in resources)
         {
-            string uri = resourceItem.Source?.OriginalString ?? "none";
+            var uri = resourceItem.Source?.OriginalString ?? "none";
             if (uri.StartsWith("Styles/Themes/"))
-            {
                 return Path.GetFileNameWithoutExtension(uri);
-            }
         }
         return "none";
     }
@@ -87,11 +73,9 @@ public class ThemeManager
         var resources = Application.Current.Resources.MergedDictionaries;
         foreach (var resourceItem in resources)
         {
-            string uri = resourceItem.Source?.OriginalString ?? "none";
+            var uri = resourceItem.Source?.OriginalString ?? "none";
             if (uri.StartsWith("Styles/Accents/"))
-            {
                 return Path.GetFileNameWithoutExtension(uri);
-            }
         }
         return "none";
     }
@@ -102,12 +86,10 @@ public class ThemeManager
 
         foreach ( var resourceItem in resources )
         {
-            string uri = resourceItem.Source?.OriginalString ?? "none";
-            if (uri.StartsWith("Styles/Themes/"))
-            {
-                resourceItem.Source = theme;
-                return;
-            }
+            var uri = resourceItem.Source?.OriginalString ?? "none";
+            if (!uri.StartsWith("Styles/Themes/")) continue;
+            resourceItem.Source = theme;
+            return;
         }
     }
     
@@ -117,12 +99,10 @@ public class ThemeManager
 
         foreach ( var resourceItem in resources )
         {
-            string uri = resourceItem.Source?.OriginalString ?? "none";
-            if (uri.StartsWith("Styles/Accents/"))
-            {
-                resourceItem.Source = accent;
-                return;
-            }
+            var uri = resourceItem.Source?.OriginalString ?? "none";
+            if (!uri.StartsWith("Styles/Accents/")) continue;
+            resourceItem.Source = accent;
+            return;
         }
     }
 

@@ -12,12 +12,12 @@ public class ShellViewModel : Conductor<object>
     public ShellViewModel()
     {
         // Get the current version of our app
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+        var assembly = Assembly.GetExecutingAssembly();
+        var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
         CurrentVersion = $" v{versionInfo.FileVersion}";
     }
 
-    protected async override void OnViewLoaded(object view)
+    protected override async void OnViewLoaded(object view)
     {
         base.OnViewLoaded(view);
         await Orders();

@@ -1,5 +1,4 @@
-﻿using OrderReader.Core;
-using OrderReaderUI.Helpers;
+﻿using OrderReaderUI.Helpers;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -18,7 +17,7 @@ namespace OrderReaderUI.Views
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 
             // Check user settings to see which theme we should use
-            UserSettings userSettings = OrderReader.Core.Settings.LoadSettings();
+            var userSettings = OrderReader.Core.Settings.LoadSettings();
             ThemeManager.ChangeTheme(userSettings.Theme);
         }
 
@@ -27,28 +26,20 @@ namespace OrderReaderUI.Views
             base.OnSourceInitialized(e);
 
             // Detect when the theme changed
-            HwndSource source = (HwndSource)PresentationSource.FromVisual(this);
-            source.AddHook((IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
+            var source = (HwndSource?)PresentationSource.FromVisual(this);
+
+            source?.AddHook((IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
             {
-                const int WM_SETTINGCHANGE = 0x001A;
-                if (msg == WM_SETTINGCHANGE)
-                {
-                    if (wParam == IntPtr.Zero && Marshal.PtrToStringUni(lParam) == "ImmersiveColorSet")
-                    {
-                        if (OrderReader.Core.Settings.LoadSettings().Theme == "Auto")
-                        {
-                            var isLightTheme = ThemeManager.IsOSLightTheme();
-                            if (isLightTheme)
-                            {
-                                ThemeManager.ChangeTheme("Light");
-                            }
-                            else
-                            {
-                                ThemeManager.ChangeTheme("Dark");
-                            }
-                        }
-                    }
-                }
+                const int wmSettingChange = 0x001A;
+                if (msg != wmSettingChange) return IntPtr.Zero;
+
+                if (wParam != IntPtr.Zero || Marshal.PtrToStringUni(lParam) != "ImmersiveColorSet") return IntPtr.Zero;
+
+                if (OrderReader.Core.Settings.LoadSettings().Theme != "Auto") return IntPtr.Zero;
+                
+                var isLightTheme = ThemeManager.IsOsLightTheme();
+                
+                ThemeManager.ChangeTheme(isLightTheme ? "Light" : "Dark");
 
                 return IntPtr.Zero;
             });

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using OrderReader;
 using OrderReaderUI.ViewModels.BaseViewModels;
 
@@ -90,7 +91,7 @@ public class DialogConfigFileViewModel : DialogViewModelBase, IFilesDropped
             // Determine if we are dealing with a correct file extension
             var ext = Path.GetExtension(filePath);
 
-            if (ext.ToLower() == ".xml")
+            if (ext.Equals(".xml", StringComparison.CurrentCultureIgnoreCase))
             {
                 ConfigFileLocation = filePath;
                 FileError = string.Empty;

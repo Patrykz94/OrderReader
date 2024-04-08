@@ -20,7 +20,7 @@ namespace OrderReaderUI.Views
             double height = ClippingGrid.ActualHeight;
 
             // Update the Path's points to match the size of the Grid
-            clipPathLeft.Data = new PathGeometry
+            ClipPathLeft.Data = new PathGeometry
             {
                 Figures = new PathFigureCollection
                 {
@@ -37,7 +37,7 @@ namespace OrderReaderUI.Views
             };
 
             // Update the Path's points to match the size of the Grid
-            clipPathRight.Data = new PathGeometry
+            ClipPathRight.Data = new PathGeometry
             {
                 Figures = new PathFigureCollection
                 {
