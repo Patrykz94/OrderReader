@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using OrderReaderUI.ViewModels;
+using OrderReaderUI.ViewModels.Dialogs;
 
 namespace OrderReaderUI.Helpers;
 

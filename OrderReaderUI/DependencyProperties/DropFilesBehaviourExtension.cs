@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using OrderReader;
 using OrderReader.Core;
 using OrderReaderUI.ViewModels;
+using OrderReaderUI.ViewModels.Dialogs;
 
 namespace OrderReaderUI.DependencyProperties;
 

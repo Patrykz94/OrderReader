@@ -1,6 +1,6 @@
-﻿using OrderReaderUI.ViewModels.BaseViewModels;
+﻿using OrderReaderUI.ViewModels.Dialogs.BaseViewModels;
 
-namespace OrderReaderUI.ViewModels;
+namespace OrderReaderUI.ViewModels.Dialogs;
 
 public class DialogMessageViewModel : DialogViewModelBase
 {

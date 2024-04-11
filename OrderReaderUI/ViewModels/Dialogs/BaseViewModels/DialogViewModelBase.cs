@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 
-namespace OrderReaderUI.ViewModels.BaseViewModels;
+namespace OrderReaderUI.ViewModels.Dialogs.BaseViewModels;
 
 public class DialogViewModelBase : Screen
 {

@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 
-namespace OrderReaderUI.Views
+namespace OrderReaderUI.Views.Dialogs
 {
     /// <summary>
     /// Interaction logic for DialogYesNoView.xaml
