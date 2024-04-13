@@ -54,7 +54,7 @@
         <Setter Property="Background" Value="#3888"/>
         <Setter Property="Width" Value="12"/>
         <Setter Property="MinWidth" Value="{Binding Width, RelativeSource={RelativeSource Self}}"/>
-        <Setter Property="Margin" Value="5 0 0 0"/>
+        <Setter Property="Margin" Value="0 10 10 10"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -77,7 +77,7 @@
                 <Setter Property="MinWidth" Value="0"/>
                 <Setter Property="Height" Value="12"/>
                 <Setter Property="MinHeight" Value="{Binding Height, RelativeSource={RelativeSource Self}}"/>
-                <Setter Property="Margin" Value="0 5 0 0"/>
+                <Setter Property="Margin" Value="10 0 10 10"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -100,10 +100,10 @@
     <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource DefaultScrollBar}"/>
 
     <Style TargetType="{x:Type ScrollBar}" x:Key="ThinScrollBar" BasedOn="{StaticResource DefaultScrollBar}">
-        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Margin" Value="0 5 5 5"/>
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
-                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Margin" Value="5 0 5 5"/>
             </Trigger>
         </Style.Triggers>
     </Style>

@@ -29,8 +29,7 @@
                         <Border x:Name="contentPanel"
                                 Grid.Column="0" Grid.Row="1" 
                                 KeyboardNavigation.DirectionalNavigation="Contained"
-                                KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local"
-                                Padding="{TemplateBinding Padding}">
+                                KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </ScrollViewer>

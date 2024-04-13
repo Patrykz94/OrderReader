@@ -32,7 +32,7 @@
 
             <!-- Dialog Content Holder -->
             <Border Grid.Row="1" Background="{DynamicResource Background.Panel.Brush}"
-                    CornerRadius="10" Margin="10" Padding="5" MaxHeight="400">
+                    CornerRadius="10" Margin="10" MaxHeight="400">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
                 </Border.Effect>
@@ -42,7 +42,7 @@
                     <!-- Dialog Content -->
                     <TextBlock x:Name="Message"
                                VerticalAlignment="Center" HorizontalAlignment="Center"
-                               TextWrapping="Wrap" TextAlignment="Center"/>
+                               TextWrapping="Wrap" TextAlignment="Center" Margin="5"/>
                     
                 </ScrollViewer>
             </Border>
