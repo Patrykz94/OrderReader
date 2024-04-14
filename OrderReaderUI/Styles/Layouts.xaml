@@ -24,4 +24,14 @@
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
 
+    <Style TargetType="{x:Type Border}" x:Key="ShadowBorder">
+        <Setter Property="Background" Value="{DynamicResource Background.Panel.Brush}"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
