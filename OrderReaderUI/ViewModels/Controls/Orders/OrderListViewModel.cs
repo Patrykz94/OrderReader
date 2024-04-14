@@ -1,40 +1,30 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using Caliburn.Micro;
 
 namespace OrderReaderUI.ViewModels.Controls.Orders;
 
 public class OrderListViewModel : Conductor<IScreen>.Collection.AllActive
 {
-    public ObservableCollection<OrderListItemViewModel> OrderItemControl { get; set; }
-
-    public OrderListViewModel()
-    {
-        OrderItemControl = [];
-    }
-
     public string Field { get; set; } = "Order List Control";
-    public bool CanRemoveItem => OrderItemControl.Count > 0;
+    public bool CanRemoveItem => Items.Count > 0;
 
-    public void AddItem(string name)
+    public void AddItem(string orderId)
     {
-        OrderListItemViewModel newItem = new ()
-        {
-            Field = name
-        };
-
-        OrderItemControl.Add(newItem);
+        // Make sure we don't have an order 
+        if (Items.OfType<OrderListItemViewModel>().Any(x => x.OrderId == orderId)) return;
+        
+        OrderListItemViewModel newItem = new(orderId);
+        
         Items.Add(newItem);
-        NotifyOfPropertyChange(() => OrderItemControl);
+        NotifyOfPropertyChange(() => Items);
         NotifyOfPropertyChange(() => CanRemoveItem);
     }
 
     public void RemoveItem()
     {
-        if (OrderItemControl.Count > 0)
-        {
-            OrderItemControl.RemoveAt(0);
-            NotifyOfPropertyChange(() => OrderItemControl);
-            NotifyOfPropertyChange(() => CanRemoveItem);
-        }
+        Items.RemoveAt(0);
+        NotifyOfPropertyChange(() => Items);
+        NotifyOfPropertyChange(() => CanRemoveItem);
     }
 }

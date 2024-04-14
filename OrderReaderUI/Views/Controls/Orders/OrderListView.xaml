@@ -14,19 +14,13 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button Content="Remove Order" Name="RemoveItem"
-                Visibility="{Binding OrderItemControl.Count,
+                Visibility="{Binding Items.Count,
                 Converter={StaticResource IntToVisibilityConverter},
                 ConverterParameter=2}"/>
-        <ItemsControl Grid.Row="1" Name="OrderItemControl">
+        <ItemsControl Grid.Row="1" Name="Items">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="{DynamicResource Background.Panel.Brush}" CornerRadius="10" Margin="0 0 0 20" Padding="10">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
-                        </Border.Effect>
-
-                        <ContentControl cm:View.Model="{Binding}"/>
-                    </Border>
+                    <ContentControl cm:View.Model="{Binding}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

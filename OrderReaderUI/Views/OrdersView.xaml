@@ -11,13 +11,10 @@
              dp:DropFilesBehaviourExtension.IsEnabled="True" d:DataContext="{d:DesignInstance viewModels:OrdersViewModel }">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
-            <Border Background="{DynamicResource Background.Panel.Brush}" CornerRadius="10" Margin="20" Padding="10"
-                    Visibility="{Binding OrderListControl.OrderItemControl.Count,
+            <Border Style="{StaticResource ShadowBorder}" Margin="20" Padding="10"
+                    Visibility="{Binding OrderListControl.Items.Count,
                     Converter={StaticResource IntToVisibilityConverter},
                     ConverterParameter=Reversed}">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
-                </Border.Effect>
 
                 <Grid>
                     <TextBlock Text="Drop order files in this window..."
@@ -30,7 +27,7 @@
             </Border>
             
             <ContentControl Name="ActiveItem" Margin="20 20 20 0"
-                            Visibility="{Binding OrderListControl.OrderItemControl.Count,
+                            Visibility="{Binding OrderListControl.Items.Count,
                             Converter={StaticResource IntToVisibilityConverter}}"/>
         </Grid>
     </ScrollViewer>
