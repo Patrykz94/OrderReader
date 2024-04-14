@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using OrderReader.Core.Interfaces;
+using OrderReaderUI.Services;
 
 namespace OrderReaderUI;
 
@@ -69,6 +71,7 @@ public class Bootstrapper : BootstrapperBase
             .Singleton<IEventAggregator, EventAggregator>()
             .Singleton<OrdersLibrary>()
             .Singleton<CustomersHandler>()
+            .PerRequest<IUserNotificationService, UserNotificationService>()
             .PerRequest<AppInitialization>();
 
         foreach (var assembly in SelectAssemblies())
