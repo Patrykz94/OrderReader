@@ -7,6 +7,7 @@ using OrderReaderUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using OrderReader.Core.Interfaces;
 using OrderReaderUI.Services;
@@ -20,6 +21,8 @@ public class Bootstrapper : BootstrapperBase
     public Bootstrapper()
     {
         Initialize();
+        
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         LogManager.GetLog = type => new DebugLog(type);
     }
@@ -55,6 +58,9 @@ public class Bootstrapper : BootstrapperBase
         
         // Reset the shutdown mode back to default once the startup procedure is complete
         Application.Current.ShutdownMode = defaultShutdownMode;
+        
+        // Inject the UserNotificationService to all classes that need it
+        FileImport.UserNotificationService = _container.GetInstance<IUserNotificationService>();
         
         // Display the shell view
         await DisplayRootViewForAsync(typeof(ShellViewModel));

@@ -1,10 +1,17 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
     public static class FileImport
     {
+        #region Public Properties
+
+        public static IUserNotificationService UserNotificationService { get; set; }
+
+        #endregion
+
         #region Public Helpers
 
         /// <summary>
@@ -28,12 +35,7 @@ namespace OrderReader.Core
                         return await ReadPDFFileAsync(filePath);
                     default:
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "File Processing Error",
-                            Message = "Unsupported file type.",
-                            ButtonText = "OK"
-                        });
+                        await UserNotificationService.ShowMessage("File Processing Error", "Unsupported file type.");
                         return false;
                 }
             }
@@ -60,7 +62,7 @@ namespace OrderReader.Core
         /// <returns>Whether or not processing was successful</returns>
         private static async Task<bool> ReadExcelFileAsync(string filePath)
         {
-            ExcelImport excelImporter = new ExcelImport(filePath);
+            ExcelImport excelImporter = new ExcelImport(filePath, UserNotificationService);
 
             return await excelImporter.ProcessFileAsync();
         }
@@ -72,7 +74,7 @@ namespace OrderReader.Core
         /// <returns>Whether or not processing was successful</returns>
         private static async Task<bool> ReadPDFFileAsync(string filePath)
         {
-            PDFImport pdfImporter = new PDFImport(filePath);
+            PDFImport pdfImporter = new PDFImport(filePath, UserNotificationService);
 
             return await pdfImporter.ProcessFileAsync();
         }

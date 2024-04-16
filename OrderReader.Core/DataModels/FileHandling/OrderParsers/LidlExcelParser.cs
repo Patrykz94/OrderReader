@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
-    public class LidlExcelParser : IParseOrder
+    public class LidlExcelParser(IUserNotificationService userNotificationService) : IParseOrder
     {
         #region Private Variables
 
@@ -18,6 +19,8 @@ namespace OrderReader.Core
         /// Where in a table string array we can find the row count
         /// </summary>
         private static readonly int tableRowCountPosition = 1;
+
+        private readonly IUserNotificationService _userNotificationService = userNotificationService;
 
         #endregion
 
@@ -229,12 +232,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without depot \"{depotString.Value}\". You will need to add order for that depot manually.";
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "File Processing Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                             }
                         }
                     }
@@ -260,12 +258,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without product \"{productString.Value}\". You will need to add that product to order manually if required.";
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "File Processing Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                             }
                         }
                     }
@@ -283,12 +276,7 @@ namespace OrderReader.Core
                     errorMessage += "If you think this file has all the correct data, please contact Patryk Z.";
 
                     // Display error message to the user
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "File Processing Error",
-                        Message = errorMessage,
-                        ButtonText = "OK"
-                    });
+                    await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                 }
                 else
                 {
@@ -300,12 +288,7 @@ namespace OrderReader.Core
                             "\nThis file was not processed.";
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "File Processing Error",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                     }
                     else if (deliveryDate != DateTime.Today.AddDays(1))
                     {
@@ -319,12 +302,7 @@ namespace OrderReader.Core
                         }
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Unusual Date Warning",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("Unusual Date Warning", errorMessage);
                     }
 
                     if (orderReference.EndsWith("01"))
@@ -334,11 +312,7 @@ namespace OrderReader.Core
                             "Would you like to process this order anyway?";
 
                         // Display error message to the user
-                        var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
-                        {
-                            Title = "Order Reference Warning",
-                            Question = errorMessage
-                        });
+                        var result = await _userNotificationService.ShowQuestion("Order Reference Warning", errorMessage);
 
                         if (result == DialogResult.No)
                         {
@@ -358,12 +332,7 @@ namespace OrderReader.Core
                         errorMessage += "\nThis file was not processed.";
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "File Processing Error",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                     }
 
                     // Create the order objects
@@ -401,12 +370,7 @@ namespace OrderReader.Core
                                 string errorMessage = $"The order in file {fileName} for depot {order.DepotName} could not be processed. The same order already exists.";
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "Order Processing Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                             else
                             {

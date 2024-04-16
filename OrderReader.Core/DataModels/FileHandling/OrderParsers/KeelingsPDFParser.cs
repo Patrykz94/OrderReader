@@ -4,11 +4,18 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
-    public class KeelingsPDFParser : IParseOrder
+    public class KeelingsPDFParser(IUserNotificationService userNotificationService) : IParseOrder
     {
+        #region Private Variables
+
+        private readonly IUserNotificationService _userNotificationService = userNotificationService;
+
+        #endregion
+        
         #region Public Properties
 
         /// <summary>
@@ -131,12 +138,7 @@ namespace OrderReader.Core
                     isAllDataFound = false;
 
                     // Display error message to the user
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "File Processing Error",
-                        Message = errorMessage,
-                        ButtonText = "OK"
-                    });
+                    await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                 }
                 else
                 {
@@ -149,12 +151,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "File Processing Error",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
                     }
                     else if (deliveryDate != DateTime.Today.AddDays(1))
                     {
@@ -164,12 +161,7 @@ namespace OrderReader.Core
                         warnings.Add(new OrderWarning(OrderWarning.WarningType.UnusualDate, errorMessage));
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Unusual Date Warning",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("Unusual Date Warning", errorMessage);
                     }
 
                     // Process and validate all products
@@ -192,12 +184,7 @@ namespace OrderReader.Core
                                 warnings.Add(new OrderWarning(OrderWarning.WarningType.UnknownProduct, errorMessage));
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "Unknown Product Warning",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("Unknown Product Warning", errorMessage);
                             }
                             else
                             {
@@ -208,12 +195,7 @@ namespace OrderReader.Core
                                 isAllDataFound = false;
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "Unknown Product Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("Unknown Product Error", errorMessage);
                             }
                         }
                         else
@@ -233,12 +215,7 @@ namespace OrderReader.Core
                                 isAllDataFound = false;
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "Order Processing Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                         }
                     }
@@ -253,12 +230,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Order Processing Error",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                     }
 
                     // Make sure we have valid products to add
@@ -270,12 +242,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Order Processing Error",
-                            Message = errorMessage,
-                            ButtonText = "OK"
-                        });
+                        await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                     }
 
                     // Create the depot object
@@ -308,12 +275,7 @@ namespace OrderReader.Core
                                 string errorMessage = $"The order in file {fileName} could not be processed. An order with the same reference number already exists.";
 
                                 // Display error message to the user
-                                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                                {
-                                    Title = "Order Processing Error",
-                                    Message = errorMessage,
-                                    ButtonText = "OK"
-                                });
+                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                             else
                             {
@@ -329,12 +291,7 @@ namespace OrderReader.Core
                                 "This file was not processed.";
 
                             // Display error message to the user
-                            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                            {
-                                Title = "Order Processing Error",
-                                Message = errorMessage,
-                                ButtonText = "OK"
-                            });
+                            await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
                         }
                     }
                 }

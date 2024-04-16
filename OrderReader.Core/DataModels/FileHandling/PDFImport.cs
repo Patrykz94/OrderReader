@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
@@ -26,17 +27,17 @@ namespace OrderReader.Core
         /// Name of the file that we are working on including extension
         /// </summary>
         private readonly string fileName;
+        
+        private readonly IUserNotificationService _userNotificationService;
 
         #endregion
 
         #region Constructor
 
-        /// <summary>
-        /// Default constructor that opens the PDF file and reads from it
-        /// </summary>
-        /// <param name="filePath"></param>
-        public PDFImport(string filePath)
+        // Default constructor that opens the PDF file and reads from it
+        public PDFImport(string filePath, IUserNotificationService userNotificationService)
         {
+            _userNotificationService = userNotificationService;
             fileExtension = Path.GetExtension(filePath).ToLower();
             fileName = Path.GetFileName(filePath);
             orderText = ReadAllLines(filePath);
@@ -50,7 +51,7 @@ namespace OrderReader.Core
         {
             // List of available processors - TODO: Populate this list automatically
             List<IParseOrder> orderParsers = new List<IParseOrder>();
-            orderParsers.Add(new KeelingsPDFParser());
+            orderParsers.Add(new KeelingsPDFParser(_userNotificationService));
 
             CustomersHandler customers = IoC.Customers();
             customers.LoadCustomers();
@@ -73,12 +74,7 @@ namespace OrderReader.Core
                     "Please double check the PDF file to make sure it contains a valid order.\n";
 
             // Display error message to the user
-            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-            {
-                Title = "File Processing Error",
-                Message = errorMessage,
-                ButtonText = "OK"
-            });
+            await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
 
             return false;
         }

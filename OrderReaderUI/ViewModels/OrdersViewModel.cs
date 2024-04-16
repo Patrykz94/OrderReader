@@ -2,7 +2,6 @@
 using Caliburn.Micro;
 using OrderReader;
 using OrderReader.Core;
-using OrderReaderUI.ViewModels.Dialogs;
 using IoC = Caliburn.Micro.IoC;
 using OrderListViewModel = OrderReaderUI.ViewModels.Controls.Orders.OrderListViewModel;
 
@@ -10,14 +9,12 @@ namespace OrderReaderUI.ViewModels;
 
 public class OrdersViewModel : Conductor<IScreen>, IFilesDropped
 {
-    private readonly IWindowManager _windowManager;
     private readonly OrdersLibrary _ordersLibrary;
 
     public OrderListViewModel OrderListControl { get; set; }
 
-    public OrdersViewModel(IWindowManager windowManager)
+    public OrdersViewModel()
     {
-        _windowManager = windowManager;
         _ordersLibrary = IoC.Get<OrdersLibrary>();
         OrderListControl = IoC.Get<OrderListViewModel>();
     }
@@ -43,7 +40,7 @@ public class OrdersViewModel : Conductor<IScreen>, IFilesDropped
         }
     }
 
-    public async Task Orders()
+    private async Task Orders()
     {
         await ActivateItemAsync(OrderListControl);
     }

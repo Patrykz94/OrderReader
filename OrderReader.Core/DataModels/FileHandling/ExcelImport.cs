@@ -4,11 +4,18 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Threading.Tasks;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
     public class ExcelImport : IFileImport
     {
+        #region Private Variables
+        
+        private readonly IUserNotificationService _userNotificationService;
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -35,12 +42,10 @@ namespace OrderReader.Core
 
         #region Constructor
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="filePath"></param>
-        public ExcelImport(string filePath)
+        // Default constructor
+        public ExcelImport(string filePath, IUserNotificationService userNotificationService)
         {
+            _userNotificationService = userNotificationService;
             fileExtension = Path.GetExtension(filePath).ToLower();
             fileName = Path.GetFileName(filePath);
             excelData = ReadExcelData(filePath);
@@ -55,8 +60,8 @@ namespace OrderReader.Core
         {
             // List of available processors - TODO: Populate this list with actual parsers
             List<IParseOrder> orderParsers = new List<IParseOrder>();
-            orderParsers.Add(new LidlExcelParser());
-            orderParsers.Add(new LidlNewExcelParser());
+            orderParsers.Add(new LidlExcelParser(_userNotificationService));
+            orderParsers.Add(new LidlNewExcelParser(_userNotificationService));
 
             CustomersHandler customers = IoC.Customers();
             customers.LoadCustomers();
@@ -79,12 +84,7 @@ namespace OrderReader.Core
                     "Please double check the Excel file to make sure it contains a valid order.\n";
 
             // Display error message to the user
-            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-            {
-                Title = "File Processing Error",
-                Message = errorMessage,
-                ButtonText = "OK"
-            });
+            await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
 
             return false;
         }
