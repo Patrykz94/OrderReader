@@ -102,7 +102,9 @@ public class OrderListItemViewModel : Screen
         }
         
         tempTable.Rows.Add(totalRow);
-        
+
+        _ordersTable = tempTable;
+        NotifyOfPropertyChange(() => OrdersView);
     }
 
     #endregion

@@ -41,7 +41,17 @@
 
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
                 Style="{StaticResource ShadowBorder}" Padding="10">
-            <DataGrid>
+            <DataGrid x:Name="OrdersView"
+                      AutoGenerateColumns="True"
+                      CanUserReorderColumns="False"
+                      CanUserDeleteRows="False"
+                      CanUserAddRows="False"
+                      CanUserSortColumns="False"
+                      IsReadOnly="True"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Disabled"
+                      HeadersVisibility="Column"
+                      ColumnWidth="*">
                 
             </DataGrid>
         </Border>
