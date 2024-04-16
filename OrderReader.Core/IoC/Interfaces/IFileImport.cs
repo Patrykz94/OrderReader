@@ -11,6 +11,6 @@ namespace OrderReader.Core
         /// Function that identifies customer and calls apropriate plugin to process that file
         /// </summary>
         /// <returns>A <see cref="bool"/> whether or not the order could be processed</returns>
-        Task<bool> ProcessFileAsync();
+        Task<bool> ProcessFileAsync(CustomersHandler customersHandler, OrdersLibrary ordersLibrary);
     }
 }

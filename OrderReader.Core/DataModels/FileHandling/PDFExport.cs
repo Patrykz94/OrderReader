@@ -9,14 +9,17 @@ using iText.Layout.Properties;
 using System;
 using System.Data;
 using System.IO;
+using OrderReader.Core.Interfaces;
+using Path = System.IO.Path;
 
 namespace OrderReader.Core
 {
     public static class PDFExport
     {
-        public static void ExportOrderToPDF(OrderListItemViewModel orders)
+        public static INotificationService NotificationService { get; set; }
+        
+        public static void ExportOrderToPDF(DataTable ordersTable, Customer customer, string orderId, DateTime orderDate)
         {
-            DataTable ordersTable = orders.OrdersTable;
             ordersTable.Columns.Add(new DataColumn("Sales Order"));
             ordersTable.Columns.Add(new DataColumn("Pal"));
             ordersTable.Columns.Add(new DataColumn("Lorry Number"));
@@ -24,8 +27,8 @@ namespace OrderReader.Core
             // Create the file name
             DateTime time = DateTime.Now;
             string pcName = Environment.MachineName;
-            string customerName = IoC.Customers().GetCustomerByID(orders.Orders[0].CustomerID).CSVName;
-            string fileName = $"OrderReaderExport_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orders.OrderID}_{customerName}.pdf";
+            string customerName = customer.CSVName;
+            string fileName = $"OrderReaderExport_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orderId}_{customerName}.pdf";
             // Load the user settings
             UserSettings settings = Settings.LoadSettings();
             string tempFilePath = System.IO.Path.Combine(Settings.TempFilesPath, fileName);
@@ -45,8 +48,8 @@ namespace OrderReader.Core
                 doc.SetFontSize(12.0f);
 
                 // Create a header
-                Paragraph header = new Paragraph().Add("Order for ").Add(new Text(orders.CustomerName).SetFont(boldFont).SetFontSize(16.0f))
-                    .Add(" to be delivered on ").Add(new Text(orders.Date.ToShortDateString()).SetFont(boldFont).SetFontSize(16.0f))
+                Paragraph header = new Paragraph().Add("Order for ").Add(new Text(customer.Name).SetFont(boldFont).SetFontSize(16.0f))
+                    .Add(" to be delivered on ").Add(new Text(orderDate.ToShortDateString()).SetFont(boldFont).SetFontSize(16.0f))
                     .SetFontColor(ColorConstants.DARK_GRAY).SetMarginBottom(20.0f).SetFontSize(14.0f);
                 doc.Add(header);
 
@@ -101,12 +104,7 @@ namespace OrderReader.Core
             }
             catch (IOException ex)
             {
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Error creating a file",
-                    Message = $"An error occured while trying to create a PDF file:\n{ex.Message}\nOperation was aborted.",
-                    ButtonText = "OK"
-                });
+                NotificationService.ShowMessage("Error creating a file", $"An error occured while trying to create a PDF file:\n{ex.Message}\nOperation was aborted.");
 
                 try
                 {
@@ -118,12 +116,7 @@ namespace OrderReader.Core
                 }
                 catch (IOException IOex)
                 {
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "Error deleting a file",
-                        Message = $"An error occured while trying to delete a PDF file:\n{IOex.Message}\nOperation was aborted.",
-                        ButtonText = "OK"
-                    });
+                    NotificationService.ShowMessage("Error deleting a file", $"An error occured while trying to delete a PDF file:\n{IOex.Message}\nOperation was aborted.");
                 }
 
                 return;
@@ -132,7 +125,7 @@ namespace OrderReader.Core
             // Before saving the file, make sure that the export directory exists, if not then create it
             if (!Directory.Exists(settings.UserPDFExportPath)) Directory.CreateDirectory(settings.UserPDFExportPath);
             // Create the export path
-            string exportPath = System.IO.Path.Combine(settings.UserPDFExportPath, fileName);
+            string exportPath = Path.Combine(settings.UserPDFExportPath, fileName);
             
             // If file needs to be printed
             if (settings.PrintOrders)
@@ -150,12 +143,7 @@ namespace OrderReader.Core
                 }
                 catch (Exception ex)
                 {
-                    IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "Error moving a file",
-                        Message = $"An error occured while trying to move a PDF file:\n{ex.Message}\nFile was not moved.",
-                        ButtonText = "OK"
-                    });
+                    NotificationService.ShowMessage("Error moving a file", $"An error occured while trying to move a PDF file:\n{ex.Message}\nFile was not moved.");
                 }
             }
             else
@@ -168,12 +156,7 @@ namespace OrderReader.Core
                 {
                     if (ex is IOException || ex is UnauthorizedAccessException)
                     {
-                        IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Error deleting a file",
-                            Message = $"An error occured while trying to delete a PDF file:\n{ex.Message}\nOperation was aborted.",
-                            ButtonText = "OK"
-                        });
+                        NotificationService.ShowMessage("Error deleting a file", $"An error occured while trying to delete a PDF file:\n{ex.Message}\nOperation was aborted.");
                     }
                     else if (!(ex is DirectoryNotFoundException))
                     {

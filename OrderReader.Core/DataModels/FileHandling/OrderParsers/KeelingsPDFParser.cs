@@ -8,11 +8,11 @@ using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
-    public class KeelingsPDFParser(IUserNotificationService userNotificationService) : IParseOrder
+    public class KeelingsPDFParser(INotificationService notificationService) : IParseOrder
     {
         #region Private Variables
 
-        private readonly IUserNotificationService _userNotificationService = userNotificationService;
+        private readonly INotificationService _notificationService = notificationService;
 
         #endregion
         
@@ -27,7 +27,7 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public Customer GetCustmer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+        public Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
         {
             foreach (KeyValuePair<string, string[]> pageText in orderText)
             {
@@ -41,7 +41,7 @@ namespace OrderReader.Core
             return null;
         }
 
-        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer)
+        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
         {
             // Iterate over the pages in extracted text
             foreach (KeyValuePair<string, string[]> pageText in orderText)
@@ -138,7 +138,7 @@ namespace OrderReader.Core
                     isAllDataFound = false;
 
                     // Display error message to the user
-                    await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                    await _notificationService.ShowMessage("File Processing Error", errorMessage);
                 }
                 else
                 {
@@ -151,7 +151,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                        await _notificationService.ShowMessage("File Processing Error", errorMessage);
                     }
                     else if (deliveryDate != DateTime.Today.AddDays(1))
                     {
@@ -161,7 +161,7 @@ namespace OrderReader.Core
                         warnings.Add(new OrderWarning(OrderWarning.WarningType.UnusualDate, errorMessage));
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("Unusual Date Warning", errorMessage);
+                        await _notificationService.ShowMessage("Unusual Date Warning", errorMessage);
                     }
 
                     // Process and validate all products
@@ -184,7 +184,7 @@ namespace OrderReader.Core
                                 warnings.Add(new OrderWarning(OrderWarning.WarningType.UnknownProduct, errorMessage));
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("Unknown Product Warning", errorMessage);
+                                await _notificationService.ShowMessage("Unknown Product Warning", errorMessage);
                             }
                             else
                             {
@@ -195,7 +195,7 @@ namespace OrderReader.Core
                                 isAllDataFound = false;
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("Unknown Product Error", errorMessage);
+                                await _notificationService.ShowMessage("Unknown Product Error", errorMessage);
                             }
                         }
                         else
@@ -203,7 +203,7 @@ namespace OrderReader.Core
                             // Get the product quantity
                             if (double.TryParse(product.Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double quantity))
                             {
-                                OrderProduct orderProduct = new OrderProduct(customer.Id, customer.GetProduct(product.Key).Id, quantity);
+                                OrderProduct orderProduct = new OrderProduct(customer.Id, customer.GetProduct(product.Key).Id, quantity, customer);
                                 products.Add(orderProduct);
                             }
                             else
@@ -215,7 +215,7 @@ namespace OrderReader.Core
                                 isAllDataFound = false;
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                                await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                         }
                     }
@@ -230,7 +230,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                        await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                     }
 
                     // Make sure we have valid products to add
@@ -242,7 +242,7 @@ namespace OrderReader.Core
                         isAllDataFound = false;
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                        await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                     }
 
                     // Create the depot object
@@ -252,7 +252,7 @@ namespace OrderReader.Core
                     if (isAllDataFound)
                     {
                         // Create a  new order object
-                        Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id);
+                        Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
 
                         // Add products to this order
                         foreach (OrderProduct product in products)
@@ -270,17 +270,17 @@ namespace OrderReader.Core
                         if (order.GetTotalProductQuantity() == orderTotal || order.GetTotalProductQuantity() == orderTotal - unknownProductQuantity)
                         {
                             // Check if the same order already exists
-                            if (IoC.Orders().HasOrder(order) || IoC.Orders().HasOrderWithSameReference(order))
+                            if (ordersLibrary.HasOrder(order) || ordersLibrary.HasOrderWithSameReference(order))
                             {
                                 string errorMessage = $"The order in file {fileName} could not be processed. An order with the same reference number already exists.";
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                                await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                             else
                             {
                                 // Add this order to the list
-                                IoC.Orders().AddOrder(order);
+                                ordersLibrary.AddOrder(order);
                             }
                         }
                         else
@@ -291,7 +291,7 @@ namespace OrderReader.Core
                                 "This file was not processed.";
 
                             // Display error message to the user
-                            await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                            await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                         }
                     }
                 }

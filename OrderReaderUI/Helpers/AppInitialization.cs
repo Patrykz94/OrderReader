@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using OrderReader.Core.Interfaces;
 using OrderReaderUI.ViewModels;
 using OrderReaderUI.ViewModels.Dialogs;
 
@@ -10,10 +11,12 @@ namespace OrderReaderUI.Helpers;
 
 public class AppInitialization
 {
+    private readonly INotificationService _notificationService;
     private readonly IWindowManager _windowManager;
 
-    public AppInitialization(IWindowManager windowManager)
+    public AppInitialization(INotificationService notificationService, IWindowManager windowManager)
     {
+        _notificationService = notificationService;
         _windowManager = windowManager;
     }
 
@@ -56,10 +59,10 @@ public class AppInitialization
             // Test the new configs file again
             if (!SqliteDataAccess.TestConnection())
             {
-                await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                await _notificationService.ShowMessage(
                     "Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
                     "Configuration Error",
-                    "Exit"));
+                    "Exit");
 
                 Environment.Exit(0);
             }
@@ -85,24 +88,24 @@ public class AppInitialization
                 var appConfig = Settings.LoadConfigs(filePath);
                 if (appConfig.HasConfigs())
                 {
-                    appConfig.UpdateConfigs();
+                    appConfig.UpdateConfigs(_notificationService);
                 }
                 else
                 {
-                    await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                    await _notificationService.ShowMessage(
                             $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
                             "Configuration Error",
-                            "Exit"));
+                            "Exit");
 
                     if (exitOnError) Environment.Exit(0);
                 }
             }
             catch (Exception ex)
             {
-                await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+                await _notificationService.ShowMessage(
                         $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
                         "Configuration Error",
-                        "Exit"));
+                        "Exit");
 
                 if (exitOnError) Environment.Exit(0);
             }
@@ -132,9 +135,9 @@ public class AppInitialization
         }
         catch (Exception ex)
         {
-            await _windowManager.ShowDialogAsync(new DialogMessageViewModel(
+            await _notificationService.ShowMessage(
                     $"Failed to delete the backup config file:\n\n{ex.Message}",
-                    "Config Restore Error"));
+                    "Config Restore Error");
         }
 
     }

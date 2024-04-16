@@ -8,7 +8,9 @@ namespace OrderReader.Core
     {
         #region Public Properties
 
-        public static IUserNotificationService UserNotificationService { get; set; }
+        public static INotificationService NotificationService { get; set; }
+        public static OrdersLibrary OrdersLibrary { get; set; }
+        public static CustomersHandler CustomersHandler { get; set; }
 
         #endregion
 
@@ -35,18 +37,13 @@ namespace OrderReader.Core
                         return await ReadPDFFileAsync(filePath);
                     default:
                         // Display error message to the user
-                        await UserNotificationService.ShowMessage("File Processing Error", "Unsupported file type.");
+                        await NotificationService.ShowMessage("File Processing Error", "Unsupported file type.");
                         return false;
                 }
             }
 
             // Display error message to the user
-            await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-            {
-                Title = "File Processing Error",
-                Message = "Could not process this file.",
-                ButtonText = "OK"
-            });
+            await NotificationService.ShowMessage("File Processing Error", "Could not process this file.");
 
             return false;
         }
@@ -62,9 +59,9 @@ namespace OrderReader.Core
         /// <returns>Whether or not processing was successful</returns>
         private static async Task<bool> ReadExcelFileAsync(string filePath)
         {
-            ExcelImport excelImporter = new ExcelImport(filePath, UserNotificationService);
+            ExcelImport excelImporter = new ExcelImport(filePath, NotificationService);
 
-            return await excelImporter.ProcessFileAsync();
+            return await excelImporter.ProcessFileAsync(CustomersHandler, OrdersLibrary);
         }
 
         /// <summary>
@@ -74,9 +71,9 @@ namespace OrderReader.Core
         /// <returns>Whether or not processing was successful</returns>
         private static async Task<bool> ReadPDFFileAsync(string filePath)
         {
-            PDFImport pdfImporter = new PDFImport(filePath, UserNotificationService);
+            PDFImport pdfImporter = new PDFImport(filePath, NotificationService);
 
-            return await pdfImporter.ProcessFileAsync();
+            return await pdfImporter.ProcessFileAsync(CustomersHandler, OrdersLibrary);
         }
 
         #endregion

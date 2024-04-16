@@ -225,7 +225,7 @@ namespace OrderReader.Core
         public CustomersViewModel()
         {
             // Initialize the customers property
-            Customers = IoC.Customers();
+            Customers = new();//IoC.Customers();
             Customers.LoadCustomers();
             UpdateFields(IndexChangedFor.Customer);
 
@@ -440,13 +440,13 @@ namespace OrderReader.Core
             Depot depot = customer.Depots[depotIndex];
 
             // Ask the user for confirmation
-            var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
-            {
-                Title = "Confirm Removing Depot",
-                Question = $"Are you sure you want to remove the {depot.Name} depot?"
-            });
+            // var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
+            // {
+            //     Title = "Confirm Removing Depot",
+            //     Question = $"Are you sure you want to remove the {depot.Name} depot?"
+            // });
 
-            if (result == DialogResult.No) return;
+            // if (result == DialogResult.No) return;
 
             // Delete the depot from database first
             SqliteDataAccess.RemoveDepot(depot.Id);
@@ -467,13 +467,13 @@ namespace OrderReader.Core
             Product product = customer.Products[productIndex];
 
             // Ask the user for confirmation
-            var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
-            {
-                Title = "Confirm Removing Product",
-                Question = $"Are you sure you want to remove {product.Name}?"
-            });
-
-            if (result == DialogResult.No) return;
+            // var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
+            // {
+            //     Title = "Confirm Removing Product",
+            //     Question = $"Are you sure you want to remove {product.Name}?"
+            // });
+            //
+            // if (result == DialogResult.No) return;
 
             // Delete the product from database first
             SqliteDataAccess.RemoveProduct(product.Id);

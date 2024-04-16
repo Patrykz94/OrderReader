@@ -35,12 +35,14 @@ namespace OrderReader.Core
         /// <summary>
         /// Gets the name of the Customer
         /// </summary>
-        public string CustomerName => GetCustomerName();
+        public string CustomerName => Customer.Name;
 
         /// <summary>
         /// An ID of the depot
         /// </summary>
         public int DepotID { get; private set; }
+
+        public Customer Customer { get; }
 
         /// <summary>
         /// Gets the name of the Depot
@@ -73,12 +75,13 @@ namespace OrderReader.Core
         /// <param name="date">The required delivery date</param>
         /// <param name="customerId">Id of the customer</param>
         /// <param name="depotId">Id of the customer depot</param>
-        public Order(string orderReference, DateTime date, int customerId, int depotId)
+        public Order(string orderReference, DateTime date, int customerId, int depotId, Customer customer)
         {
             OrderReference = orderReference;
             Date = date;
             CustomerID = customerId;
             DepotID = depotId;
+            Customer = customer;
 
             // OrderID is constructed from CustomerID and date
             OrderID = $"{CustomerID}-{Date.Year}-{Date.Month}-{Date.Day}";
@@ -108,7 +111,7 @@ namespace OrderReader.Core
             }
 
             // If same product is not on this order yet, add it to the list
-            Products.Add(new OrderProduct(CustomerID, productId, quantity));
+            Products.Add(new OrderProduct(CustomerID, productId, quantity, Customer));
             SortProducts();
         }
 
@@ -181,25 +184,14 @@ namespace OrderReader.Core
         #endregion
 
         #region Private Helpers
-
-        /// <summary>
-        /// Gets the name of customer on this order
-        /// </summary>
-        /// <returns>Name of the customer</returns>
-        private string GetCustomerName()
-        {
-            return IoC.Customers().HasCustomer(CustomerID) ? IoC.Customers().GetCustomerByID(CustomerID).Name : $"Customer not found [ID - {CustomerID}]";
-        }
-
+        
         /// <summary>
         /// Gets the name of depot on this order
         /// </summary>
         /// <returns>Name of the depot</returns>
         private string GetDepotName()
         {
-            if (IoC.Customers().HasCustomer(CustomerID))
-                return IoC.Customers().GetCustomerByID(CustomerID).HasDepot(DepotID) ? IoC.Customers().GetCustomerByID(CustomerID).GetDepot(DepotID).Name : $"Depot not found [ID - {DepotID}]";
-            return $"Customer not found [ID - {DepotID}]";
+                return Customer.HasDepot(DepotID) ? Customer.GetDepot(DepotID).Name : $"Depot not found [ID - {DepotID}]";
         }
 
         /// <summary>

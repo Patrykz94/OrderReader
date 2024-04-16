@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Runtime.Serialization;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
@@ -77,7 +78,7 @@ namespace OrderReader.Core
         /// Updates the configuration file when a new file is provided
         /// </summary>
         /// <returns>Whether or not the config was successfully updated</returns>
-        public bool UpdateConfigs()
+        public bool UpdateConfigs(INotificationService notificationService)
         {
             try
             {
@@ -97,12 +98,7 @@ namespace OrderReader.Core
             catch(Exception ex)
             {
                 // If an error occurs, we just want to show the error message and return false, instead of crashing the application
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Error",
-                    Message = $"An error occured while trying to update the configuration file:\n{ex.Message}",
-                    ButtonText = "OK"
-                });
+                notificationService.ShowMessage("Error", $"An error occured while trying to update the configuration file:\n{ex.Message}");
                 return false;
             }
             return true;

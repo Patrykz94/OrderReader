@@ -2,7 +2,6 @@
 using Caliburn.Micro;
 using OrderReader;
 using OrderReader.Core;
-using IoC = Caliburn.Micro.IoC;
 using OrderListViewModel = OrderReaderUI.ViewModels.Controls.Orders.OrderListViewModel;
 
 namespace OrderReaderUI.ViewModels;

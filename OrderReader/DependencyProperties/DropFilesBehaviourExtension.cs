@@ -150,11 +150,11 @@ namespace OrderReader
                         }
                         catch (Exception ex)
                         {
-                            IoC.UI.ShowMessage(new MessageBoxDialogViewModel {
-                                Title = "Error deleting a file",
-                                Message = ex.Message,
-                                ButtonText = "OK"
-                            });
+                            // IoC.UI.ShowMessage(new MessageBoxDialogViewModel {
+                            //     Title = "Error deleting a file",
+                            //     Message = ex.Message,
+                            //     ButtonText = "OK"
+                            // });
                         }
                     }
                 }

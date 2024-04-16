@@ -58,32 +58,32 @@ namespace OrderReader.Core
             for (int i = Orders.Count-1; i >= 0; i--)
             {
                 var OrderVM = Orders[i];
-                if (IoC.Orders().HasOrdersWithID(OrderVM.OrderID))
-                {
-                    for (int c = OrderVM.Orders.Count-1; c >= 0; c--)
-                    {
-                        Order o = OrderVM.Orders[c];
-                        if (!IoC.Orders().HasOrder(o))
-                        {
-                            OrderVM.Orders.Remove(o);
-                            OrderVM.ReloadTable();
-                        }
-                    }
-                }
-                else
-                {
-                    Orders.Remove(OrderVM);
-                }
+                // if (IoC.Orders().HasOrdersWithID(OrderVM.OrderID))
+                // {
+                //     for (int c = OrderVM.Orders.Count-1; c >= 0; c--)
+                //     {
+                //         Order o = OrderVM.Orders[c];
+                //         // if (!IoC.Orders().HasOrder(o))
+                //         // {
+                //         //     OrderVM.Orders.Remove(o);
+                //         //     OrderVM.ReloadTable();
+                //         // }
+                //     }
+                // }
+                // else
+                // {
+                //     Orders.Remove(OrderVM);
+                // }
             }
 
             // Add all new orders
-            List<string> OrderIDs = IoC.Orders().GetUniqueOrderIDs();
+            List<string> OrderIDs = []; //IoC.Orders().GetUniqueOrderIDs();
 
             foreach (string orderId in OrderIDs)
             {
                 if (!HasOrdersWithID(orderId))
                 {
-                    Orders.Add(new OrderListItemViewModel(Orders, orderId, IoC.Orders().GetAllOrdersWithID(orderId)));
+                    //Orders.Add(new OrderListItemViewModel(Orders, orderId, IoC.Orders().GetAllOrdersWithID(orderId)));
                 }
                 else
                 {
@@ -91,15 +91,15 @@ namespace OrderReader.Core
                     {
                         if (OrderVM.OrderID == orderId)
                         {
-                            foreach (Order o in IoC.Orders().GetAllOrdersWithID(orderId))
-                            {
-                                if (!OrderVM.HasOrder(o))
-                                {
-                                    OrderVM.Orders.Add(o);
-                                    OrderVM.SortOrders();
-                                    OrderVM.ReloadTable();
-                                }
-                            }
+                            // foreach (Order o in IoC.Orders().GetAllOrdersWithID(orderId))
+                            // {
+                            //     if (!OrderVM.HasOrder(o))
+                            //     {
+                            //         OrderVM.Orders.Add(o);
+                            //         OrderVM.SortOrders();
+                            //         OrderVM.ReloadTable();
+                            //     }
+                            // }
                         }
                     }
                 }

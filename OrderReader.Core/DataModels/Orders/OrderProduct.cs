@@ -5,6 +5,12 @@
     /// </summary>
     public class OrderProduct
     {
+        #region Private Variables
+
+        private readonly Customer _customer;
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -36,8 +42,9 @@
         /// </summary>
         /// <param name="ProductID"></param>
         /// <param name="Quantity"></param>
-        public OrderProduct(int customerId, int productId, double quantity)
+        public OrderProduct(int customerId, int productId, double quantity, Customer customer)
         {
+            _customer = customer;
             CustomerID = customerId;
             ProductID = productId;
             Quantity = quantity;
@@ -53,9 +60,7 @@
         /// <returns>Product name</returns>
         private string GetProductName()
         {
-            if (IoC.Customers().HasCustomer(CustomerID))
-                return IoC.Customers().GetCustomerByID(CustomerID).HasProduct(ProductID) ? IoC.Customers().GetCustomerByID(CustomerID).GetProduct(ProductID).Name : $"Product not found [ID - {ProductID}]";
-            return $"Customer not found [ID - {CustomerID} - Product - {ProductID}]";
+            return _customer.HasProduct(ProductID) ? _customer.GetProduct(ProductID).Name : $"Product not found [ID - {ProductID}]";
         }
 
         #endregion

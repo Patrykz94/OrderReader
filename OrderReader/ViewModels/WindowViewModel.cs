@@ -209,11 +209,11 @@ namespace OrderReader
             CloseCommand = new RelayCommand(() => mWindow.Close());
             MenuCommand = new RelayCommand(() => SystemCommands.ShowSystemMenu(mWindow, GetMousePosition()));
             // Got to orders page
-            OrdersPanelCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Orders));
+            // OrdersPanelCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Orders));
             // Got to customers page
-            CustomersCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Customers));
+            // CustomersCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Customers));
             // Got to settings page
-            SettingsCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Settings));
+            // SettingsCommand = new RelayCommand(() => IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.Settings));
 
             // Fix window resize issue
             var resizer = new WindowResizer(mWindow);
@@ -330,12 +330,12 @@ namespace OrderReader
             catch (Exception ex)
             {
                 // If an error occurs, we just want to show the error message, instead of crashing the application
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Config Backup Error",
-                    Message = $"Failed to backup the config file:\n\n{ex.Message}",
-                    ButtonText = "OK"
-                });
+                // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                // {
+                //     Title = "Config Backup Error",
+                //     Message = $"Failed to backup the config file:\n\n{ex.Message}",
+                //     ButtonText = "OK"
+                // });
             }
         }
 

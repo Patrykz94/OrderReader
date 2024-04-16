@@ -60,7 +60,12 @@ public class Bootstrapper : BootstrapperBase
         Application.Current.ShutdownMode = defaultShutdownMode;
         
         // Inject the UserNotificationService to all classes that need it
-        FileImport.UserNotificationService = _container.GetInstance<IUserNotificationService>();
+        FileImport.NotificationService = _container.GetInstance<INotificationService>();
+        FileImport.OrdersLibrary = _container.GetInstance<OrdersLibrary>();
+        FileImport.CustomersHandler = _container.GetInstance<CustomersHandler>();
+
+        PrintingManager.NotificationService = _container.GetInstance<INotificationService>();
+        CSVExport.NotificationService = _container.GetInstance<INotificationService>();
         
         // Display the shell view
         await DisplayRootViewForAsync(typeof(ShellViewModel));
@@ -77,7 +82,7 @@ public class Bootstrapper : BootstrapperBase
             .Singleton<IEventAggregator, EventAggregator>()
             .Singleton<OrdersLibrary>()
             .Singleton<CustomersHandler>()
-            .PerRequest<IUserNotificationService, UserNotificationService>()
+            .PerRequest<INotificationService, NotificationService>()
             .PerRequest<AppInitialization>();
 
         foreach (var assembly in SelectAssemblies())

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
-using System.Windows.Input;
 using Caliburn.Micro;
 using OrderReader.Core;
-using IoC = Caliburn.Micro.IoC;
 
 namespace OrderReaderUI.ViewModels.Controls.Orders;
 
@@ -65,7 +61,12 @@ public class OrderListItemViewModel : Screen
         // Add a column for each product name
         foreach (var uniqueProduct in uniqueProducts)
         {
-            tempTable.Columns.Add(uniqueProduct.ProductName, typeof(double));
+            // Add a new column with a default value of 0
+            var newColumn = new DataColumn(uniqueProduct.ProductName, typeof(double))
+            {
+                DefaultValue = 0.0
+            };
+            tempTable.Columns.Add(newColumn);
         }
         
         // Add the totals column at the end
@@ -95,12 +96,11 @@ public class OrderListItemViewModel : Screen
         totalRow["Depot"] = string.Empty;
         totalRow["PO Number"] = "Totals";
 
-        for (var i = 2; i <= tempTable.Columns.Count; i++)
+        for (var i = 2; i < tempTable.Columns.Count; i++)
         {
-            var column = tempTable.Columns[i];
-            totalRow[column.ColumnName] = tempTable.Rows.Cast<DataRow>().Sum(row => (double)row[column.ColumnName]);
+            totalRow[i] = tempTable.Rows.Cast<DataRow>().Sum(row => (double)row[i]);
         }
-            
+        
         tempTable.Rows.Add(totalRow);
         
     }

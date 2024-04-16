@@ -17,7 +17,7 @@ namespace OrderReader
         /// <summary>
         /// The application view model
         /// </summary>
-        public static ApplicationViewModel ApplicationViewModel => IoC.Get<ApplicationViewModel>();
+        public static ApplicationViewModel ApplicationViewModel => new ApplicationViewModel(); //IoC.Get<ApplicationViewModel>();
 
         #endregion
     }

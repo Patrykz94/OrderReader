@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
@@ -29,6 +30,8 @@ namespace OrderReader.Core
         /// Name of the default system printer
         /// </summary>
         public static string DefaultPrinter = new PrinterSettings().PrinterName;
+        
+        public static INotificationService NotificationService { get; set; }
 
         #endregion
 
@@ -64,12 +67,7 @@ namespace OrderReader.Core
             }
             catch (Exception ex)
             {
-                IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Printing Error",
-                    Message = $"An error occured while trying to print the order:\n{ex.Message}\nOperation was aborted.",
-                    ButtonText = "OK"
-                });
+                NotificationService.ShowMessage("Printing Error", $"An error occured while trying to print the order:\n{ex.Message}\nOperation was aborted.");
                 return false;
             }
         }

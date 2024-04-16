@@ -28,16 +28,16 @@ namespace OrderReader.Core
         /// </summary>
         private readonly string fileName;
         
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly INotificationService _notificationService;
 
         #endregion
 
         #region Constructor
 
         // Default constructor that opens the PDF file and reads from it
-        public PDFImport(string filePath, IUserNotificationService userNotificationService)
+        public PDFImport(string filePath, INotificationService notificationService)
         {
-            _userNotificationService = userNotificationService;
+            _notificationService = notificationService;
             fileExtension = Path.GetExtension(filePath).ToLower();
             fileName = Path.GetFileName(filePath);
             orderText = ReadAllLines(filePath);
@@ -47,24 +47,21 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public async Task<bool> ProcessFileAsync()
+        public async Task<bool> ProcessFileAsync(CustomersHandler customers, OrdersLibrary ordersLibrary)
         {
             // List of available processors - TODO: Populate this list automatically
             List<IParseOrder> orderParsers = new List<IParseOrder>();
-            orderParsers.Add(new KeelingsPDFParser(_userNotificationService));
-
-            CustomersHandler customers = IoC.Customers();
-            customers.LoadCustomers();
+            orderParsers.Add(new KeelingsPDFParser(_notificationService));
 
             foreach (IParseOrder parser in orderParsers)
             {
                 if (parser.FileExtension == fileExtension)
                 {
-                    Customer customer = parser.GetCustmer(orderText, customers);
+                    Customer customer = parser.GetCustomer(orderText, customers);
 
                     if (customer != null)
                     {
-                        await parser.ParseOrderAsync(orderText, fileName, customer);
+                        await parser.ParseOrderAsync(orderText, fileName, customer, ordersLibrary);
                         return true;
                     }
                 }
@@ -74,7 +71,7 @@ namespace OrderReader.Core
                     "Please double check the PDF file to make sure it contains a valid order.\n";
 
             // Display error message to the user
-            await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+            await _notificationService.ShowMessage("File Processing Error", errorMessage);
 
             return false;
         }

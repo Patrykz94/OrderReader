@@ -6,7 +6,7 @@ using OrderReaderUI.ViewModels.Dialogs;
 
 namespace OrderReaderUI.Services;
 
-public class UserNotificationService(IWindowManager windowManager) : IUserNotificationService
+public class NotificationService(IWindowManager windowManager) : INotificationService
 {
     public async Task<DialogResult> ShowMessage(string title, string message, string button = "OK")
     {

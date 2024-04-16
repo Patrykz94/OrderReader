@@ -1,5 +1,4 @@
-﻿using Ninject.Planning.Targets;
-using System;
+﻿using System;
 using System.Globalization;
 
 namespace OrderReader

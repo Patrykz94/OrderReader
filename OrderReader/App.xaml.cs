@@ -50,10 +50,10 @@ namespace OrderReader
             SquirrelAwareApp.HandleEvents(onInitialInstall: OnAppInstall, onAppUninstall: OnAppUninstall, onEveryRun: OnAppRun);
 
             // Setup IoC
-            IoC.SetupInitial();
+            // IoC.SetupInitial();
 
             // Bind a UI Manager
-            IoC.Kernel.Bind<IUIManager>().ToConstant(new UIManager());
+            // IoC.Kernel.Bind<IUIManager>().ToConstant(new UIManager());
 
             // Initialize the settings class which creates all required directories
             Settings.Initialize();
@@ -71,45 +71,45 @@ namespace OrderReader
             if (!SqliteDataAccess.HasConnectionString())
             {
                 // Ask the user to drag and drop a file
-                var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
-                {
-                    Title = "App Configuration",
-                    Heading = "Welcome to Order Reader!",
-                    Message = "To begin using this application, please drag and drop the configuration file provided with the download into the box below.",
-                    CancelButtonText = "Exit"
-                });
-
-                await UpdateConfigFile(result);
+                // var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
+                // {
+                //     Title = "App Configuration",
+                //     Heading = "Welcome to Order Reader!",
+                //     Message = "To begin using this application, please drag and drop the configuration file provided with the download into the box below.",
+                //     CancelButtonText = "Exit"
+                // });
+                //
+                // await UpdateConfigFile(result);
             }
 
             // Test connection to the database
             if (!SqliteDataAccess.TestConnection())
             {
-                var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
-                {
-                    Title = "Configuration Error",
-                    Message = "Application could not access the database.\n\nThis could mean the database file was moved or renamed, or it could indicate a network issue.\n\nIf you have a new configuration file, please drop it into the box below.",
-                    CancelButtonText = "Exit"
-                });
+                // var result = await IoC.UI.ShowMessage(new ConfigFileBoxDialogViewModel
+                // {
+                //     Title = "Configuration Error",
+                //     Message = "Application could not access the database.\n\nThis could mean the database file was moved or renamed, or it could indicate a network issue.\n\nIf you have a new configuration file, please drop it into the box below.",
+                //     CancelButtonText = "Exit"
+                // });
 
-                await UpdateConfigFile(result);
+                // await UpdateConfigFile(result);
 
                 // Test the new configs file again
                 if (!SqliteDataAccess.TestConnection())
                 {
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "Configuration Error",
-                        Message = $"Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
-                        ButtonText = "Exit"
-                    });
+                    // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    // {
+                    //     Title = "Configuration Error",
+                    //     Message = $"Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
+                    //     ButtonText = "Exit"
+                    // });
 
                     Environment.Exit(0);
                 }
             }
 
             // Finish setup
-            IoC.SetupFull();
+            // IoC.SetupFull();
         }
 
         /// <summary>
@@ -131,28 +131,28 @@ namespace OrderReader
                     AppConfiguration appConfig = Settings.LoadConfigs(filePath);
                     if (appConfig.HasConfigs())
                     {
-                        appConfig.UpdateConfigs();
+                        //appConfig.UpdateConfigs();
                     }
                     else
                     {
-                        await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                        {
-                            Title = "Configuration Error",
-                            Message = $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                            ButtonText = "Exit"
-                        });
+                        // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                        // {
+                        //     Title = "Configuration Error",
+                        //     Message = $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                        //     ButtonText = "Exit"
+                        // });
 
                         if (exitOnError) Environment.Exit(0);
                     }
                 }
                 catch (Exception ex)
                 {
-                    await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                    {
-                        Title = "Configuration Error",
-                        Message = $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                        ButtonText = "Exit"
-                    });
+                    // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                    // {
+                    //     Title = "Configuration Error",
+                    //     Message = $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                    //     ButtonText = "Exit"
+                    // });
 
                     if (exitOnError) Environment.Exit(0);
                 }
@@ -182,12 +182,12 @@ namespace OrderReader
             }
             catch (Exception ex)
             {
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Config Restore Error",
-                    Message = $"Failed to delete the backup config file:\n\n{ex.Message}",
-                    ButtonText = "OK"
-                });
+                // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                // {
+                //     Title = "Config Restore Error",
+                //     Message = $"Failed to delete the backup config file:\n\n{ex.Message}",
+                //     ButtonText = "OK"
+                // });
             }
 
         }

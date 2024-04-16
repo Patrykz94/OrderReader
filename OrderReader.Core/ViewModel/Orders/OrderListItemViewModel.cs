@@ -248,9 +248,10 @@ namespace OrderReader.Core
             {
 
                 // Perform all the order processing tasks based on users settings
-                if (settings.ExportCSV) await CSVExport.ExportOrdersToCSV(OrderID);
-
-                if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(this);
+                //if (settings.ExportCSV) await CSVExport.ExportOrdersToCSV(OrderID);
+                
+                
+                if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(OrdersTable, new Customer(), OrderID, Date);
 
                 // Once processed, remove the order without requiring confirmation
                 DeleteOrder(false);
@@ -258,12 +259,12 @@ namespace OrderReader.Core
             catch (Exception ex)
             {
                 // If an error occurs, we want to show the error message
-                await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
-                {
-                    Title = "Processing Error",
-                    Message = $"This order could not processed due to the following error:\n\n{ex.Message}",
-                    ButtonText = "OK"
-                });
+                // await IoC.UI.ShowMessage(new MessageBoxDialogViewModel
+                // {
+                //     Title = "Processing Error",
+                //     Message = $"This order could not processed due to the following error:\n\n{ex.Message}",
+                //     ButtonText = "OK"
+                // });
             }
         }
 
@@ -275,18 +276,18 @@ namespace OrderReader.Core
             /// Prompt user to confirm whether this order should be removed.
             if (promptUser)
             {
-                var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
-                {
-                    Title = "Confirm Deleting Order",
-                    Question = "Are you sure you want to delete this order?"
-                });
-
-                if (result == DialogResult.No) return;
+                // var result = await IoC.UI.ShowMessage(new YesNoBoxDialogViewModel
+                // {
+                //     Title = "Confirm Deleting Order",
+                //     Question = "Are you sure you want to delete this order?"
+                // });
+                //
+                // if (result == DialogResult.No) return;
             }
             // Need to create a confirmation message box with multiple possible answers
             if (OrdersList.Contains(this)) OrdersList.Remove(this);
             // Remove the orders first
-            IoC.Orders().RemoveAllOrdersWithID(OrderID);
+            // IoC.Orders().RemoveAllOrdersWithID(OrderID);
         }
 
         #endregion

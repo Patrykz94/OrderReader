@@ -6,7 +6,7 @@ using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core
 {
-    public class LidlNewExcelParser(IUserNotificationService userNotificationService) : IParseOrder
+    public class LidlNewExcelParser(INotificationService notificationService) : IParseOrder
     {
         #region Private Variables
 
@@ -20,7 +20,7 @@ namespace OrderReader.Core
         /// </summary>
         private static readonly int tableRowCountPosition = 1;
 
-        private readonly IUserNotificationService _userNotificationService = userNotificationService;
+        private readonly INotificationService _notificationService = notificationService;
 
         #endregion
 
@@ -111,7 +111,7 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public Customer GetCustmer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+        public Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
         {
             foreach (KeyValuePair<string, string[]> valuePair in orderText)
             {
@@ -132,7 +132,7 @@ namespace OrderReader.Core
         /// <param name="orderText">The data that we should read from</param>
         /// <param name="fileName">Name of the order file</param>
         /// <param name="customer">Customer associated with this order</param>
-        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer)
+        public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
         {
             foreach (string[] table in orderText.Values)
             {
@@ -233,7 +233,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without depot \"{depotString.Value}\". You will need to add order for that depot manually.";
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                                await _notificationService.ShowMessage("File Processing Error", errorMessage);
                             }
                         }
                     }
@@ -259,7 +259,7 @@ namespace OrderReader.Core
                                     $"\nThis file will be processed without product \"{productString.Value}\". You will need to add that product to order manually if required.";
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                                await _notificationService.ShowMessage("File Processing Error", errorMessage);
                             }
                         }
                     }
@@ -277,7 +277,7 @@ namespace OrderReader.Core
                     errorMessage += "If you think this file has all the correct data, please contact Patryk Z.";
 
                     // Display error message to the user
-                    await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                    await _notificationService.ShowMessage("File Processing Error", errorMessage);
                 }
                 else
                 {
@@ -289,7 +289,7 @@ namespace OrderReader.Core
                             "\nThis file was not processed.";
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                        await _notificationService.ShowMessage("File Processing Error", errorMessage);
                     }
                     else if (deliveryDate != DateTime.Today.AddDays(1))
                     {
@@ -303,7 +303,7 @@ namespace OrderReader.Core
                         }
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("Unusual Date Warning", errorMessage);
+                        await _notificationService.ShowMessage("Unusual Date Warning", errorMessage);
                     }
 
                     // Display all the cells that could not be read from
@@ -318,14 +318,14 @@ namespace OrderReader.Core
                         errorMessage += "\nThis file was not processed.";
 
                         // Display error message to the user
-                        await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+                        await _notificationService.ShowMessage("File Processing Error", errorMessage);
                     }
 
                     // Create the order objects
                     foreach (int col in usedDepotColumns)
                     {
                         Depot depot = customer.GetDepot(depotStrings[col]);
-                        Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id);
+                        Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
                         // Add products
                         foreach (int row in usedProductRows)
                         {
@@ -351,17 +351,17 @@ namespace OrderReader.Core
                         if (order.Products.Count > 0)
                         {
                             // Check if the same order already exists
-                            if (IoC.Orders().HasOrder(order))
+                            if (ordersLibrary.HasOrder(order))
                             {
                                 string errorMessage = $"The order in file {fileName} for depot {order.DepotName} could not be processed. The same order already exists.";
 
                                 // Display error message to the user
-                                await _userNotificationService.ShowMessage("Order Processing Error", errorMessage);
+                                await _notificationService.ShowMessage("Order Processing Error", errorMessage);
                             }
                             else
                             {
                                 // Add this order to the list
-                                IoC.Orders().AddOrder(order);
+                                ordersLibrary.AddOrder(order);
                             }
                         }
                     }

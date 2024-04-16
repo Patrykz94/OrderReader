@@ -12,7 +12,7 @@ namespace OrderReader.Core
     {
         #region Private Variables
         
-        private readonly IUserNotificationService _userNotificationService;
+        private readonly INotificationService _notificationService;
 
         #endregion
 
@@ -43,9 +43,9 @@ namespace OrderReader.Core
         #region Constructor
 
         // Default constructor
-        public ExcelImport(string filePath, IUserNotificationService userNotificationService)
+        public ExcelImport(string filePath, INotificationService notificationService)
         {
-            _userNotificationService = userNotificationService;
+            _notificationService = notificationService;
             fileExtension = Path.GetExtension(filePath).ToLower();
             fileName = Path.GetFileName(filePath);
             excelData = ReadExcelData(filePath);
@@ -56,25 +56,22 @@ namespace OrderReader.Core
 
         #region Public Helpers
 
-        public async Task<bool> ProcessFileAsync()
+        public async Task<bool> ProcessFileAsync(CustomersHandler customers, OrdersLibrary ordersLibrary)
         {
             // List of available processors - TODO: Populate this list with actual parsers
             List<IParseOrder> orderParsers = new List<IParseOrder>();
-            orderParsers.Add(new LidlExcelParser(_userNotificationService));
-            orderParsers.Add(new LidlNewExcelParser(_userNotificationService));
-
-            CustomersHandler customers = IoC.Customers();
-            customers.LoadCustomers();
+            orderParsers.Add(new LidlExcelParser(_notificationService));
+            orderParsers.Add(new LidlNewExcelParser(_notificationService));
 
             foreach (IParseOrder parser in orderParsers)
             {
                 if (parser.FileExtension == fileExtension)
                 {
-                    Customer customer = parser.GetCustmer(orderText, customers);
+                    Customer customer = parser.GetCustomer(orderText, customers);
 
                     if (customer != null)
                     {
-                        await parser.ParseOrderAsync(orderText, fileName, customer);
+                        await parser.ParseOrderAsync(orderText, fileName, customer, ordersLibrary);
                         return true;
                     }
                 }
@@ -84,7 +81,7 @@ namespace OrderReader.Core
                     "Please double check the Excel file to make sure it contains a valid order.\n";
 
             // Display error message to the user
-            await _userNotificationService.ShowMessage("File Processing Error", errorMessage);
+            await _notificationService.ShowMessage("File Processing Error", errorMessage);
 
             return false;
         }
