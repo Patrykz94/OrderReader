@@ -133,8 +133,8 @@ public class OrderListItemViewModel : Screen
                 
             if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(_ordersTable, customer, OrderId, Date);
 
-            // Once processed, remove the order without requiring confirmation
-            await DeleteOrder(false);
+            // Once processed, remove the order
+            Delete();
         }
         catch (Exception ex)
         {
@@ -143,20 +143,26 @@ public class OrderListItemViewModel : Screen
         }
     }
     
-    private async Task DeleteOrder(bool promptUser = true)
+    public async Task DeleteOrder()
     {
         // Prompt user to confirm whether this order should be removed.
-        if (promptUser)
-        {
-            var result = await _notificationService.ShowQuestion("Confirm Deleting Order", "Are you sure you want to delete this order?");
-            
-            if (result == DialogResult.No) return;
-        }
+        var result = await _notificationService.ShowQuestion("Confirm Deleting Order", "Are you sure you want to delete this order?");
         
-        // Remove the orders first
+        if (result == DialogResult.No) return;
+        
+        Delete();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    public void Delete()
+    {
+        // Remove the orders from orders library first
         _ordersLibrary.RemoveAllOrdersWithID(OrderId);
         
-        // Need to create a confirmation message box with multiple possible answers
+        // Then remove this view model from the list
         if (Parent is OrderListViewModel parentViewModel)
         {
             parentViewModel.RemoveItem(this);
