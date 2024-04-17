@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using OrderReader.Core;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReaderUI.ViewModels.Controls.Orders;
 
@@ -12,7 +15,8 @@ public class OrderListItemViewModel : Screen
     #region Private Variables
     
     private readonly OrdersLibrary _ordersLibrary;
-    
+    private readonly INotificationService _notificationService;
+
     private DataTable _ordersTable = new ();
 
     #endregion
@@ -20,6 +24,8 @@ public class OrderListItemViewModel : Screen
     #region Public Properties
 
     public string OrderId { get; init; }
+    
+    public DateTime Date { get; init; }
 
     public ObservableCollection<Order> Orders { get; private set; } = [];
 
@@ -29,11 +35,13 @@ public class OrderListItemViewModel : Screen
 
     #region Constructors
 
-    public OrderListItemViewModel(string orderId)
+    public OrderListItemViewModel(string orderId, OrdersLibrary ordersLibrary, INotificationService notificationService)
     {
-        _ordersLibrary = IoC.Get<OrdersLibrary>();
         OrderId = orderId;
-        
+        _ordersLibrary = ordersLibrary;
+        _notificationService = notificationService;
+        Date = _ordersLibrary.GetAllOrdersWithID(OrderId)[0].Date;
+
         UpdateOrders();
     }
 
@@ -105,6 +113,54 @@ public class OrderListItemViewModel : Screen
 
         _ordersTable = tempTable;
         NotifyOfPropertyChange(() => OrdersView);
+    }
+
+    public async Task ProcessOrder()
+    {
+        // Make sure there are orders to process
+        if (Orders.Count == 0) return;
+        
+        // Load the user settings
+        var settings = Settings.LoadSettings();
+        
+        try
+        {
+            var customer = Orders[0].Customer;
+
+            // Perform all the order processing tasks based on users settings
+            if (settings.ExportCSV) await CSVExport.ExportOrdersToCSV(Orders, customer);
+                
+                
+            if (settings.PrintOrders || settings.ExportPDF) PDFExport.ExportOrderToPDF(_ordersTable, customer, OrderId, Date);
+
+            // Once processed, remove the order without requiring confirmation
+            await DeleteOrder(false);
+        }
+        catch (Exception ex)
+        {
+            // If an error occurs, we want to show the error message
+            await _notificationService.ShowMessage("Processing Error", $"This order could not processed due to the following error:\n\n{ex.Message}");
+        }
+    }
+    
+    private async Task DeleteOrder(bool promptUser = true)
+    {
+        // Prompt user to confirm whether this order should be removed.
+        if (promptUser)
+        {
+            var result = await _notificationService.ShowQuestion("Confirm Deleting Order", "Are you sure you want to delete this order?");
+            
+            if (result == DialogResult.No) return;
+        }
+        
+        // Remove the orders first
+        _ordersLibrary.RemoveAllOrdersWithID(OrderId);
+        
+        // Need to create a confirmation message box with multiple possible answers
+        if (Parent is OrderListViewModel parentViewModel)
+        {
+            parentViewModel.RemoveItem(this);
+        }
     }
 
     #endregion

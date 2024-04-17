@@ -12,10 +12,10 @@ public class OrdersViewModel : Conductor<IScreen>, IFilesDropped
 
     public OrderListViewModel OrderListControl { get; set; }
 
-    public OrdersViewModel()
+    public OrdersViewModel(OrdersLibrary ordersLibrary, OrderListViewModel orderListViewModel)
     {
-        _ordersLibrary = IoC.Get<OrdersLibrary>();
-        OrderListControl = IoC.Get<OrderListViewModel>();
+        _ordersLibrary = ordersLibrary;
+        OrderListControl = orderListViewModel;
     }
     
     protected override async void OnViewLoaded(object view)

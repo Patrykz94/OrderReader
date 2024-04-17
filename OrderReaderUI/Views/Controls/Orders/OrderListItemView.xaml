@@ -29,15 +29,19 @@
             <TextBlock Text="Date"/>
         </Border>
         
-        <Border Grid.Row="0" Grid.Column="3"
-                Style="{StaticResource ShadowBorder}" Margin="0 0 0 10" Padding="10">
-            <TextBlock Text="Delete"/>
-        </Border>
+        <Button Grid.Row="0" Grid.Column="3" Name="DeleteOrder" Content="Delete"
+                Margin="0 0 0 10">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+            </Button.Effect>
+        </Button>
         
-        <Border Grid.Row="0" Grid.Column="4"
-                Style="{StaticResource ShadowBorder}" Margin="10 0 0 10" Padding="10">
-            <TextBlock Text="Process Order"/>
-        </Border>
+        <Button Grid.Row="0" Grid.Column="4" Name="ProcessOrder" Content="Process Order"
+                Margin="10 0 0 10">
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+            </Button.Effect>
+        </Button>
 
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
                 Style="{StaticResource ShadowBorder}" Padding="10">
