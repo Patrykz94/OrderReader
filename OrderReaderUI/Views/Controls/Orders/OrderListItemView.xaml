@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:OrderReaderUI.DesignModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="800"
-             Background="Transparent">
+             d:DesignHeight="400" d:DesignWidth="800"
+             Background="Transparent" d:DataContext="{d:DesignInstance }">
     <Grid Margin="0 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,42 +22,42 @@
 
         <Border Grid.Row="0" Grid.Column="0"
                 Style="{StaticResource ShadowBorder}" Margin="0 0 10 10" Padding="10">
-            <TextBlock Text="Customer"/>
+            <TextBlock Name="Customer"/>
         </Border>
         
         <Border Grid.Row="0" Grid.Column="1"
                 Style="{StaticResource ShadowBorder}" Margin="0 0 0 10" Padding="10">
-            <TextBlock Text="Date"/>
+            <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yy}'}" />
         </Border>
         
         <Button Grid.Row="0" Grid.Column="3" Name="DeleteOrder" Content="Delete"
-                Margin="0 0 0 10">
-            <Button.Effect>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
-            </Button.Effect>
-        </Button>
+                Style="{DynamicResource DeleteOrderButton}" Margin="0 0 0 10"/>
         
         <Button Grid.Row="0" Grid.Column="4" Name="ProcessOrder" Content="Process Order"
-                Margin="10 0 0 10">
-            <Button.Effect>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
-            </Button.Effect>
-        </Button>
+                Style="{DynamicResource ProcessOrderButton}" Margin="10 0 0 10"/>
 
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
-                Style="{StaticResource ShadowBorder}" Padding="10">
-            <DataGrid x:Name="OrdersView"
-                      AutoGenerateColumns="True"
-                      CanUserReorderColumns="False"
-                      CanUserDeleteRows="False"
-                      CanUserAddRows="False"
-                      CanUserSortColumns="False"
-                      IsReadOnly="True"
-                      HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Disabled"
-                      HeadersVisibility="Column"
-                      ColumnWidth="*">
-                
+                Style="{StaticResource ShadowBorder}"
+                x:Name="DataGridBorder">
+            <Border.OpacityMask>
+                <VisualBrush>
+                    <VisualBrush.Visual>
+                        <Border Background="Black"
+                                SnapsToDevicePixels="True"
+                                CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Border.OpacityMask>
+            <!--d:DataContext="{x:Static local:OrderListItemDesginModel.OrdersView}"-->
+            <DataGrid Style="{DynamicResource OrdersGrid}"
+                      CellStyle="{DynamicResource OrdersGridCell}"
+                      ColumnHeaderStyle="{DynamicResource OrdersGridColumnHeader}"
+                      RowStyle="{DynamicResource OrdersGridRow}"
+                      x:Name="OrdersView">
+                <!--ItemsSource="{Binding}"-->
+
             </DataGrid>
         </Border>
     </Grid>

@@ -13,10 +13,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Content="Remove Order" Name="RemoveItem"
-                Visibility="{Binding Items.Count,
-                Converter={StaticResource IntToVisibilityConverter},
-                ConverterParameter=2}"/>
+        <Button Content="Process All" Visibility="Collapsed"/>
+                <!-- Visibility="{Binding Items.Count, -->
+                <!-- Converter={StaticResource IntToVisibilityConverter}, -->
+                <!-- ConverterParameter=2}"/> -->
         <ItemsControl Grid.Row="1" Name="Items">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

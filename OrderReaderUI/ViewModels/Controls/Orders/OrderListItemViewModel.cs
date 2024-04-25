@@ -23,9 +23,11 @@ public class OrderListItemViewModel : Screen
     
     #region Public Properties
 
-    public string OrderId { get; init; }
+    public string OrderId { get; }
     
-    public DateTime Date { get; init; }
+    public string Customer { get; }
+    
+    public DateTime Date { get; }
 
     public ObservableCollection<Order> Orders { get; private set; } = [];
 
@@ -40,7 +42,9 @@ public class OrderListItemViewModel : Screen
         OrderId = orderId;
         _ordersLibrary = ordersLibrary;
         _notificationService = notificationService;
-        Date = _ordersLibrary.GetAllOrdersWithID(OrderId)[0].Date;
+        var order = _ordersLibrary.GetAllOrdersWithID(OrderId)[0];
+        Date = order.Date;
+        Customer = order.CustomerName;
 
         UpdateOrders();
     }

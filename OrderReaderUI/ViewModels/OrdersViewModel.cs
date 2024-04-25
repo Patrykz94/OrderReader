@@ -31,16 +31,22 @@ public class OrdersViewModel : Conductor<IScreen>, IFilesDropped
         {
             await FileImport.ProcessFileAsync(file);
         }
-
-        var ordersList = _ordersLibrary.GetUniqueOrderIDs();
-        foreach (var order in ordersList)
-        {
-            OrderListControl.AddItem(order);
-        }
+        
+        UpdateOrders();
     }
 
     private async Task Orders()
     {
         await ActivateItemAsync(OrderListControl);
+        UpdateOrders();
+    }
+
+    private void UpdateOrders()
+    {
+        var ordersList = _ordersLibrary.GetUniqueOrderIDs();
+        foreach (var order in ordersList)
+        {
+            OrderListControl.AddItem(order);
+        }
     }
 }

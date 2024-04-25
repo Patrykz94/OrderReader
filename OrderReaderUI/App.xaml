@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Styles/Controls.xaml"/>
                 <ResourceDictionary Source="Styles/ComboBox.xaml"/>
                 <ResourceDictionary Source="Styles/TabControl.xaml"/>
+                <ResourceDictionary Source="Styles/DataGrid.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <valueConverters:StringToBoolConverter x:Key="StringToBoolConverter" />

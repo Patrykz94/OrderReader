@@ -25,5 +25,10 @@
         <GradientStop Color="#444444" Offset="0.9"/>
         <GradientStop Color="Transparent" Offset="1.0"/>
     </LinearGradientBrush>
+    
+    <!-- Control Colors -->
+    <Color x:Key="DataGrid.AltRow.Color">#282828</Color>
+    
+    <SolidColorBrush x:Key="DataGrid.AltRow.Brush" Color="{DynamicResource DataGrid.AltRow.Color}"/>
 
 </ResourceDictionary>
