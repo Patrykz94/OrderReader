@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Navigation Accent Colors -->
-    <Color x:Key="NavBackground.Color">#f23d34</Color>
+    <!--<Color x:Key="NavBackground.Color">#f23d34</Color>
     <Color x:Key="NavBackgroundLight.Color">#ff4d36</Color>
     <Color x:Key="NavBackgroundDark.Color">#bf3029</Color>
     
@@ -10,9 +10,9 @@
     <LinearGradientBrush x:Key="NavBackground.Gradient" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="{DynamicResource NavBackgroundLight.Color}" Offset="0.0"/>
         <GradientStop Color="{DynamicResource NavBackground.Color}" Offset="1.0"/>
-    </LinearGradientBrush>
+    </LinearGradientBrush>-->
 
-    <!-- Navigation Buttons -->
+    <!-- Navigation Buttons --><!--
     <Color x:Key="NavButton.Hover.Color">#fff</Color>
     <SolidColorBrush x:Key="NavButton.Hover.Brush" Color="{StaticResource NavButton.Hover.Color}"/>
 
@@ -20,7 +20,7 @@
         <GradientStop Color="Transparent" Offset="0.0"/>
         <GradientStop Color="#ffffff" Offset="0.5"/>
         <GradientStop Color="Transparent" Offset="1.0"/>
-    </LinearGradientBrush>
+    </LinearGradientBrush>-->
 
     <!-- Text Colors On Accent-->
     <Color x:Key="Accent.Foreground.Color">#f0f0f0</Color>

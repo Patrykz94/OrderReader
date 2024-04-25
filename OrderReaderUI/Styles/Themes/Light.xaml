@@ -31,4 +31,24 @@
     
     <SolidColorBrush x:Key="DataGrid.AltRow.Brush" Color="{DynamicResource DataGrid.AltRow.Color}"/>
 
+    <!-- Navigation Accent Colors -->
+    <Color x:Key="NavBackground.Color">#ececec</Color>
+    <Color x:Key="NavBackgroundLight.Color">#ececec</Color>
+
+    <SolidColorBrush x:Key="NavBackground.Brush" Color="{DynamicResource NavBackground.Color}"/>
+    <LinearGradientBrush x:Key="NavBackground.Gradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{DynamicResource NavBackgroundLight.Color}" Offset="0.0"/>
+        <GradientStop Color="{DynamicResource NavBackground.Color}" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- Navigation Buttons -->
+    <Color x:Key="NavButton.Hover.Color">#2e2e2e</Color>
+    <SolidColorBrush x:Key="NavButton.Hover.Brush" Color="{StaticResource NavButton.Hover.Color}"/>
+
+    <LinearGradientBrush x:Key="NavPanel.Line.Brush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="Transparent" Offset="0.0"/>
+        <GradientStop Color="#2e2e2e" Offset="0.5"/>
+        <GradientStop Color="Transparent" Offset="1.0"/>
+    </LinearGradientBrush>
+
 </ResourceDictionary>

@@ -2,15 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Application Theme Colors -->
-    <SolidColorBrush x:Key="Background.Brush" Color="#0d0d0d"/>
+    <SolidColorBrush x:Key="Background.Brush" Color="#1e1e1e"/>
     <LinearGradientBrush x:Key="Background.Gradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#0b0b0b" Offset="0.0"/>
-        <GradientStop Color="#0f0f0f" Offset="1.0"/>
+        <GradientStop Color="#1e1e1e" Offset="0.0"/>
+        <GradientStop Color="#1e1e1e" Offset="1.0"/>
     </LinearGradientBrush>
-    <SolidColorBrush x:Key="Background.Panel.Brush" Color="#1e1e1e"/>
+    <SolidColorBrush x:Key="Background.Panel.Brush" Color="#2a2a2a"/>
 
     <!-- Panel Shadow Colors-->
-    <Color x:Key="Shadow.Color">#aaaaaa</Color>
+    <Color x:Key="Shadow.Color">#000000</Color>
 
     <!-- Text Colors -->
     <SolidColorBrush x:Key="Foreground.Brush" Color="#d1d1d1"/>
@@ -18,7 +18,7 @@
     <SolidColorBrush x:Key="Foreground.Placeholder.Brush" Color="#444444"/>
 
     <!-- Layout Colors -->
-    <SolidColorBrush x:Key="FormDivider.Brush" Color="#333333"/>
+    <SolidColorBrush x:Key="FormDivider.Brush" Color="#444444"/>
     <LinearGradientBrush x:Key="FormDivider.Gradient" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="Transparent" Offset="0.0"/>
         <GradientStop Color="#444444" Offset="0.1"/>
@@ -27,8 +27,18 @@
     </LinearGradientBrush>
     
     <!-- Control Colors -->
-    <Color x:Key="DataGrid.AltRow.Color">#282828</Color>
+    <Color x:Key="DataGrid.AltRow.Color">#323232</Color>
     
     <SolidColorBrush x:Key="DataGrid.AltRow.Brush" Color="{DynamicResource DataGrid.AltRow.Color}"/>
+
+    <!-- Navigation Accent Colors -->
+    <Color x:Key="NavBackground.Color">#2b2b2b</Color>
+    <Color x:Key="NavBackgroundLight.Color">#2b2b2b</Color>
+
+    <SolidColorBrush x:Key="NavBackground.Brush" Color="{DynamicResource NavBackground.Color}"/>
+    <LinearGradientBrush x:Key="NavBackground.Gradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{DynamicResource NavBackgroundLight.Color}" Offset="0.0"/>
+        <GradientStop Color="{DynamicResource NavBackground.Color}" Offset="1.0"/>
+    </LinearGradientBrush>
 
 </ResourceDictionary>

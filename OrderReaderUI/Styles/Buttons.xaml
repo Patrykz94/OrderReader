@@ -4,7 +4,7 @@
     <!-- Navigation Button -->
     <Style TargetType="{x:Type RadioButton}" x:Key="NavButton" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
         <Setter Property="Margin" Value="0"/>
