@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:OrderReaderUI.DesignModels"
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="800"
-             Background="Transparent" d:DataContext="{d:DesignInstance }">
+             Background="Transparent">
     <Grid Margin="0 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -50,15 +49,11 @@
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Border.OpacityMask>
-            <!--d:DataContext="{x:Static local:OrderListItemDesginModel.OrdersView}"-->
             <DataGrid Style="{DynamicResource OrdersGrid}"
                       CellStyle="{DynamicResource OrdersGridCell}"
                       ColumnHeaderStyle="{DynamicResource OrdersGridColumnHeader}"
                       RowStyle="{DynamicResource OrdersGridRow}"
-                      x:Name="OrdersView">
-                <!--ItemsSource="{Binding}"-->
-
-            </DataGrid>
+                      x:Name="OrdersView"/>
         </Border>
     </Grid>
 </UserControl>

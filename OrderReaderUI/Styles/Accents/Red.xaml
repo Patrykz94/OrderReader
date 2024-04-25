@@ -56,9 +56,9 @@
     <SolidColorBrush x:Key="ButtonPressed.Brush" Color="{DynamicResource ButtonPressed.Color}"/>
     <SolidColorBrush x:Key="ButtonDisabled.Brush" Color="{DynamicResource ButtonDisabled.Color}"/>
     <SolidColorBrush x:Key="ButtonDisabledText.Brush" Color="{DynamicResource Accent.Foreground.Secondary.Color}"/>
-    
-    <Color x:Key="DataGridHover.Color">#50ff4d36</Color>
-    <Color x:Key="DataGridSelected.Color">#ff4d36</Color>
+
+    <Color x:Key="DataGridHover.Color">#80f23d34</Color>
+    <Color x:Key="DataGridSelected.Color">#f23d34</Color>
     
     <SolidColorBrush x:Key="DataGridHover.Brush" Color="{DynamicResource DataGridHover.Color}"/>
     <SolidColorBrush x:Key="DataGridSelected.Brush" Color="{DynamicResource DataGridSelected.Color}"/>

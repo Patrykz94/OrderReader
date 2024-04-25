@@ -111,6 +111,7 @@
     </Style>
     <Style x:Key="OrdersGridCell" TargetType="{x:Type DataGridCell}">
         <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -191,21 +192,14 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="DGR_Border" Property="Background" Value="{DynamicResource DataGridHover.Brush}"/>
                         </Trigger>
-                        <MultiTrigger>
+                        <!--<MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="True"/>
                                 <Condition Property="Selector.IsSelectionActive" Value="True"/>
                             </MultiTrigger.Conditions>
                             <Setter TargetName="DGR_Border" Property="Background" Value="{DynamicResource DataGridSelected.Brush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
-                        </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True"/>
-                                <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Foreground" Value="{DynamicResource Foreground.Brush}"/>
-                        </MultiTrigger>
+                        </MultiTrigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
