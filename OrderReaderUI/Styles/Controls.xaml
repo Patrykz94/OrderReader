@@ -222,11 +222,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                    <Border Background="{TemplateBinding Background}" Padding="10 5" Margin="0 2.5"
+                    <Border Background="{TemplateBinding Background}" Margin="0 2.5"
                             CornerRadius="3" SnapsToDevicePixels="True">
+                        <Border.OpacityMask>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Border Background="Black"
+                                            SnapsToDevicePixels="True"
+                                            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.OpacityMask>
                         <ContentPresenter>
                             <ContentPresenter.Resources>
-                                <Style TargetType="TextBlock"/>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Margin" Value="20 5"/>
+                                </Style>
                             </ContentPresenter.Resources>
                         </ContentPresenter>
                     </Border>

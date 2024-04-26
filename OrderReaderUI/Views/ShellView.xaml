@@ -17,17 +17,28 @@
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
+        <!-- Column 2 - Page Content -->
+
+        <Border Grid.Column="1"
+                Background="{DynamicResource Background.Gradient}"/>
+
+        <ContentControl x:Name="ActiveItem" Grid.Column="1"/>
         
         <!-- Column 1 - Navigation Bar -->
 
         <Border Grid.Column="0"
-                Background="{DynamicResource NavBackground.Gradient}"/>
+                Background="{DynamicResource NavBackground.Gradient}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.5"/>
+            </Border.Effect>
+        </Border>
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="75"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             
             <!-- Row 1 - Logo -->
@@ -83,21 +94,13 @@
             </StackPanel>
 
             <!-- Row 3 - Exit Button -->
-            <StackPanel Grid.Row="2" Orientation="Vertical">
+            <StackPanel Grid.Row="2" Orientation="Vertical" Margin="0 5">
                 <RadioButton x:Name="ExitApplication" Content="Exit"
                              Tag="{StaticResource IconNavExit}"
                              Style="{DynamicResource NavButton}"/>
             </StackPanel>
-            
 
         </Grid>
-
-        <!-- Column 2 - Page Content -->
-
-        <Border Grid.Column="1"
-                Background="{DynamicResource Background.Gradient}"/>
-
-        <ContentControl x:Name="ActiveItem" Grid.Column="1"/>
 
     </Grid>
 </Window>

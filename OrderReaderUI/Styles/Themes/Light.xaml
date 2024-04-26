@@ -28,12 +28,14 @@
     
     <!-- Control Colors -->
     <Color x:Key="DataGrid.AltRow.Color">#f5f5f5</Color>
+    <Color x:Key="DataGridHover.Color">#e1e1e1</Color>
     
     <SolidColorBrush x:Key="DataGrid.AltRow.Brush" Color="{DynamicResource DataGrid.AltRow.Color}"/>
+    <SolidColorBrush x:Key="DataGridHover.Brush" Color="{DynamicResource DataGridHover.Color}"/>
 
     <!-- Navigation Accent Colors -->
-    <Color x:Key="NavBackground.Color">#ececec</Color>
-    <Color x:Key="NavBackgroundLight.Color">#ececec</Color>
+    <Color x:Key="NavBackground.Color">#d8d8d8</Color>
+    <Color x:Key="NavBackgroundLight.Color">#d8d8d8</Color>
 
     <SolidColorBrush x:Key="NavBackground.Brush" Color="{DynamicResource NavBackground.Color}"/>
     <LinearGradientBrush x:Key="NavBackground.Gradient" StartPoint="0,0" EndPoint="1,1">
