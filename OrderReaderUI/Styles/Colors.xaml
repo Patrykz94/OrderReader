@@ -33,8 +33,8 @@
     <SolidColorBrush x:Key="AccentGreen.Background.Secondary.Brush" Color="#33b864"/>
     <SolidColorBrush x:Key="AccentGreen.Foreground.Brush" Color="#ffffff"/>
 
-    <SolidColorBrush x:Key="AccentRed.Background.Brush" Color="#f23d34"/>
-    <SolidColorBrush x:Key="AccentRed.Background.Secondary.Brush" Color="#ff4d36"/>
+    <SolidColorBrush x:Key="AccentRed.Background.Brush" Color="#fa2640"/>
+    <SolidColorBrush x:Key="AccentRed.Background.Secondary.Brush" Color="#fb5166"/>
     <SolidColorBrush x:Key="AccentRed.Foreground.Brush" Color="#f0f0f0"/>
 
     <SolidColorBrush x:Key="AccentBlue.Background.Brush" Color="#007fff"/>

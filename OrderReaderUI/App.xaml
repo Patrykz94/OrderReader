@@ -5,6 +5,9 @@
              xmlns:valueConverters="clr-namespace:OrderReaderUI.ValueConverters">
     <Application.Resources>
         <ResourceDictionary>
+            <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <valueConverters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <valueConverters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <local:Bootstrapper x:Key="Bootstrapper"/>
@@ -21,9 +24,6 @@
                 <ResourceDictionary Source="Styles/TabControl.xaml"/>
                 <ResourceDictionary Source="Styles/DataGrid.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <valueConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <valueConverters:StringToBoolConverter x:Key="StringToBoolConverter" />
-            <valueConverters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

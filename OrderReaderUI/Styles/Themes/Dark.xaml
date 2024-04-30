@@ -20,10 +20,10 @@
     <!-- Layout Colors -->
     <SolidColorBrush x:Key="FormDivider.Brush" Color="#5a5a5a"/>
     <LinearGradientBrush x:Key="FormDivider.Gradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="Transparent" Offset="0.0"/>
-        <GradientStop Color="#5a5a5a" Offset="0.1"/>
-        <GradientStop Color="#5a5a5a" Offset="0.9"/>
-        <GradientStop Color="Transparent" Offset="1.0"/>
+        <GradientStop Color="#002a2a2a" Offset="0.0"/>
+        <GradientStop Color="#ff5a5a5a" Offset="0.1"/>
+        <GradientStop Color="#ff5a5a5a" Offset="0.9"/>
+        <GradientStop Color="#002a2a2a" Offset="1.0"/>
     </LinearGradientBrush>
     
     <!-- Control Colors -->
@@ -33,7 +33,7 @@
     <SolidColorBrush x:Key="DataGrid.AltRow.Brush" Color="{DynamicResource DataGrid.AltRow.Color}"/>
     <SolidColorBrush x:Key="DataGridHover.Brush" Color="{DynamicResource DataGridHover.Color}"/>
 
-    <!-- Navigation Accent Colors -->
+    <!-- Navigation Colors -->
     <Color x:Key="NavBackground.Color">#2b2b2b</Color>
     <Color x:Key="NavBackgroundLight.Color">#2b2b2b</Color>
 
@@ -43,14 +43,10 @@
         <GradientStop Color="{DynamicResource NavBackground.Color}" Offset="1.0"/>
     </LinearGradientBrush>
     
-    <!-- Navigation Buttons -->
-    <Color x:Key="NavButton.Hover.Color">#aaaaaa</Color>
-    <SolidColorBrush x:Key="NavButton.Hover.Brush" Color="{StaticResource NavButton.Hover.Color}"/>
-
     <LinearGradientBrush x:Key="NavPanel.Line.Brush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="Transparent" Offset="0.0"/>
-        <GradientStop Color="#aaaaaa" Offset="0.5"/>
-        <GradientStop Color="Transparent" Offset="1.0"/>
+        <GradientStop Color="#002b2b2b" Offset="0.0"/>
+        <GradientStop Color="#ffaaaaaa" Offset="0.5"/>
+        <GradientStop Color="#002b2b2b" Offset="1.0"/>
     </LinearGradientBrush>
 
 </ResourceDictionary>
