@@ -1,14 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
-    <!-- Navigation Bar Accent Colour -->
-    <LinearGradientBrush x:Key="NavBackground.Accent.Gradient" StartPoint="0,0" EndPoint="0.25,1">
-        <GradientStop Color="#ccfa2640" Offset="0.0"/>
-        <GradientStop Color="#ccfa2640" Offset="0.15"/>
-        <GradientStop Color="#00fa2640" Offset="0.5"/>
-        <GradientStop Color="#00fa2640" Offset="1.0"/>
-    </LinearGradientBrush>
-    
     <!-- Text Colors On Accent-->
     <Color x:Key="Accent.Foreground.Color">#f0f0f0</Color>
     <Color x:Key="Accent.Foreground.Secondary.Color">#c8c8c8</Color>

@@ -25,28 +25,24 @@
     <Color x:Key="DarkTheme.Shadow.Color">#000000</Color>
     
     <!-- Accent Selection Colours -->
-    <SolidColorBrush x:Key="AccentGray.Background.Brush" Color="#6a6a6a"/>
-    <SolidColorBrush x:Key="AccentGray.Background.Secondary.Brush" Color="#8f8f8f"/>
-    <SolidColorBrush x:Key="AccentGray.Foreground.Brush" Color="#ffffff"/>
-    
-    <SolidColorBrush x:Key="AccentGreen.Background.Brush" Color="#228b22"/>
-    <SolidColorBrush x:Key="AccentGreen.Background.Secondary.Brush" Color="#33b864"/>
-    <SolidColorBrush x:Key="AccentGreen.Foreground.Brush" Color="#ffffff"/>
+    <SolidColorBrush x:Key="AccentGreenLight.Background.Brush" Color="#00c47d"/>
+    <SolidColorBrush x:Key="AccentGreen.Background.Brush" Color="#00a167"/>
+    <SolidColorBrush x:Key="AccentGreenDark.Background.Brush" Color="#008152"/>
+    <SolidColorBrush x:Key="AccentGreen.Foreground.Brush" Color="#f0f0f0"/>
 
+    <SolidColorBrush x:Key="AccentRedLight.Background.Brush" Color="#fb5166"/>
     <SolidColorBrush x:Key="AccentRed.Background.Brush" Color="#fa2640"/>
-    <SolidColorBrush x:Key="AccentRed.Background.Secondary.Brush" Color="#fb5166"/>
+    <SolidColorBrush x:Key="AccentRedDark.Background.Brush" Color="#e10520"/>
     <SolidColorBrush x:Key="AccentRed.Foreground.Brush" Color="#f0f0f0"/>
 
-    <SolidColorBrush x:Key="AccentBlue.Background.Brush" Color="#007fff"/>
-    <SolidColorBrush x:Key="AccentBlue.Background.Secondary.Brush" Color="#3e8ede"/>
-    <SolidColorBrush x:Key="AccentBlue.Foreground.Brush" Color="#ffffff"/>
+    <SolidColorBrush x:Key="AccentBlueLight.Background.Brush" Color="#51a5fb"/>
+    <SolidColorBrush x:Key="AccentBlue.Background.Brush" Color="#268efa"/>
+    <SolidColorBrush x:Key="AccentBlueDark.Background.Brush" Color="#0571e1"/>
+    <SolidColorBrush x:Key="AccentBlue.Foreground.Brush" Color="#f0f0f0"/>
 
-    <SolidColorBrush x:Key="AccentPurple.Background.Brush" Color="#800080"/>
-    <SolidColorBrush x:Key="AccentPurple.Background.Secondary.Brush" Color="#bf40bf"/>
-    <SolidColorBrush x:Key="AccentPurple.Foreground.Brush" Color="#ffffff"/>
-
-    <SolidColorBrush x:Key="AccentYellow.Background.Brush" Color="#fff700"/>
-    <SolidColorBrush x:Key="AccentYellow.Background.Secondary.Brush" Color="#fdfd96"/>
-    <SolidColorBrush x:Key="AccentYellow.Foreground.Brush" Color="#000000"/>
+    <SolidColorBrush x:Key="AccentYellowLight.Background.Brush" Color="#fcf27d"/>
+    <SolidColorBrush x:Key="AccentYellow.Background.Brush" Color="#faea26"/>
+    <SolidColorBrush x:Key="AccentYellowDark.Background.Brush" Color="#e1d105"/>
+    <SolidColorBrush x:Key="AccentYellow.Foreground.Brush" Color="#2e2e2e"/>
 
 </ResourceDictionary>

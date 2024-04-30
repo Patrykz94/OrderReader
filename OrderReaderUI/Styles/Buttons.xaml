@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ap="clr-namespace:OrderReaderUI.AttachedProperties">
 
     <!-- Navigation Button -->
     <Style TargetType="{x:Type RadioButton}" x:Key="NavButton" BasedOn="{StaticResource BaseStyle}">
@@ -131,7 +132,6 @@
 
     <!-- Accent Selection Button -->
     <Style TargetType="{x:Type RadioButton}" x:Key="AccentButton" BasedOn="{StaticResource BaseStyle}">
-        <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
         <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="FontSize" Value="{DynamicResource FontSize.Large}"/>
@@ -141,31 +141,39 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RadioButton}">
-                    <Border BorderThickness="2"
-                            x:Name="border"
-                            BorderBrush="{DynamicResource Background.Panel.Brush}"
-                            Background="{DynamicResource Background.Panel.Brush}"
+                    <Border x:Name="border"
                             CornerRadius="10"
+                            Height="75"
                             Margin="10 10">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.4"/>
                         </Border.Effect>
+                        <Border.OpacityMask>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Border Background="Black"
+                                            SnapsToDevicePixels="True"
+                                            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.OpacityMask>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition x:Name="centre"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0" Margin="10" CornerRadius="5" Height="50"
-                                    Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}">
-                                <TextBlock Text="Example" Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Foreground}"
-                                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            </Border>
+                            <Border Grid.Column="0" Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=(ap:MultiColorButton.Column1Background)}"/>
+                            <Border Grid.Column="1" Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=(ap:MultiColorButton.Column2Background)}"/>
+                            <Border Grid.Column="2" Background="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=(ap:MultiColorButton.Column3Background)}"/>
 
-                            <TextBlock Grid.Column="1"
+                            <TextBlock Grid.Column="0" Grid.ColumnSpan="3"
                                        Text="{TemplateBinding Content}"
-                                       Foreground="{DynamicResource Foreground.Brush}"
+                                       Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Foreground}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        FontSize="{TemplateBinding FontSize}"/>
@@ -177,19 +185,18 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Effect" TargetName="border">
                                 <Setter.Value>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="1"/>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=(ap:MultiColorButton.Column2Background).Color}" Opacity="1"/>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter Property="Effect" TargetName="border">
                                 <Setter.Value>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background.Color}" Opacity="1"/>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=(ap:MultiColorButton.Column2Background).Color}" Opacity="1"/>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}, Path=Background}"/>
                             <Setter Property="FontWeight" Value="Medium"/>
+                            <Setter TargetName="centre" Property="Width" Value="2*"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

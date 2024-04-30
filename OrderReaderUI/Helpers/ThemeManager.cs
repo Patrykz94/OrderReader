@@ -11,7 +11,7 @@ public class ThemeManager
     #region Private Memebers
 
     private static readonly List<string> ThemeList = ["Light", "Dark"];
-    private static readonly List<string> AccentList = ["Grey", "Green", "Red", "Blue", "Purple", "Yellow"];
+    private static readonly List<string> AccentList = ["Green", "Red", "Blue", "Yellow"];
 
     #endregion
 
