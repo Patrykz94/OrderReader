@@ -26,9 +26,12 @@ public class AppInitialization
         Settings.Initialize();
         
         // Attempt to load user settings in order to set the desired theme and accent colour
-        var userSettings = Settings.LoadSettings();
-        ThemeManager.ChangeTheme(userSettings.Theme);
-        ThemeManager.ChangeAccent(userSettings.Accent);
+        if (Settings.SettingsFileExists())
+        {
+            var userSettings = Settings.LoadSettings();
+            ThemeManager.ChangeTheme(userSettings.Theme);
+            ThemeManager.ChangeAccent(userSettings.Accent);
+        }
 
         // Check if there are any saved settings and if so, restore them
         RestoreSettings();

@@ -60,6 +60,11 @@ namespace OrderReader.Core
             if (!Directory.Exists(TempFilesPath)) Directory.CreateDirectory(TempFilesPath);
             if (!Directory.Exists(SettingsPath)) Directory.CreateDirectory(SettingsPath);
         }
+        
+        public static bool SettingsFileExists()
+        {
+            return File.Exists(SettingsFile);
+        }
 
         /// <summary>
         /// Load user settings from file
