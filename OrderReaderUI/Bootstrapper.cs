@@ -11,6 +11,7 @@ using System.Text;
 using System.Windows;
 using OrderReader.Core.Interfaces;
 using OrderReaderUI.Services;
+using OrderReaderUI.DependencyProperties;
 
 namespace OrderReaderUI;
 
@@ -66,6 +67,7 @@ public class Bootstrapper : BootstrapperBase
 
         PrintingManager.NotificationService = _container.GetInstance<INotificationService>();
         CSVExport.NotificationService = _container.GetInstance<INotificationService>();
+        DropFilesBehaviourExtension.NotificationService = _container.GetInstance<INotificationService>();
         
         // Display the shell view
         await DisplayRootViewForAsync(typeof(ShellViewModel));

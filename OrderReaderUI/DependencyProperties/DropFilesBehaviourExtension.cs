@@ -3,11 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
-using Caliburn.Micro;
 using OrderReader;
 using OrderReader.Core;
-using OrderReaderUI.ViewModels;
-using OrderReaderUI.ViewModels.Dialogs;
+using OrderReader.Core.Interfaces;
 
 namespace OrderReaderUI.DependencyProperties;
 
@@ -16,6 +14,8 @@ namespace OrderReaderUI.DependencyProperties;
 /// </summary>
 public class DropFilesBehaviourExtension
 {
+    public static INotificationService NotificationService { get; set; } = null!;
+
     public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(
         "IsEnabled", typeof(bool), typeof(DropFilesBehaviourExtension), new FrameworkPropertyMetadata(default(bool), OnPropChanged)
         {
@@ -153,20 +153,14 @@ public class DropFilesBehaviourExtension
                 }
                 catch (Exception ex)
                 {
-                    var dialogMessage = new DialogMessageViewModel()
-                    {
-                        Title = "Error deleting a file",
-                        Message = ex.Message
-                    };
-                    // TODO - See if we can somehow get this through Dependency Injection
-                    await new WindowManager().ShowDialogAsync(dialogMessage);
+                    await NotificationService.ShowMessage("Error deleting a file", ex.Message);
                 }
             }
         }
         catch (Exception ex)
         {
             Trace.WriteLine("Error in DragDrop function: " + ex.Message);
-            // Dont use Dialog Message here because either Outlook or Explorer are waiting!
+            // Don't use Dialog Message here because either Outlook or Explorer are waiting!
         }
     }
 

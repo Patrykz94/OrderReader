@@ -2,24 +2,14 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Caliburn.Micro;
 using OrderReader.Core.Interfaces;
 using OrderReaderUI.ViewModels;
 using OrderReaderUI.ViewModels.Dialogs;
 
 namespace OrderReaderUI.Helpers;
 
-public class AppInitialization
+public class AppInitialization(INotificationService notificationService)
 {
-    private readonly INotificationService _notificationService;
-    private readonly IWindowManager _windowManager;
-
-    public AppInitialization(INotificationService notificationService, IWindowManager windowManager)
-    {
-        _notificationService = notificationService;
-        _windowManager = windowManager;
-    }
-
     public async Task Initialize()
     {
         // Initialize the settings class which creates all required directories
@@ -39,37 +29,35 @@ public class AppInitialization
         // Check if app is configured
         if (!SqliteDataAccess.HasConnectionString())
         {
-            // Config File Dialog
-            var configDialog = new DialogConfigFileViewModel(secondaryButtonText: "Exit");
-            var configResult = await _windowManager.ShowDialogAsync(configDialog);
+            // Show Config File Dialog
+            var configResult = await notificationService.ShowConfigMessage();
             
             // If user did not provide the file, exit the application
-            if (configResult != true) Environment.Exit(0);
+            if (configResult == string.Empty) Environment.Exit(0);
 
-            await UpdateConfigFile(configDialog.ConfigFileLocation);
+            await UpdateConfigFile(configResult);
         }
 
         // Test connection to the database
         if (!SqliteDataAccess.TestConnection())
         {
-            // Config File Dialog
-            var configDialog = new DialogConfigFileViewModel("Configuration Error", secondaryButtonText: "Exit")
-            {
-                Message = "Application could not access the database.\n\nThis could mean the database file was moved or renamed, or it could indicate a network issue.\n\nIf you have a new configuration file, please drop it into the box below."
-            };
-            var configResult = await _windowManager.ShowDialogAsync(configDialog);
+            // Show Config File Dialog
+            const string message = "Application could not access the database.\n\n" +
+                                   "This could mean the database file was moved or renamed, or it could indicate a network issue.\n\n" +
+                                   "If you have a new configuration file, please drop it into the box below.";
+            var configResult = await notificationService.ShowConfigMessage("Configuration Error", message);
             
             // If user did not provide the file, exit the application
-            if (configResult != true) Environment.Exit(0);
+            if (configResult == string.Empty) Environment.Exit(0);
 
-            await UpdateConfigFile(configDialog.ConfigFileLocation);
+            await UpdateConfigFile(configResult);
 
             // Test the new configs file again
             if (!SqliteDataAccess.TestConnection())
             {
-                await _notificationService.ShowMessage(
-                    "Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
+                await notificationService.ShowMessage(
                     "Configuration Error",
+                    "Could not connect to the database using the configuration file provided.\n\nApplication will now terminate.",
                     "Exit");
 
                 Environment.Exit(0);
@@ -96,24 +84,24 @@ public class AppInitialization
                 var appConfig = Settings.LoadConfigs(filePath);
                 if (appConfig.HasConfigs())
                 {
-                    appConfig.UpdateConfigs(_notificationService);
+                    appConfig.UpdateConfigs(notificationService);
                 }
                 else
                 {
-                    await _notificationService.ShowMessage(
-                            $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                            "Configuration Error",
-                            "Exit");
+                    await notificationService.ShowMessage(
+                        "Configuration Error",
+                        $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                        "Exit");
 
                     if (exitOnError) Environment.Exit(0);
                 }
             }
             catch (Exception ex)
             {
-                await _notificationService.ShowMessage(
-                        $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
-                        "Configuration Error",
-                        "Exit");
+                await notificationService.ShowMessage(
+                    "Configuration Error",
+                    $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
+                    "Exit");
 
                 if (exitOnError) Environment.Exit(0);
             }
@@ -143,9 +131,9 @@ public class AppInitialization
         }
         catch (Exception ex)
         {
-            await _notificationService.ShowMessage(
-                    $"Failed to delete the backup config file:\n\n{ex.Message}",
-                    "Config Restore Error");
+            await notificationService.ShowMessage(
+                "Config Restore Error",
+                $"Failed to delete the backup config file:\n\n{ex.Message}");
         }
 
     }
