@@ -3,8 +3,6 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using OrderReader.Core.Interfaces;
-using OrderReaderUI.ViewModels;
-using OrderReaderUI.ViewModels.Dialogs;
 
 namespace OrderReaderUI.Helpers;
 

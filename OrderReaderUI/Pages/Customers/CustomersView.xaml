@@ -1,0 +1,300 @@
+﻿<UserControl x:Class="OrderReaderUI.Pages.Customers.CustomersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:customers="clr-namespace:OrderReaderUI.Pages.Customers"
+             d:DataContext="{d:DesignInstance Type=customers:CustomersViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Border Background="{DynamicResource Background.Panel.Brush}" Margin="20 20 20 0" Padding="5" CornerRadius="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition MinWidth="250"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Text="Customer Selection:" FontSize="{StaticResource FontSize.Large}" FontWeight="Medium"/>
+                <ComboBox Grid.Column="2" x:Name="Customers">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Grid.Column="3" x:Name="LoadCustomers"
+                        Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
+                        FontFamily="{StaticResource IconFontRegular}" Padding="10"/>
+            </Grid>
+            
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+            </Border.Effect>
+        </Border>
+
+        <TabControl Margin="20" Grid.Row="1">
+            <TabItem Header="Customer">
+                <StackPanel>
+                    <TextBlock Text="Customer Information" Style="{DynamicResource HeaderText}"/>
+                    <TextBlock Text="View and manage information about customers" Margin="5 -5 5 5"
+                               HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                    <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                    <!-- Customer Details -->
+                    <TextBlock Text="Customer Details" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Details about this customer that are used to identify it on order files and tranlsate it to the exported CSV/PDF files.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.CsvName}" Tag="CSV Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding CustomerToEdit.OrderName}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
+                        </StackPanel>
+                        
+                        <StackPanel>
+                            <Label Content=""/>
+                            <Button x:Name="UpdateCustomer" Content="Update Customer"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+
+                    <!-- Other Info -->
+                    <TextBlock Text="Other Information" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Other information about the selected customer.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Number of depots"/>
+                            <TextBlock Text="{Binding SelectedCustomer.Depots.Count}" FontWeight="Medium"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Number of products"/>
+                            <TextBlock Text="{Binding SelectedCustomer.Products.Count}" FontWeight="Medium"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Depots">
+                <StackPanel>
+                    <TextBlock Style="{DynamicResource HeaderText}">
+                        <Run Text="Depots for"/>
+                        <Run Text="{Binding SelectedCustomer.Name}"/>
+                    </TextBlock>
+                    <TextBlock Text="Add, edit or remove depots from a customer" Margin="5 -5 5 5"
+                               HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                    <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                    <!-- Depot Details -->
+                    <TextBlock Text="Edit/Remove Selected Depot" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Select a depot from the list to edit the details or remove it.
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0" x:Name="DepotEditor">
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding SelectedDepot.Name}" Tag="Display Name"
+                                     IsEnabled="{Binding HasSelectedDepot}"/>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding SelectedDepot.CsvName}" Tag="CSV Name"
+                                     IsEnabled="{Binding HasSelectedDepot}"/>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding SelectedDepot.OrderName}" Tag="Order Name"
+                                     IsEnabled="{Binding HasSelectedDepot}"/>
+                            <Button x:Name="UpdateDepot" Content="Update Depot"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1" Height="{Binding ActualHeight, ElementName=DepotEditor}">
+                            <ListBox x:Name="Depots">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                            <Button Command="{Binding DataContext.DeleteDepotCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                                    Style="{DynamicResource ListBoxDeleteButton}" Grid.Column="1"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+
+                    <!-- Add Depot -->
+                    <TextBlock Text="Add New Depot" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Enter details of a new depot, to add it to the selected customer.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding NewDepot.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=AddDepot}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding NewDepot.CsvName}" Tag="CSV Name"
+                                     Height="{Binding ActualHeight, ElementName=AddDepot}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding NewDepot.OrderName}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=AddDepot}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content=""/>
+                            <Button x:Name="AddDepot" Content="Add Depot"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Products">
+                <StackPanel>
+                    <TextBlock Style="{DynamicResource HeaderText}">
+                        <Run Text="Products for"/>
+                        <Run Text="{Binding SelectedCustomer.Name}"/>
+                    </TextBlock>
+                    <TextBlock Text="Add, edit or remove products from a customer" Margin="5 -5 5 5"
+                               HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                    <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                    <!-- Product Details -->
+                    <TextBlock Text="Edit/Remove Selected Product" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Select a product from the list to edit the details or remove it.
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" x:Name="ProductEditor">
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding SelectedProduct.Name}" Tag="Display Name"
+                                     IsEnabled="{Binding HasSelectedProduct}"/>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding SelectedProduct.CsvName}" Tag="CSV Name"
+                                     IsEnabled="{Binding HasSelectedProduct}"/>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding SelectedProduct.OrderName}" Tag="Order Name"
+                                     IsEnabled="{Binding HasSelectedProduct}"/>
+                            <Label Content="Price"/>
+                            <TextBox Text="{Binding SelectedProduct.Price}" Tag="0.00"
+                                     IsEnabled="{Binding HasSelectedProduct}"/>
+                            <Button x:Name="UpdateProduct" Content="Update Product"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1" Height="{Binding ActualHeight, ElementName=ProductEditor}">
+                            <ListBox x:Name="Products">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                            <Button Command="{Binding DataContext.DeleteProductCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                                    Style="{StaticResource ListBoxDeleteButton}" Grid.Column="1"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+
+                    <!-- Add Product -->
+                    <TextBlock Text="Add New Product" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Enter details of a new product, to add it to the selected customer.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding NewProduct.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=AddProduct}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding NewProduct.CsvName}" Tag="CSV Name"
+                                     Height="{Binding ActualHeight, ElementName=AddProduct}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding NewProduct.OrderName}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=AddProduct}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Price"/>
+                            <TextBox Text="{Binding NewProduct.Price}" Tag="0.00"
+                                     Height="{Binding ActualHeight, ElementName=AddProduct}"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+
+                    <Button x:Name="AddProduct" Content="Add Product"/>
+                </StackPanel>
+            </TabItem>
+            
+            <TabControl.Effect>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource Shadow.Color}" Opacity="0.1"/>
+            </TabControl.Effect>
+        </TabControl>
+    </Grid>
+
+</UserControl>
+ 

@@ -3,13 +3,13 @@ using Caliburn.Micro;
 using OrderReader.Core;
 using OrderReaderUI.Helpers;
 using OrderReaderUI.Models;
-using OrderReaderUI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using OrderReader.Core.Interfaces;
+using OrderReaderUI.Pages.Shell;
 using OrderReaderUI.Services;
 using OrderReaderUI.DependencyProperties;
 
