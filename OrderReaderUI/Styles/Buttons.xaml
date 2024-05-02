@@ -263,7 +263,65 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
+    <!-- Combo Button -->
+    <Style TargetType="{x:Type Button}" x:Key="ComboButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSize.Large}"/>
+        <Setter Property="Padding" Value="10 5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="5"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Name="label" Grid.Column="0" Text="{TemplateBinding Tag}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}"
+                                       Margin="5 0 0 0" Padding="5 0 0 0"
+                                       Visibility="Collapsed"/>
+                            
+                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"
+                                              TextBlock.FontFamily="{StaticResource IconFontSolid}">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock"/>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource Control.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Brush}"/>
+                            <Setter TargetName="label" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource ControlLight.Brush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource ControlDisabled.Brush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Accent.Foreground.Secondary.Brush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Table Control Buttons -->
     <Style TargetType="{x:Type Button}" x:Key="ProcessOrderButton">
         <Setter Property="Background" Value="{DynamicResource Background.Panel.Brush}"/>
