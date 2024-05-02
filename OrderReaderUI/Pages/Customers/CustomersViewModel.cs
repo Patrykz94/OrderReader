@@ -4,6 +4,7 @@ using System.Windows.Input;
 using AutoMapper;
 using Caliburn.Micro;
 using OrderReader.Core;
+using OrderReader.Core.Interfaces;
 using OrderReaderUI.Models;
 
 namespace OrderReaderUI.Pages.Customers;
@@ -22,6 +23,11 @@ public class CustomersViewModel : Screen
     /// </summary>
     private CustomersHandler _customersHandler;
 
+    /// <summary>
+    /// An instance of INotificationService used to display notifications on screen
+    /// </summary>
+    private readonly INotificationService _notificationService;
+
     #endregion
 
     #region Constructor
@@ -29,12 +35,14 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Default constructor that loads the customers information from the database
     /// </summary>
-    public CustomersViewModel(IMapper mapper, CustomersHandler customersHandler)
+    public CustomersViewModel(IMapper mapper, CustomersHandler customersHandler, INotificationService notificationService)
     {
         _mapper = mapper;
         _customersHandler = customersHandler;
-        LoadCustomers();
+        _notificationService = notificationService;
 
+        LoadCustomers();
+        
         // Initialize Commands
         DeleteDepotCommand = new RelayCommand(DeleteDepot);
         DeleteProductCommand = new RelayCommand(DeleteProduct);
@@ -445,13 +453,14 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// Delete the selected depot from this customer
     /// </summary>
-    public void DeleteDepot()
+    public async void DeleteDepot()
     {
-        // TODO: Show a popup window asking the user if they are sure they want to delete this depot
-
         // Make sure a depot is selected
         if (SelectedDepot is null || SelectedCustomer is null) return;
 
+        var result = await _notificationService.ShowQuestion("Confirm Removing Depot", $"Are you sure you want to remove the {SelectedDepot.Name} depot?");
+        if (result == DialogResult.No) return;
+        
         // Get selected customer
         var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
@@ -464,17 +473,18 @@ public class CustomersViewModel : Screen
         // Remove the depot from the list
         Depots.Remove(Depots.Single(x => x.Id == SelectedDepot.Id));
     }
-
+    
     /// <summary>
     /// Delete the selected product from this customer
     /// </summary>
-    public void DeleteProduct()
+    public async void DeleteProduct()
     {
-        // TODO: Show a popup window asking the user if they are sure they want to delete this product
-
         // Make sure a product is selected
         if (SelectedProduct is null || SelectedCustomer is null) return;
-
+        
+        var result = await _notificationService.ShowQuestion("Confirm Removing Product", $"Are you sure you want to remove {SelectedProduct.Name}?");
+        if (result == DialogResult.No) return;
+        
         // Get selected customer
         var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
 
