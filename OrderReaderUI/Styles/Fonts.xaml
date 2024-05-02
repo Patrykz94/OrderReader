@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <FontFamily x:Key="IconFontRegular">pack://application;,,,/Fonts/#Font Awesome 5 Free Regular</FontFamily>
-    <FontFamily x:Key="IconFontSolid">pack://application;,,,/Fonts/#Font Awesome 5 Free Solid</FontFamily>
+    <FontFamily x:Key="IconFontRegular">/Fonts/#Font Awesome 6 Free Regular</FontFamily>
+    <FontFamily x:Key="IconFontSolid">/Fonts/#Font Awesome 6 Free Solid</FontFamily>
 
     <system:Double x:Key="FontSize.Title">32</system:Double>
     <system:Double x:Key="FontSize.Large">24</system:Double>
@@ -26,7 +26,7 @@
 
     <!-- Navigation icons -->
     <system:String x:Key="IconNavOrders">&#xf328;</system:String>
-    <system:String x:Key="IconNavCustomers">&#xf0c0;</system:String>
+    <system:String x:Key="IconNavCustomers">&#xf509;</system:String>
     <system:String x:Key="IconNavSettings">&#xf013;</system:String>
     <system:String x:Key="IconNavExit">&#xf2f5;</system:String>
     <system:String x:Key="IconChevronDown">&#xf078;</system:String>

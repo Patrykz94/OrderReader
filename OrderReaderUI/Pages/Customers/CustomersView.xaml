@@ -34,7 +34,7 @@
                 </ComboBox>
                 <Button Grid.Column="3" x:Name="LoadCustomers"
                         Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
-                        FontFamily="{StaticResource IconFontRegular}" Padding="10"/>
+                        FontFamily="{StaticResource IconFontSolid}" Padding="10"/>
             </Grid>
             
             <Border.Effect>

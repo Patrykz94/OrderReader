@@ -15,7 +15,7 @@
                 BorderThickness="1"
                 Background="{DynamicResource Background.Panel.Brush}"/>
             <TextBlock x:Name="chevron"
-                   FontFamily="{StaticResource IconFontRegular}"
+                   FontFamily="{StaticResource IconFontSolid}"
                    FontSize="{TemplateBinding FontSize}"
                    Text="{StaticResource IconChevronDown}"
                    Foreground="{DynamicResource Control.Brush}"

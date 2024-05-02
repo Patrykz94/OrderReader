@@ -28,7 +28,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="CSV File Export" FontSize="{StaticResource FontSize.Large}"/>
                     <Button x:Name="ReloadCsvSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
-                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            FontFamily="{StaticResource IconFontSolid}" FontSize="{StaticResource FontSize.Regular}"
                             Margin="5 0" Grid.Column="1"/>
                 </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
@@ -57,7 +57,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="PDF File Export" FontSize="{StaticResource FontSize.Large}"/>
                     <Button x:Name="ReloadPdfSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
-                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            FontFamily="{StaticResource IconFontSolid}" FontSize="{StaticResource FontSize.Regular}"
                             Margin="5 0" Grid.Column="1"/>
                 </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
@@ -85,7 +85,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Printing Settings" FontSize="{StaticResource FontSize.Large}"/>
                     <Button x:Name="ReloadPrintingSettings" Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
-                            FontFamily="{StaticResource IconFontRegular}" FontSize="{StaticResource FontSize.Regular}"
+                            FontFamily="{StaticResource IconFontSolid}" FontSize="{StaticResource FontSize.Regular}"
                             Margin="5 0" Grid.Column="1"/>
                 </Grid>
                 <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">

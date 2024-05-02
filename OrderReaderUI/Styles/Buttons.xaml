@@ -482,7 +482,7 @@
                                 Background="{TemplateBinding Background}">
                             <TextBlock x:Name="checkMark" Grid.Column="1"
                                        Visibility="Collapsed"
-                                       FontFamily="{StaticResource IconFontRegular}"
+                                       FontFamily="{StaticResource IconFontSolid}"
                                        Text="{StaticResource IconCheckMark}"
                                        Margin="0"
                                        VerticalAlignment="Center"
