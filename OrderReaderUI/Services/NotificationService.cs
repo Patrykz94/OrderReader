@@ -36,4 +36,9 @@ public class NotificationService(IWindowManager windowManager) : INotificationSe
         var result = await windowManager.ShowDialogAsync(dialogViewModel);
         return result == true ? dialogViewModel.ConfigFileLocation : string.Empty;
     }
+
+    public Task ShowUpdateNotification(string updatedVersion)
+    {
+        return windowManager.ShowWindowAsync(new ToastUpdateNotificationViewModel(updatedVersion));
+    }
 }
