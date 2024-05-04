@@ -4,6 +4,9 @@
     <SolidColorBrush x:Key="Waring.Background.Brush" Color="#e40520"/>
     <SolidColorBrush x:Key="Waring.Foreground.Brush" Color="#ffffff"/>
     
+    <!-- Bar Track Colour -->
+    <SolidColorBrush x:Key="BarTrack.Brush" Color="#3888"/>
+
     <!-- Special Control Colors -->
     <SolidColorBrush x:Key="OrderButton.Process.Hover.Brush" Color="#007a4e"/>
     <SolidColorBrush x:Key="OrderButton.Delete.Hover.Brush" Color="#e40520"/>

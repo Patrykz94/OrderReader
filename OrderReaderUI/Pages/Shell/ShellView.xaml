@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:shell="clr-namespace:OrderReaderUI.Pages.Shell"
+        d:DataContext="{d:DesignInstance Type=shell:ShellViewModel}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         MinHeight="600" MinWidth="1100"
@@ -42,40 +44,77 @@
             </Grid.RowDefinitions>
             
             <!-- Row 1 - Logo -->
-            <Grid Margin="20 20 20 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <Grid Margin="20">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.RowSpan="2"
-                        Background="White"
-                        CornerRadius="15"/>
+                <Grid Row="0" Margin="0 0 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                
+                    <Border Grid.RowSpan="2" Grid.Column="0"
+                            Background="White"
+                            CornerRadius="15"/>
 
-                <TextBlock Grid.Row="0" Grid.Column="1"
-                           Text="Order Reader"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Left"
-                           Padding="5 0"
-                           FontSize="{DynamicResource FontSize.Regular}"
-                           FontWeight="Medium"
-                           Foreground="{DynamicResource Foreground.Brush}"/>
-                <TextBlock Grid.Column="1" Grid.Row="1"
-                           x:Name="CurrentVersion"
-                           Text="Version Number"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Left"
-                           Padding="5 0"
-                           FontSize="{DynamicResource FontSize.Small}"
-                           Foreground="{DynamicResource Foreground.Secondary.Brush}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="0"
+                               Text="Order Reader"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Left"
+                               Padding="5 0"
+                               FontSize="{DynamicResource FontSize.Regular}"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource Foreground.Brush}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1"
+                               x:Name="CurrentVersion"
+                               Text="v0.0.0"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Padding="5 0"
+                               FontSize="{DynamicResource FontSize.Small}"
+                               Foreground="{DynamicResource Foreground.Secondary.Brush}"/>
+                    
+                </Grid>
+                
+                <Grid Grid.Row="1"
+                      Visibility="{Binding UpdateInProgress, Converter={StaticResource BoolToVisibilityConverter}}" Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <ProgressBar x:Name="UpdateProgress" Height="8" Grid.Column="0" VerticalAlignment="Bottom"/>
 
-                <Border Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2"
-                        Height="1" Background="{DynamicResource NavPanel.Line.Brush}"/>
+                    <TextBlock Grid.Column="1" TextAlignment="Center"
+                               Text="{StaticResource IconDownload}"
+                               FontFamily="{StaticResource IconFontSolid}"
+                               FontSize="{StaticResource FontSize.Regular}"
+                               Foreground="{DynamicResource Foreground.Secondary.Brush}">
+                        <TextBlock.Triggers>
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         From="1.0" To="0.25" Duration="0:0:1"
+                                                         AutoReverse="True" RepeatBehavior="Forever"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </TextBlock.Triggers>
+                    </TextBlock>
+                </Grid>
+
+                <Border Grid.Row="1" Height="1"
+                        Margin="0 12 0 0"
+                        Visibility="{Binding UpdateInProgress, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Reversed}"
+                        Background="{DynamicResource NavPanel.Line.Brush}"/>
 
             </Grid>
             

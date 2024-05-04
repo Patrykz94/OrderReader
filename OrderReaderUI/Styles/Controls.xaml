@@ -51,7 +51,7 @@
     <Style TargetType="{x:Type ScrollBar}" x:Key="DefaultScrollBar">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-        <Setter Property="Background" Value="#3888"/>
+        <Setter Property="Background" Value="{DynamicResource BarTrack.Brush}"/>
         <Setter Property="Width" Value="12"/>
         <Setter Property="MinWidth" Value="{Binding Width, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="Margin" Value="0 10 10 10"/>
@@ -259,4 +259,69 @@
         </Setter>
     </Style>
 
+    <!-- ProgressBar -->    
+    <Style TargetType="{x:Type ProgressBar}">
+        <Setter Property="Background" Value="{DynamicResource BarTrack.Brush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Control.Brush}"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ProgressBar}">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Determinate" />
+                                <VisualState x:Name="Indeterminate">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Duration="00:00:00"
+                                                                       Storyboard.TargetName="PART_Indicator"
+                                                                       Storyboard.TargetProperty="Background">
+                                            <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <SolidColorBrush>Transparent</SolidColorBrush>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        
+                            <Border x:Name="PART_Track"
+                                    CornerRadius="3"
+                                    Background="{TemplateBinding Background}"/>
+                            
+                            <Border x:Name="PART_Indicator"
+                                    CornerRadius="3"
+                                    HorizontalAlignment="Left"
+                                    Background="{TemplateBinding Foreground}">
+                                <Border.OpacityMask>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Border Background="Black"
+                                                    SnapsToDevicePixels="True"
+                                                    CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                                                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Border.OpacityMask>
+                            
+                                <Grid ClipToBounds="True"
+                                      x:Name="Animation">
+                                    <Rectangle x:Name="PART_GlowRect"
+                                               Width="100"
+                                               HorizontalAlignment="Left"
+                                               Fill="{DynamicResource ProgressBar.Fill.Brush}"
+                                               Margin="-100,0,0,0"/>
+                                </Grid>
+                            </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
 </ResourceDictionary>

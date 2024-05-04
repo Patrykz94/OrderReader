@@ -12,6 +12,28 @@ public class ShellViewModel : Conductor<object>
 {
     public string CurrentVersion { get; set; }
 
+    private bool _updateInProgress;
+    public bool UpdateInProgress
+    {
+        get => _updateInProgress;
+        set
+        {
+            _updateInProgress = value;
+            NotifyOfPropertyChange();
+        }
+    }
+
+    private int _updateProgress = 0;
+    public int UpdateProgress
+    {
+        get => _updateProgress;
+        set
+        {
+            _updateProgress = value;
+            NotifyOfPropertyChange();
+        }
+    }
+
     public ShellViewModel()
     {
         // Get the current version of our app

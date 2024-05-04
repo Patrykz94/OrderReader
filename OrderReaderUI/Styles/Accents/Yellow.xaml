@@ -40,5 +40,19 @@
     <SolidColorBrush x:Key="NavButton.Hover.Brush" Color="{DynamicResource AccentLight.Color}"/>
     <SolidColorBrush x:Key="NavButton.Selected.Brush" Color="{DynamicResource Accent.Color}"/>
     <SolidColorBrush x:Key="NavButton.Hover.Foreground.Brush" Color="{DynamicResource Accent.Foreground.Color}"/>
+
+    <!-- Progress Bar Fill -->
+    <LinearGradientBrush x:Key="ProgressBar.Fill.Brush" StartPoint="0,0" EndPoint="1,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="{DynamicResource Accent.Color}"
+                      Offset="0" />
+                <GradientStop Color="{DynamicResource AccentLight.Color}"
+                      Offset="0.5" />
+                <GradientStop Color="{DynamicResource Accent.Color}"
+                      Offset="1" />
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
     
 </ResourceDictionary>
