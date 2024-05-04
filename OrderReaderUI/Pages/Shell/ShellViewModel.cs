@@ -26,19 +26,22 @@ public class ShellViewModel : Conductor<object>
         await Orders();
     }
 
-    public Task Orders()
+    public async Task Orders()
     {
-        return ActivateItemAsync(IoC.Get<OrdersViewModel>());
+        if (ActiveItem is OrdersViewModel) return;
+        await ActivateItemAsync(IoC.Get<OrdersViewModel>());
     }
 
-    public Task Customers()
+    public async Task Customers()
     {
-        return ActivateItemAsync(IoC.Get<CustomersViewModel>());
+        if (ActiveItem is CustomersViewModel) return;
+        await ActivateItemAsync(IoC.Get<CustomersViewModel>());
     }
 
-    public Task Settings()
+    public async Task Settings()
     {
-        return ActivateItemAsync(IoC.Get<SettingsViewModel>());
+        if (ActiveItem is SettingsViewModel) return;
+        await ActivateItemAsync(IoC.Get<SettingsViewModel>());
     }
 
     public void ExitApplication()
