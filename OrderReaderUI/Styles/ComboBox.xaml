@@ -17,7 +17,7 @@
             <TextBlock x:Name="chevron"
                    FontFamily="{StaticResource IconFontSolid}"
                    FontSize="{TemplateBinding FontSize}"
-                   Text="{StaticResource IconChevronDown}"
+                   Text="{StaticResource IconCaretDown}"
                    Foreground="{DynamicResource Control.Brush}"
                    Grid.Column="1"
                    VerticalAlignment="Center"

@@ -29,12 +29,25 @@
     <system:String x:Key="IconNavCustomers">&#xf509;</system:String>
     <system:String x:Key="IconNavSettings">&#xf013;</system:String>
     <system:String x:Key="IconNavExit">&#xf2f5;</system:String>
-    <system:String x:Key="IconChevronDown">&#xf078;</system:String>
     
+    <!-- File/Folder Icons -->
+    <system:String x:Key="IconPdf">&#xf1c1;</system:String>
+    <system:String x:Key="IconCsv">&#xf6dd;</system:String>
+    <system:String x:Key="IconExcel">&#xf1c3;</system:String>
+    <system:String x:Key="IconFolderClosed">&#xf07b;</system:String>
+    <system:String x:Key="IconFolderOpen">&#xf07c;</system:String>
+    <system:String x:Key="IconExport">&#xf56e;</system:String>
+    <system:String x:Key="IconPrint">&#xf02f;</system:String>
+
     <!-- Other Icons -->
+    <system:String x:Key="IconCaretDown">&#xf0d7;</system:String>
     <system:String x:Key="IconCheckMark">&#xf00c;</system:String>
     <system:String x:Key="IconReload">&#xf2f1;</system:String>
     <system:String x:Key="IconDelete">&#xf2ed;</system:String>
     <system:String x:Key="IconClose">&#xf00d;</system:String>
-    
+    <system:String x:Key="IconCloud">&#xf0c2;</system:String>
+    <system:String x:Key="IconDownload">&#xf019;</system:String>
+    <system:String x:Key="IconCalendar">&#xf783;</system:String>
+    <system:String x:Key="IconStore">&#xf54e;</system:String>
+
 </ResourceDictionary>
