@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
+using OrderReader.Core;
 using Screen = Caliburn.Micro.Screen;
 
 namespace OrderReaderUI.Dialogs;
@@ -12,6 +13,8 @@ public class ToastUpdateNotificationViewModel : Screen
     
     public DateTime NotificationTime { get; } = DateTime.Now;
     public string UpdatedVersion { get; set; }
+
+    public bool Result { get; set; }
 
     #endregion
 
@@ -33,10 +36,8 @@ public class ToastUpdateNotificationViewModel : Screen
     
     public void RestartApplication()
     {
-        var currentExecutablePath = Process.GetCurrentProcess().MainModule?.FileName;
-        if (currentExecutablePath is null) return;
-        Process.Start(currentExecutablePath);
-        Application.Current.Shutdown();
+        Result = true;
+        TryCloseAsync();
     }
 
     #endregion

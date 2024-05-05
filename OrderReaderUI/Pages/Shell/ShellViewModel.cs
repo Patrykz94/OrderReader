@@ -1,15 +1,21 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReaderUI.Pages.Customers;
-using OrderReaderUI.Pages.Orders;
-using OrderReaderUI.Pages.Settings;
+using OrderReader.Core;
+using OrderReader.Core.Interfaces;
+using Velopack;
+using CustomersViewModel = OrderReaderUI.Pages.Customers.CustomersViewModel;
+using OrdersViewModel = OrderReaderUI.Pages.Orders.OrdersViewModel;
+using SettingsViewModel = OrderReaderUI.Pages.Settings.SettingsViewModel;
 
 namespace OrderReaderUI.Pages.Shell;
 
 public class ShellViewModel : Conductor<object>
 {
+    private readonly INotificationService _notificationService;
+    
     public string CurrentVersion { get; set; }
 
     private bool _updateInProgress;
@@ -34,8 +40,9 @@ public class ShellViewModel : Conductor<object>
         }
     }
 
-    public ShellViewModel()
+    public ShellViewModel(INotificationService notificationService)
     {
+        _notificationService = notificationService;
         // Get the current version of our app
         var assembly = Assembly.GetExecutingAssembly();
         var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -45,7 +52,35 @@ public class ShellViewModel : Conductor<object>
     protected override async void OnViewLoaded(object view)
     {
         base.OnViewLoaded(view);
+        _ = GetUpdates();
         await Orders();
+    }
+
+    private async Task GetUpdates()
+    {
+        var mgr = new UpdateManager(@"E:\Documents\Programming\OrderReader Resources\Updates");
+        
+        // Check for new version
+        var newVersion = await mgr.CheckForUpdatesAsync();
+        if (newVersion is null) return;
+        
+        // Download the new version
+        UpdateInProgress = true;
+        
+        await mgr.DownloadUpdatesAsync(newVersion, ProgressHandler);
+        
+        UpdateInProgress = false;
+
+        var result = await _notificationService.ShowUpdateNotification(newVersion.TargetFullRelease.Version.ToString());
+        
+        if (result == DialogResult.Yes) mgr.ApplyUpdatesAndRestart(newVersion);
+        
+        return;
+
+        void ProgressHandler(int progress)
+        {
+            UpdateProgress = progress;
+        }
     }
 
     public async Task Orders()
