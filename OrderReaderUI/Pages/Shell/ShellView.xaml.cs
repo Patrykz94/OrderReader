@@ -17,7 +17,7 @@ namespace OrderReaderUI.Pages.Shell
             MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 
             // Check user settings to see which theme we should use
-            var userSettings = OrderReader.Core.Settings.LoadSettings();
+            var userSettings = OrderReader.Core.DataModels.Settings.LoadSettings();
             ThemeManager.ChangeTheme(userSettings.Theme);
         }
 
@@ -35,7 +35,7 @@ namespace OrderReaderUI.Pages.Shell
 
                 if (wParam != IntPtr.Zero || Marshal.PtrToStringUni(lParam) != "ImmersiveColorSet") return IntPtr.Zero;
 
-                if (OrderReader.Core.Settings.LoadSettings().Theme != "Auto") return IntPtr.Zero;
+                if (OrderReader.Core.DataModels.Settings.LoadSettings().Theme != "Auto") return IntPtr.Zero;
                 
                 var isLightTheme = ThemeManager.IsOsLightTheme();
                 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using OrderReader;
+using OrderReader.Core.Interfaces;
 using OrderReaderUI.Dialogs.BaseViewModels;
 
 namespace OrderReaderUI.Dialogs;

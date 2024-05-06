@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader", "OrderReader\OrderReader.csproj", "{6B29CBAE-81CD-4FB1-8F30-88C125AC9479}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader.Core", "OrderReader.Core\OrderReader.Core.csproj", "{B74FDBA7-10D6-4801-AE8D-5ACA52B16230}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReaderUI", "OrderReaderUI\OrderReaderUI.csproj", "{55AE2991-A12D-4F8E-B27C-4927AAB96445}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6B29CBAE-81CD-4FB1-8F30-88C125AC9479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B29CBAE-81CD-4FB1-8F30-88C125AC9479}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B29CBAE-81CD-4FB1-8F30-88C125AC9479}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B29CBAE-81CD-4FB1-8F30-88C125AC9479}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B74FDBA7-10D6-4801-AE8D-5ACA52B16230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B74FDBA7-10D6-4801-AE8D-5ACA52B16230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B74FDBA7-10D6-4801-AE8D-5ACA52B16230}.Release|Any CPU.ActiveCfg = Release|Any CPU

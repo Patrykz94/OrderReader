@@ -4,7 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReader.Core;
+using OrderReader.Core.DataModels;
+using OrderReader.Core.DataModels.FileHandling;
+using OrderReader.Core.DataModels.Orders;
+using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
 
 namespace OrderReaderUI.Controls.Orders;

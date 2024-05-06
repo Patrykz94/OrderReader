@@ -4,7 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReader.Core;
+using OrderReader.Core.DataAccess;
+using OrderReader.Core.DataModels;
 using OrderReaderUI.Helpers;
 using WinForms = System.Windows.Forms;
 
@@ -172,12 +173,12 @@ public class SettingsViewModel : Screen
 
     public void ReloadCsvSettings()
     {
-        PathCsv = LoadDefaultSetting("DefaultCSVExportPath") ?? OrderReader.Core.Settings.DefaultExportPath;
+        PathCsv = LoadDefaultSetting("DefaultCSVExportPath") ?? OrderReader.Core.DataModels.Settings.DefaultExportPath;
     }
 
     public void ReloadPdfSettings()
     {
-        PathPdf = LoadDefaultSetting("DefaultPDFExportPath") ?? OrderReader.Core.Settings.DefaultExportPath;
+        PathPdf = LoadDefaultSetting("DefaultPDFExportPath") ?? OrderReader.Core.DataModels.Settings.DefaultExportPath;
     }
 
     public void ReloadPrintingSettings()
@@ -197,10 +198,10 @@ public class SettingsViewModel : Screen
     {
         Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
 
-        if (PathCsv == string.Empty) PathCsv = defaultSettings.TryGetValue("DefaultCSVExportPath", out var value) ? value : OrderReader.Core.Settings.DefaultExportPath;
-        if (string.IsNullOrEmpty(PathCsv)) PathCsv = OrderReader.Core.Settings.DefaultExportPath;
-        if (PathPdf == string.Empty) PathPdf = defaultSettings.TryGetValue("DefaultPDFExportPath", out var value) ? value : OrderReader.Core.Settings.DefaultExportPath;
-        if (string.IsNullOrEmpty(PathPdf)) PathPdf = OrderReader.Core.Settings.DefaultExportPath;
+        if (PathCsv == string.Empty) PathCsv = defaultSettings.TryGetValue("DefaultCSVExportPath", out var value) ? value : OrderReader.Core.DataModels.Settings.DefaultExportPath;
+        if (string.IsNullOrEmpty(PathCsv)) PathCsv = OrderReader.Core.DataModels.Settings.DefaultExportPath;
+        if (PathPdf == string.Empty) PathPdf = defaultSettings.TryGetValue("DefaultPDFExportPath", out var value) ? value : OrderReader.Core.DataModels.Settings.DefaultExportPath;
+        if (string.IsNullOrEmpty(PathPdf)) PathPdf = OrderReader.Core.DataModels.Settings.DefaultExportPath;
         if (!Directory.Exists(PathCsv)) Directory.CreateDirectory(PathCsv);
         if (!Directory.Exists(PathPdf)) Directory.CreateDirectory(PathPdf);
 
@@ -219,12 +220,12 @@ public class SettingsViewModel : Screen
             Accent = SelectedAccent
         };
 
-        OrderReader.Core.Settings.SaveSettings(settings);
+        OrderReader.Core.DataModels.Settings.SaveSettings(settings);
     }
 
     private void LoadSettings()
     {
-        var settings = OrderReader.Core.Settings.LoadSettings();
+        var settings = OrderReader.Core.DataModels.Settings.LoadSettings();
 
         ExportCsv = settings.ExportCSV;
         ExportPdf = settings.ExportPDF;

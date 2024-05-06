@@ -1,4 +1,4 @@
-﻿namespace OrderReader.Core;
+﻿namespace OrderReader.Core.DataModels.Customers;
 
 /// <summary>
 /// A class that stores information about product

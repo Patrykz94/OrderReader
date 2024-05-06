@@ -3,8 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
-using OrderReader;
-using OrderReader.Core;
+using OrderReader.Core.DataModels;
 using OrderReader.Core.Interfaces;
 
 namespace OrderReaderUI.DependencyProperties;

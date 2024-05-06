@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using OrderReader.Core.Enums;
 
 namespace OrderReader.Core.Interfaces;
 

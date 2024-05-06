@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReader;
-using OrderReader.Core;
+using OrderReader.Core.DataModels.FileHandling;
+using OrderReader.Core.DataModels.Orders;
+using OrderReader.Core.Interfaces;
 using OrderListViewModel = OrderReaderUI.Controls.Orders.OrderListViewModel;
 
 namespace OrderReaderUI.Pages.Orders;

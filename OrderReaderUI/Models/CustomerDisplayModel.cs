@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using OrderReader.Core.DataModels.Customers;
 
 namespace OrderReaderUI.Models;
 
 /// <summary>
-/// Display version of the <see cref="OrderReader.Core.Customer"/> model
+/// Display version of the <see cref="Customer"/> model
 /// </summary>
 public class CustomerDisplayModel : INotifyPropertyChanged
 {

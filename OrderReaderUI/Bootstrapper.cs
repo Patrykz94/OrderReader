@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Caliburn.Micro;
-using OrderReader.Core;
 using OrderReaderUI.Helpers;
 using OrderReaderUI.Models;
 using System;
@@ -8,6 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using OrderReader.Core.DataModels;
+using OrderReader.Core.DataModels.Customers;
+using OrderReader.Core.DataModels.FileHandling;
+using OrderReader.Core.DataModels.Orders;
 using OrderReader.Core.Interfaces;
 using OrderReaderUI.Pages.Shell;
 using OrderReaderUI.Services;

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReader.Core;
+using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
+using OrderReaderUI.Pages.Customers;
+using OrderReaderUI.Pages.Orders;
+using OrderReaderUI.Pages.Settings;
 using Velopack;
-using CustomersViewModel = OrderReaderUI.Pages.Customers.CustomersViewModel;
-using OrdersViewModel = OrderReaderUI.Pages.Orders.OrdersViewModel;
-using SettingsViewModel = OrderReaderUI.Pages.Settings.SettingsViewModel;
 
 namespace OrderReaderUI.Pages.Shell;
 

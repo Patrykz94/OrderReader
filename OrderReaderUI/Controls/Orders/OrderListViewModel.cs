@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Caliburn.Micro;
-using OrderReader.Core;
+using OrderReader.Core.DataModels.Orders;
 using OrderReader.Core.Interfaces;
-using OrderListItemViewModel = OrderReaderUI.Controls.Orders.OrderListItemViewModel;
 
 namespace OrderReaderUI.Controls.Orders;
 

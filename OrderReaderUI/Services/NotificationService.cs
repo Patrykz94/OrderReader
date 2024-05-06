@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Caliburn.Micro;
 using OrderReader.Core;
+using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
 using OrderReaderUI.Dialogs;
 
@@ -11,7 +12,7 @@ public class NotificationService(IWindowManager windowManager) : INotificationSe
     public async Task<DialogResult> ShowMessage(string title, string message, string button)
     {
         await windowManager.ShowDialogAsync(new DialogMessageViewModel(message, title, button));
-        return DialogResult.OK;
+        return DialogResult.Ok;
     }
 
     public async Task<DialogResult> ShowQuestion(string title, string message, string primaryButton, string secondaryButton)

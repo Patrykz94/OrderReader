@@ -1,92 +1,91 @@
-﻿using Spire.Pdf;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Drawing.Printing;
 using OrderReader.Core.Interfaces;
+using Spire.Pdf;
 
-namespace OrderReader.Core
+namespace OrderReader.Core.DataModels;
+
+public static class PrintingManager
 {
-    public static class PrintingManager
+    #region Public Properties
+
+    /// <summary>
+    /// Returns a list of all printers
+    /// </summary>
+    public static ObservableCollection<string> InstalledPrinters
     {
-        #region Public Properties
-
-        /// <summary>
-        /// Returns a list of all printers
-        /// </summary>
-        public static ObservableCollection<string> InstalledPrinters
+        get
         {
-            get
+            ObservableCollection<string> printers = new ObservableCollection<string>();
+            foreach (var printer in PrinterSettings.InstalledPrinters)
             {
-                ObservableCollection<string> printers = new ObservableCollection<string>();
-                foreach (var printer in PrinterSettings.InstalledPrinters)
-                {
-                    printers.Add(printer.ToString());
-                }
-                return printers;
+                printers.Add(printer.ToString());
             }
+            return printers;
         }
+    }
 
-        /// <summary>
-        /// Name of the default system printer
-        /// </summary>
-        public static string DefaultPrinter = new PrinterSettings().PrinterName;
+    /// <summary>
+    /// Name of the default system printer
+    /// </summary>
+    public static string DefaultPrinter = new PrinterSettings().PrinterName;
         
-        public static INotificationService NotificationService { get; set; }
+    public static INotificationService NotificationService { get; set; }
 
-        #endregion
+    #endregion
 
-        #region Public Helpers
+    #region Public Helpers
 
-        /// <summary>
-        /// Prints a PDF document
-        /// </summary>
-        /// <param name="filePath">Path to the PDF file to be printed</param>
-        /// <returns>True or false whether printing was successful</returns>
-        public static bool PrintPDF(string filePath)
+    /// <summary>
+    /// Prints a PDF document
+    /// </summary>
+    /// <param name="filePath">Path to the PDF file to be printed</param>
+    /// <returns>True or false whether printing was successful</returns>
+    public static bool PrintPDF(string filePath)
+    {
+        // Load user settings
+        UserSettings settings = Settings.LoadSettings();
+
+        // Print the file
+        try
         {
-            // Load user settings
-            UserSettings settings = Settings.LoadSettings();
-
-            // Print the file
-            try
+            // Load the PDF file to print
+            using (var document = new PdfDocument(filePath))
             {
-                // Load the PDF file to print
-                using (var document = new PdfDocument(filePath))
-                {
-                    // Adjust the print settings
-                    document.PrintSettings.PrinterName = PrinterAvailable(settings.PreferredPrinterName) ? settings.PreferredPrinterName : DefaultPrinter;
-                    document.PrintSettings.Copies = (short)settings.PrintingCopies;
-                    document.PrintSettings.PrintController = new StandardPrintController();
-                    document.PrintSettings.SetPaperMargins(0,0,0,0);
+                // Adjust the print settings
+                document.PrintSettings.PrinterName = PrinterAvailable(settings.PreferredPrinterName) ? settings.PreferredPrinterName : DefaultPrinter;
+                document.PrintSettings.Copies = (short)settings.PrintingCopies;
+                document.PrintSettings.PrintController = new StandardPrintController();
+                document.PrintSettings.SetPaperMargins(0,0,0,0);
 
-                    // Print the document
-                    document.Print();
-                }
+                // Print the document
+                document.Print();
+            }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                NotificationService.ShowMessage("Printing Error", $"An error occured while trying to print the order:\n{ex.Message}\nOperation was aborted.");
-                return false;
-            }
+            return true;
         }
-
-        /// <summary>
-        /// Check whether the printer provided exists
-        /// </summary>
-        /// <param name="printerName">Name of the printer</param>
-        /// <returns>True or false</returns>
-        public static bool PrinterAvailable(string printerName)
+        catch (Exception ex)
         {
-            foreach (string printer in InstalledPrinters)
-            {
-                if (printer == printerName) return true;
-            }
-
+            NotificationService.ShowMessage("Printing Error", $"An error occured while trying to print the order:\n{ex.Message}\nOperation was aborted.");
             return false;
         }
-
-        #endregion
     }
+
+    /// <summary>
+    /// Check whether the printer provided exists
+    /// </summary>
+    /// <param name="printerName">Name of the printer</param>
+    /// <returns>True or false</returns>
+    public static bool PrinterAvailable(string printerName)
+    {
+        foreach (string printer in InstalledPrinters)
+        {
+            if (printer == printerName) return true;
+        }
+
+        return false;
+    }
+
+    #endregion
 }

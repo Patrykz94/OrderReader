@@ -3,8 +3,11 @@ using System.Linq;
 using System.Windows.Input;
 using AutoMapper;
 using Caliburn.Micro;
-using OrderReader.Core;
+using OrderReader.Core.DataAccess;
+using OrderReader.Core.DataModels.Customers;
+using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
+using OrderReaderUI.Helpers;
 using OrderReaderUI.Models;
 
 namespace OrderReaderUI.Pages.Customers;

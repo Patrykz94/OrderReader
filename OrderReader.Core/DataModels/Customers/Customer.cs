@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace OrderReader.Core;
+namespace OrderReader.Core.DataModels.Customers;
 
 /// <summary>
 /// The customer class that will hold information about the customer, as well as it's depots and products
