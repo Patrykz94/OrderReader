@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader.Core", "OrderReader.Core\OrderReader.Core.csproj", "{B74FDBA7-10D6-4801-AE8D-5ACA52B16230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReaderUI", "OrderReaderUI\OrderReaderUI.csproj", "{55AE2991-A12D-4F8E-B27C-4927AAB96445}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader", "OrderReader\OrderReader.csproj", "{55AE2991-A12D-4F8E-B27C-4927AAB96445}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
