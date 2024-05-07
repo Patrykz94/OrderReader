@@ -59,10 +59,10 @@ public static class CSVExport
             try
             {
                 // Before saving the file, make sure that the export path exists, if not then create it
-                if (!Directory.Exists(settings.UserCSVExportPath)) Directory.CreateDirectory(settings.UserCSVExportPath);
+                if (!Directory.Exists(settings.UserCsvExportPath)) Directory.CreateDirectory(settings.UserCsvExportPath);
 
                 // Create the file
-                File.WriteAllLines($"{settings.UserCSVExportPath}\\{fileName}", lines);
+                File.WriteAllLines($"{settings.UserCsvExportPath}\\{fileName}", lines);
             }
             catch (Exception ex)
             {

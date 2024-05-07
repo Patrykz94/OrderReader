@@ -15,19 +15,15 @@ public class AppInitialization(INotificationService notificationService)
         Settings.Initialize();
 
         // Attempt to load user settings in order to set the desired theme and accent colour
-        if (Settings.SettingsFileExists())
+        try
         {
-            try
-            {
-                var userSettings = Settings.LoadSettings();
-                ThemeManager.ChangeTheme(userSettings.Theme);
-                ThemeManager.ChangeAccent(userSettings.Accent);
-            }
-            catch (Exception ex)
-            {
-                await notificationService.ShowMessage("Loading Theme Settings", $"Could not load theme settings: {ex}");
-                throw;
-            }
+            var userSettings = Settings.LoadSettings();
+            ThemeManager.ChangeTheme(userSettings.Theme);
+            ThemeManager.ChangeAccent(userSettings.Accent);
+        }
+        catch (Exception ex)
+        {
+            await notificationService.ShowMessage("Loading Theme Settings", $"Could not load theme settings: {ex}");
         }
 
         // Check if there are any saved settings and if so, restore them

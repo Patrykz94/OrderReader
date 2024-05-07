@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using OrderReader.Core.DataAccess;
 
@@ -16,32 +15,32 @@ public class UserSettings : ISerializable
     /// <summary>
     /// Whether the CSV files should be exported
     /// </summary>
-    public bool ExportCSV { get; set; }
+    public bool ExportCsv { get; set; }
 
     /// <summary>
     /// The export location for CSV files that the user selects. It will override the default export location
     /// </summary>
-    public string UserCSVExportPath { get; set; }
+    public string UserCsvExportPath { get; set; }
 
     /// <summary>
     /// Whether the PDF file should be exported
     /// </summary>
-    public bool ExportPDF { get; set; }
+    public bool ExportPdf { get; set; }
 
     /// <summary>
     /// The export location for PDF files that the user selects. It will override the default export location
     /// </summary>
-    public string UserPDFExportPath { get; set; }
+    public string UserPdfExportPath { get; set; }
 
     /// <summary>
-    /// Whether or not the processed orders should be printed
+    /// Whether the processed orders should be printed
     /// </summary>
     public bool PrintOrders { get; set; }
 
     /// <summary>
     /// The printer that user prefers to use. If not available, default printer will be chosen
     /// </summary>
-    public string PreferredPrinterName { get; set; }
+    public string? PreferredPrinterName { get; set; }
 
     /// <summary>
     /// Number of copies to print
@@ -67,19 +66,23 @@ public class UserSettings : ISerializable
     /// </summary>
     public UserSettings()
     {
-        Dictionary<string, string> defaultSettings = SqliteDataAccess.LoadDefaultSettings();
-
-        UserCSVExportPath = defaultSettings.ContainsKey("DefaultCSVExportPath") ? defaultSettings["DefaultCSVExportPath"] : Settings.DefaultExportPath;
-        if (UserCSVExportPath == null || UserCSVExportPath == "") UserCSVExportPath = Settings.DefaultExportPath;
-        UserPDFExportPath = defaultSettings.ContainsKey("DefaultPDFExportPath") ? defaultSettings["DefaultPDFExportPath"] : Settings.DefaultExportPath;
-        if (UserPDFExportPath == null || UserPDFExportPath == "") UserPDFExportPath = Settings.DefaultExportPath;
-        PreferredPrinterName = defaultSettings.ContainsKey("DefaultPrinter") ? defaultSettings["DefaultPrinter"] : null;
-        ExportCSV = true;
-        ExportPDF = true;
+        UserCsvExportPath = Settings.DefaultExportPath;
+        UserPdfExportPath = Settings.DefaultExportPath;
+        PreferredPrinterName = null;
+        ExportCsv = true;
+        ExportPdf = true;
         PrintOrders = true;
         PrintingCopies = 1;
         Theme = "Auto";
         Accent = "Red";
+
+        if (!SqliteDataAccess.HasConnectionString() && !SqliteDataAccess.TestConnection()) return;
+        
+        var defaultSettings = SqliteDataAccess.LoadDefaultSettings();
+
+        UserCsvExportPath = defaultSettings.TryGetValue("DefaultCSVExportPath", out var csvExportPath) && !string.IsNullOrEmpty(csvExportPath) ? csvExportPath : Settings.DefaultExportPath;
+        UserPdfExportPath = defaultSettings.TryGetValue("DefaultPDFExportPath", out var pdfExportPath) && !string.IsNullOrEmpty(pdfExportPath) ? pdfExportPath : Settings.DefaultExportPath;
+        PreferredPrinterName = defaultSettings.TryGetValue("DefaultPrinter", out var defaultSetting) ? defaultSetting : null;
     }
 
     /// <summary>
@@ -90,15 +93,15 @@ public class UserSettings : ISerializable
     public UserSettings(SerializationInfo info, StreamingContext context)
     {
         // Load saved settings
-        UserCSVExportPath = (string)info.GetValue("UserCSVExportPath", typeof(string));
-        UserPDFExportPath = (string)info.GetValue("UserPDFExportPath", typeof(string));
-        ExportCSV = (bool)info.GetValue("ExportCSV", typeof(bool));
-        ExportPDF = (bool)info.GetValue("ExportPDF", typeof(bool));
-        PrintOrders = (bool)info.GetValue("PrintOrders", typeof(bool));
-        PreferredPrinterName = (string)info.GetValue("SelectedPrinterName", typeof(string));
-        PrintingCopies = (int)info.GetValue("PrintingCopies", typeof(int));
-        Theme = (string)info.GetValue("Theme", typeof(string));
-        Accent = (string)info.GetValue("Accent", typeof(string));
+        UserCsvExportPath = (string)info.GetValue("UserCSVExportPath", typeof(string))!;
+        UserPdfExportPath = (string)info.GetValue("UserPDFExportPath", typeof(string))!;
+        ExportCsv = (bool)info.GetValue("ExportCSV", typeof(bool))!;
+        ExportPdf = (bool)info.GetValue("ExportPDF", typeof(bool))!;
+        PrintOrders = (bool)info.GetValue("PrintOrders", typeof(bool))!;
+        PreferredPrinterName = (string)info.GetValue("SelectedPrinterName", typeof(string))!;
+        PrintingCopies = (int)info.GetValue("PrintingCopies", typeof(int))!;
+        Theme = (string)info.GetValue("Theme", typeof(string))!;
+        Accent = (string)info.GetValue("Accent", typeof(string))!;
     }
 
     #endregion
@@ -112,10 +115,10 @@ public class UserSettings : ISerializable
     /// <param name="context"></param>
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
-        info.AddValue("UserCSVExportPath", UserCSVExportPath);
-        info.AddValue("UserPDFExportPath", UserPDFExportPath);
-        info.AddValue("ExportCSV", ExportCSV);
-        info.AddValue("ExportPDF", ExportPDF);
+        info.AddValue("UserCSVExportPath", UserCsvExportPath);
+        info.AddValue("UserPDFExportPath", UserPdfExportPath);
+        info.AddValue("ExportCSV", ExportCsv);
+        info.AddValue("ExportPDF", ExportPdf);
         info.AddValue("PrintOrders", PrintOrders);
         info.AddValue("SelectedPrinterName", PreferredPrinterName);
         info.AddValue("PrintingCopies", PrintingCopies);

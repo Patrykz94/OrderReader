@@ -124,9 +124,9 @@ public static class PDFExport
         }
 
         // Before saving the file, make sure that the export directory exists, if not then create it
-        if (!Directory.Exists(settings.UserPDFExportPath)) Directory.CreateDirectory(settings.UserPDFExportPath);
+        if (!Directory.Exists(settings.UserPdfExportPath)) Directory.CreateDirectory(settings.UserPdfExportPath);
         // Create the export path
-        string exportPath = Path.Combine(settings.UserPDFExportPath, fileName);
+        string exportPath = Path.Combine(settings.UserPdfExportPath, fileName);
             
         // If file needs to be printed
         if (settings.PrintOrders)
@@ -135,7 +135,7 @@ public static class PDFExport
         }
 
         // If PDF file should be saved, move it to export folder. Otherwise, delete it
-        if (settings.ExportPDF)
+        if (settings.ExportPdf)
         {
             // Copy the file over to the export directory
             try

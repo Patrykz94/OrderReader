@@ -60,11 +60,6 @@ public static class Settings
         if (!Directory.Exists(TempFilesPath)) Directory.CreateDirectory(TempFilesPath);
         if (!Directory.Exists(SettingsPath)) Directory.CreateDirectory(SettingsPath);
     }
-        
-    public static bool SettingsFileExists()
-    {
-        return File.Exists(SettingsFile);
-    }
 
     /// <summary>
     /// Load user settings from file
@@ -72,18 +67,14 @@ public static class Settings
     /// <returns><see cref="UserSettings"/> object</returns>
     public static UserSettings LoadSettings()
     {
-        if (File.Exists(SettingsFile))
-        {
-            XmlSerializer deserializer = new XmlSerializer(typeof(UserSettings));
+        if (!File.Exists(SettingsFile)) return new UserSettings();
+        
+        var deserializer = new XmlSerializer(typeof(UserSettings));
 
-            using (TextReader reader = new StreamReader(SettingsFile))
-            {
-                object obj = deserializer.Deserialize(reader);
-                return (UserSettings)obj;
-            }
-        }
-
-        return new UserSettings();
+        using TextReader reader = new StreamReader(SettingsFile);
+        var obj = deserializer.Deserialize(reader);
+        var settingsObject = obj as UserSettings;
+        return settingsObject ?? new UserSettings();
     }
 
     /// <summary>
@@ -91,12 +82,10 @@ public static class Settings
     /// </summary>
     public static void SaveSettings(UserSettings settings)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
+        var serializer = new XmlSerializer(typeof(UserSettings));
 
-        using (TextWriter writer = new StreamWriter(SettingsFile))
-        {
-            serializer.Serialize(writer, settings);
-        }
+        using TextWriter writer = new StreamWriter(SettingsFile);
+        serializer.Serialize(writer, settings);
     }
 
     /// <summary>
@@ -105,39 +94,36 @@ public static class Settings
     /// <returns><see cref="AppConfiguration"/> object</returns>
     public static AppConfiguration LoadConfigs(string filePath = "")
     {
-        if (File.Exists(filePath))
+        if (!File.Exists(filePath)) return new AppConfiguration();
+        
+        // Try to load the backup config
+        try
         {
-            // Try to load the backup config in new format
-            try
+            // Try loading the config in new format first
+            var deserializer = new XmlSerializer(typeof(AppConfiguration));
+
+            using TextReader reader = new StreamReader(filePath);
+            var obj = deserializer.Deserialize(reader);
+            if (obj is AppConfiguration configObject) return configObject;
+            
+            // If that didn't work, attempt to extract the information from the old file format instead
+            // Load the XML file
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(filePath);
+
+            // Select the connection string node
+            var connectionStringNode = xmlDoc.SelectSingleNode("/configuration/connectionStrings/add[@name='default']");
+
+            if (connectionStringNode != null)
             {
-                XmlSerializer deserializer = new XmlSerializer(typeof(AppConfiguration));
+                // Extract the connection string value
+                var connectionString = connectionStringNode.Attributes?["connectionString"]?.Value;
+                var providerName = connectionStringNode.Attributes?["providerName"]?.Value;
 
-                using (TextReader reader = new StreamReader(filePath))
+                if (connectionString is not null && providerName is not null)
                 {
-                    object obj = deserializer.Deserialize(reader);
-                    return (AppConfiguration)obj;
-                }
-            }
-            catch {}
-
-            // If that doesn't work, attempt to extract the information from the old file format
-            try
-            {
-                // Load the XML file
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(filePath);
-
-                // Select the connection string node
-                XmlNode connectionStringNode = xmlDoc.SelectSingleNode("/configuration/connectionStrings/add[@name='default']");
-
-                if (connectionStringNode != null)
-                {
-                    // Extract the connection string value
-                    string connectionString = connectionStringNode.Attributes["connectionString"]?.Value;
-                    string providerName = connectionStringNode.Attributes["providerName"]?.Value;
-
                     // Create a new AppConfiguration object and initialize it with the extracted data
-                    AppConfiguration appConfig = new AppConfiguration
+                    var appConfig = new AppConfiguration
                     {
                         DataBaseConnectionString = connectionString,
                         DataBaseProviderName = providerName
@@ -146,7 +132,11 @@ public static class Settings
                     return appConfig;
                 }
             }
-            catch {}
+        }
+        catch
+        {
+            // Don't throw an exception here.
+            // Return default value instead.
         }
 
         return new AppConfiguration();

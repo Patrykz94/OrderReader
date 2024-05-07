@@ -104,8 +104,8 @@ public class SettingsViewModel : Screen
 
     public ObservableCollection<string> Printers => PrintingManager.InstalledPrinters;
 
-    private string _selectedPrinter = string.Empty;
-    public string SelectedPrinter
+    private string? _selectedPrinter = string.Empty;
+    public string? SelectedPrinter
     {
         get => _selectedPrinter;
         set
@@ -208,12 +208,12 @@ public class SettingsViewModel : Screen
 
         UserSettings settings = new()
         {
-            ExportCSV = ExportCsv,
-            ExportPDF = ExportPdf,
+            ExportCsv = ExportCsv,
+            ExportPdf = ExportPdf,
             PrintOrders = PrintOrders,
 
-            UserCSVExportPath = PathCsv,
-            UserPDFExportPath = PathPdf,
+            UserCsvExportPath = PathCsv,
+            UserPdfExportPath = PathPdf,
             PreferredPrinterName = SelectedPrinter,
             PrintingCopies = Copies,
 
@@ -228,12 +228,12 @@ public class SettingsViewModel : Screen
     {
         var settings = OrderReader.Core.DataModels.Settings.LoadSettings();
 
-        ExportCsv = settings.ExportCSV;
-        ExportPdf = settings.ExportPDF;
+        ExportCsv = settings.ExportCsv;
+        ExportPdf = settings.ExportPdf;
         PrintOrders = settings.PrintOrders;
 
-        PathCsv = settings.UserCSVExportPath;
-        PathPdf = settings.UserPDFExportPath;
+        PathCsv = settings.UserCsvExportPath;
+        PathPdf = settings.UserPdfExportPath;
         SelectedPrinter = settings.PreferredPrinterName;
         Copies = settings.PrintingCopies;
 
