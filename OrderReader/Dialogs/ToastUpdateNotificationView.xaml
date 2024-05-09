@@ -57,15 +57,20 @@
                     <TextBlock Style="{DynamicResource HeaderText}"
                                FontSize="{StaticResource FontSize.Regular}"
                                TextWrapping="Wrap">
-                        Application Updated
+                        Update Ready
                     </TextBlock>
                     <Border Style="{DynamicResource Divider}" Margin="5"/>
                     <TextBlock Margin="5"
                                TextWrapping="Wrap"
                                FontSize="{StaticResource FontSize.Small}">
-                        <Run>Version </Run>
+                        <Run>Update </Run>
                         <Run Text="{Binding UpdatedVersion, FallbackValue=0.0.0}" Foreground="{DynamicResource Accent.Foreground.Alternative.Brush}"/>
-                        <Run> of Order Reader has just been installed. To use the new version now, restart the application.</Run>
+                        <Run> is ready to install.</Run>
+                    </TextBlock>
+                    <TextBlock Margin="5"
+                               TextWrapping="Wrap"
+                               FontSize="{StaticResource FontSize.Small}">
+                        Restart now or it will install on next launch.
                     </TextBlock>
                     <Button x:Name="RestartApplication"
                             Content="Restart Now" Margin="5"

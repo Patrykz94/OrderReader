@@ -1,27 +1,28 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Windows;
-using OrderReader.Core;
-using Screen = Caliburn.Micro.Screen;
+using Caliburn.Micro;
 
 namespace OrderReader.Dialogs;
 
 public class ToastUpdateNotificationViewModel : Screen
 {
+    #region Callbacks
+    
+    private readonly Action<bool>? _windowCloseAction;
+    
+    #endregion
+    
     #region Public Properties
 
     public DateTime NotificationTime { get; } = DateTime.Now;
     public string UpdatedVersion { get; set; }
 
-    public bool Result { get; set; }
-
     #endregion
 
     #region Constructors
 
-    public ToastUpdateNotificationViewModel(string updatedVersion)
+    public ToastUpdateNotificationViewModel(string updatedVersion, Action<bool>? windowCloseAction = null)
     {
+        _windowCloseAction = windowCloseAction;
         UpdatedVersion = updatedVersion;
     }
 
@@ -31,12 +32,13 @@ public class ToastUpdateNotificationViewModel : Screen
 
     public void CloseNotification()
     {
+        _windowCloseAction?.Invoke(false);
         TryCloseAsync();
     }
 
     public void RestartApplication()
     {
-        Result = true;
+        _windowCloseAction?.Invoke(true);
         TryCloseAsync();
     }
 

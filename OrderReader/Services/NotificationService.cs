@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Caliburn.Micro;
-using OrderReader.Core;
 using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
 using OrderReader.Dialogs;
@@ -38,10 +38,8 @@ public class NotificationService(IWindowManager windowManager) : INotificationSe
         return result == true ? dialogViewModel.ConfigFileLocation : string.Empty;
     }
 
-    public async Task<DialogResult> ShowUpdateNotification(string updatedVersion)
+    public async Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction)
     {
-        var notificationWindow = new ToastUpdateNotificationViewModel(updatedVersion);
-        await windowManager.ShowWindowAsync(notificationWindow);
-        return notificationWindow.Result ? DialogResult.Yes : DialogResult.No;
+        await windowManager.ShowWindowAsync(new ToastUpdateNotificationViewModel(updatedVersion, windowCloseAction));
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using OrderReader.Core.Enums;
 
 namespace OrderReader.Core.Interfaces;
@@ -9,5 +10,5 @@ public interface INotificationService
     Task<DialogResult> ShowQuestion(string title, string message, string primaryButton = "Yes", string secondaryButton = "No");
     Task<string> ShowConfigMessage(string title, string message);
     Task<string> ShowConfigMessage();
-    Task<DialogResult> ShowUpdateNotification(string updatedVersion);
+    Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction);
 }

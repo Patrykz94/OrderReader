@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -140,6 +141,34 @@ public static class Settings
         }
 
         return new AppConfiguration();
+    }
+    
+    /// <summary>
+    /// Used to persist configuration settings, like connection strings, across updates.
+    /// </summary>
+    public static bool BackupConfigs()
+    {
+        try
+        {
+            var con = ConfigurationManager.ConnectionStrings["default"];
+            
+            if (con == null) return false;
+            AppConfiguration appConfig = new AppConfiguration
+            {
+                DataBaseConnectionString = con.ConnectionString,
+                DataBaseProviderName = con.ProviderName
+            };
+
+            XmlSerializer serializer = new XmlSerializer(typeof(AppConfiguration));
+
+            using TextWriter writer = new StreamWriter(ConfigFile);
+            serializer.Serialize(writer, appConfig);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     #endregion

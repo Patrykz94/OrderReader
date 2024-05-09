@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using Microsoft.Extensions.Logging;
 using OrderReader.Core.DataModels;
 using OrderReader.Core.DataModels.Customers;
 using OrderReader.Core.DataModels.FileHandling;
@@ -81,6 +82,9 @@ public class Bootstrapper : BootstrapperBase
         _container.Instance(ConfigureAutomapper());
 
         _container.Instance(_container);
+        
+        _container.Instance(Program.LoggerFactory);
+        _container.Handler<ILogger>(container => container.GetInstance<ILoggerFactory>().CreateLogger("General"));
 
         _container
             .Singleton<IWindowManager, WindowManager>()

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OrderReader.Core.DataAccess;
 using OrderReader.Core.DataModels;
 using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Helpers;
 
-public class AppInitialization(INotificationService notificationService)
+public class AppInitialization(INotificationService notificationService, ILogger logger)
 {
     public async Task Initialize()
     {
@@ -15,6 +16,7 @@ public class AppInitialization(INotificationService notificationService)
         Settings.Initialize();
 
         // Attempt to load user settings in order to set the desired theme and accent colour
+        logger.LogDebug("Loading user settings and changing theme.");
         try
         {
             var userSettings = Settings.LoadSettings();
@@ -23,7 +25,7 @@ public class AppInitialization(INotificationService notificationService)
         }
         catch (Exception ex)
         {
-            await notificationService.ShowMessage("Loading Theme Settings", $"Could not load theme settings: {ex}");
+            logger.LogError("Could not load theme settings: {ex}", ex);
         }
 
         // Check if there are any saved settings and if so, restore them
@@ -75,8 +77,10 @@ public class AppInitialization(INotificationService notificationService)
     /// <param name="exitOnError">Whether the application should exit if an error is encountered</param>
     private async Task UpdateConfigFile(string filePath, bool exitOnError = true)
     {
+        logger.LogDebug("Loading the config file at {path}. Exit on error is {exit}", filePath, exitOnError);
         if (filePath == string.Empty)
         {
+            logger.LogDebug("File path empty.");
             if (exitOnError) Environment.Exit(0);
         }
         else
@@ -87,10 +91,12 @@ public class AppInitialization(INotificationService notificationService)
                 var appConfig = Settings.LoadConfigs(filePath);
                 if (appConfig.HasConfigs())
                 {
+                    logger.LogDebug("Updating the configs from file.");
                     appConfig.UpdateConfigs(notificationService);
                 }
                 else
                 {
+                    logger.LogCritical("Could not read configuration data form the provided file.");
                     await notificationService.ShowMessage(
                         "Configuration Error",
                         $"Could not read configuration data form the provided file.{(exitOnError ? "\n\nApplication will now terminate." : "")}",
@@ -101,6 +107,7 @@ public class AppInitialization(INotificationService notificationService)
             }
             catch (Exception ex)
             {
+                logger.LogCritical("Could not process the configuration file provided: {message}", ex.Message);
                 await notificationService.ShowMessage(
                     "Configuration Error",
                     $"Could not process the configuration file provided:\n\n{ex.Message}{(exitOnError ? "\n\nApplication will now terminate." : "")}",
@@ -121,9 +128,12 @@ public class AppInitialization(INotificationService notificationService)
         if (!File.Exists(Settings.ConfigFile))
         {
             // Nothing to do
+            logger.LogDebug("No configs to restore.");
             return;
         }
-
+        
+        logger.LogDebug("Restoring app configs.");
+        
         // Update the current config file with the backup
         await UpdateConfigFile(Settings.ConfigFile, false);
 
