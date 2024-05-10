@@ -121,10 +121,11 @@
             </StackPanel>
         </TabItem>
         
-        <TabItem Header="Appearance">
+        <TabItem Header="Customise">
             <StackPanel>
-                <TextBlock Text="Visual Appearance Settings" Style="{DynamicResource HeaderText}"/>
-                <TextBlock Text="Change the application's colour schemes" Margin="5 -5 5 5"
+                
+                <TextBlock Text="User Interface Settings" Style="{DynamicResource HeaderText}"/>
+                <TextBlock Text="Change colour schemes and sounds" Margin="5 -5 5 5"
                            HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
 
                 <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
@@ -261,6 +262,16 @@
                         Yellow
                     </RadioButton>
                 </UniformGrid>
+                
+                <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                <!-- Sound settings -->
+                <TextBlock Text="Sounds" FontSize="{StaticResource FontSize.Large}"/>
+                
+                <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                    Those are sounds that notify you whenever a window pops up.
+                </TextBlock>
+                <ToggleButton Name="EnableSounds" Content="Enable Sounds" Width="300" HorizontalAlignment="Left"/>
             </StackPanel>
         </TabItem>
         

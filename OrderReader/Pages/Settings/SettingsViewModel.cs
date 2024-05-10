@@ -125,6 +125,17 @@ public class SettingsViewModel : Screen
             NotifyOfPropertyChange();
         }
     }
+    
+    private bool _enableSounds;
+    public bool EnableSounds
+    {
+        get => _enableSounds;
+        set
+        {
+            _enableSounds = value;
+            NotifyOfPropertyChange();
+        }
+    }
 
     public bool CanPathCsv => ExportCsv;
     public bool CanBrowseCsv => ExportCsv;
@@ -217,6 +228,7 @@ public class SettingsViewModel : Screen
             PreferredPrinterName = SelectedPrinter,
             PrintingCopies = Copies,
 
+            EnableSounds = EnableSounds,
             Theme = SelectedTheme,
             Accent = SelectedAccent
         };
@@ -237,6 +249,7 @@ public class SettingsViewModel : Screen
         SelectedPrinter = settings.PreferredPrinterName;
         Copies = settings.PrintingCopies;
 
+        EnableSounds = settings.EnableSounds;
         SelectedTheme = settings.Theme;
         SelectedAccent = settings.Accent;
 

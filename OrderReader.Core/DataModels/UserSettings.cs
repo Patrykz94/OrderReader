@@ -46,6 +46,11 @@ public class UserSettings : ISerializable
     /// Number of copies to print
     /// </summary>
     public int PrintingCopies { get; set; }
+    
+    /// <summary>
+    /// Whether sounds should be enabled
+    /// </summary>
+    public bool EnableSounds { get; set; }
 
     /// <summary>
     /// Name of the theme to use
@@ -73,6 +78,7 @@ public class UserSettings : ISerializable
         ExportPdf = true;
         PrintOrders = true;
         PrintingCopies = 1;
+        EnableSounds = true;
         Theme = "Auto";
         Accent = "Red";
 
@@ -88,8 +94,6 @@ public class UserSettings : ISerializable
     /// <summary>
     /// A constructor that deserializes this object
     /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
     public UserSettings(SerializationInfo info, StreamingContext context)
     {
         // Load saved settings
@@ -100,6 +104,7 @@ public class UserSettings : ISerializable
         PrintOrders = (bool)info.GetValue("PrintOrders", typeof(bool))!;
         PreferredPrinterName = (string)info.GetValue("SelectedPrinterName", typeof(string))!;
         PrintingCopies = (int)info.GetValue("PrintingCopies", typeof(int))!;
+        EnableSounds = (bool)info.GetValue("EnableSounds", typeof(bool))!;
         Theme = (string)info.GetValue("Theme", typeof(string))!;
         Accent = (string)info.GetValue("Accent", typeof(string))!;
     }
@@ -111,8 +116,6 @@ public class UserSettings : ISerializable
     /// <summary>
     /// Serializes this object
     /// </summary>
-    /// <param name="info"></param>
-    /// <param name="context"></param>
     public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
         info.AddValue("UserCSVExportPath", UserCsvExportPath);
@@ -122,6 +125,7 @@ public class UserSettings : ISerializable
         info.AddValue("PrintOrders", PrintOrders);
         info.AddValue("SelectedPrinterName", PreferredPrinterName);
         info.AddValue("PrintingCopies", PrintingCopies);
+        info.AddValue("EnableSounds", EnableSounds);
         info.AddValue("Theme", Theme);
         info.AddValue("Accent", Accent);
     }
