@@ -43,7 +43,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             
-            <!-- Row 1 - Logo -->
+            <!-- Row 1 - Title -->
             <Grid Margin="20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -51,36 +51,25 @@
                 </Grid.RowDefinitions>
 
                 <Grid Row="0" Margin="0 0 0 10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                
-                    <Border Grid.RowSpan="2" Grid.Column="0"
-                            Background="White"
-                            CornerRadius="15"/>
 
-                    <TextBlock Grid.Column="1" Grid.Row="0"
+                    <TextBlock Grid.Row="0"
                                Text="Order Reader"
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Left"
+                               HorizontalAlignment="Center"
                                Padding="5 0"
                                FontSize="{DynamicResource FontSize.Regular}"
                                FontWeight="Medium"
                                Foreground="{DynamicResource Foreground.Brush}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1"
+                    <TextBlock Grid.Row="1"
                                x:Name="CurrentVersion"
                                Text="v0.0.0"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left"
+                               HorizontalAlignment="Center"
                                Padding="5 0"
                                FontSize="{DynamicResource FontSize.Small}"
                                Foreground="{DynamicResource Foreground.Secondary.Brush}"/>
-                    
                 </Grid>
                 
                 <Grid Grid.Row="1"

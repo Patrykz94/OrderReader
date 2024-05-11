@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
     <StartupObject>OrderReader.Program</StartupObject>
-    <ApplicationIcon>Images\Logo\icon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\Icon\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
