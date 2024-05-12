@@ -96,7 +96,7 @@ public class ShellViewModel : Conductor<object>
 
     public void ExitApplication()
     {
-        TryCloseAsync();
+        Environment.Exit(0);
     }
 
     #endregion

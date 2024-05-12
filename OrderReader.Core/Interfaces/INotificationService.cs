@@ -10,5 +10,5 @@ public interface INotificationService
     Task<DialogResult> ShowQuestion(string title, string message, string primaryButton = "Yes", string secondaryButton = "No");
     Task<string> ShowConfigMessage(string title, string message);
     Task<string> ShowConfigMessage();
-    Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction);
+    Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction = null);
 }

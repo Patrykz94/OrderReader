@@ -44,7 +44,7 @@ public class NotificationService(IWindowManager windowManager) : INotificationSe
         return result == true ? dialogViewModel.ConfigFileLocation : string.Empty;
     }
 
-    public async Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction)
+    public async Task ShowUpdateNotification(string updatedVersion, Action<bool>? windowCloseAction = null)
     {
         if (Settings.LoadSettings().EnableSounds) SystemSounds.Asterisk.Play();
         await windowManager.ShowWindowAsync(new ToastUpdateNotificationViewModel(updatedVersion, windowCloseAction));
