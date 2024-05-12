@@ -9,6 +9,7 @@ using OrderReader.Pages.Customers;
 using OrderReader.Pages.Orders;
 using OrderReader.Pages.Settings;
 using Velopack;
+using Velopack.Sources;
 
 namespace OrderReader.Pages.Shell;
 
@@ -60,7 +61,7 @@ public class ShellViewModel : Conductor<object>
         // Get the current version of our app
         var assembly = Assembly.GetExecutingAssembly();
         var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-        CurrentVersion = $" v{versionInfo.FileVersion}";
+        CurrentVersion = $"v{versionInfo.FileVersion}";
         _logger.LogDebug("Application {version} launched and displayed the ShellViewModel", CurrentVersion);
     }
 
@@ -104,7 +105,7 @@ public class ShellViewModel : Conductor<object>
 
     private async Task GetUpdates()
     {
-        var mgr = new UpdateManager(@"E:\Documents\Programming\OrderReader\Releases");
+        var mgr = new UpdateManager(new GithubSource(@"https://github.com/Patrykz94/OrderReader", null, true));
 
         // Check for new version
         try
