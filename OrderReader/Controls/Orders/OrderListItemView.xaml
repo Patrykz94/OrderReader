@@ -53,7 +53,8 @@
                       CellStyle="{DynamicResource OrdersGridCell}"
                       ColumnHeaderStyle="{DynamicResource OrdersGridColumnHeader}"
                       RowStyle="{DynamicResource OrdersGridRow}"
-                      x:Name="OrdersView"/>
+                      x:Name="OrdersView"
+                      PreviewMouseWheel="OrdersView_OnPreviewMouseWheel"/>
         </Border>
     </Grid>
 </UserControl>
