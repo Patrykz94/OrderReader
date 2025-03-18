@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using OrderReader.Core.DataModels.Customers;
@@ -65,6 +66,7 @@ public class ExcelImport : IFileImport
         List<IParseOrder> orderParsers = new List<IParseOrder>();
         orderParsers.Add(new LidlExcelParser(_notificationService));
         orderParsers.Add(new LidlNewExcelParser(_notificationService));
+        orderParsers.Add(new FppExcelParser(_notificationService));
 
         foreach (IParseOrder parser in orderParsers)
         {
@@ -130,26 +132,28 @@ public class ExcelImport : IFileImport
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing the <see cref="DataSet"/> we loaded</returns>
     private Dictionary<string, string[]> DataSetToDictionary(DataSet data)
     {
-        Dictionary<string, string[]> orderData = new Dictionary<string, string[]>();
+        Dictionary<string, string[]> orderData = [];
 
         foreach (DataTable table in data.Tables)
         {
-            int columnCount = table.Columns.Count;
-            int rowCount = table.Rows.Count;
-            string allText = columnCount.ToString() + Environment.NewLine + rowCount.ToString();
+            var columnCount = table.Columns.Count;
+            var rowCount = table.Rows.Count;
+            List<string> allStrings =
+            [
+                columnCount.ToString(),
+                rowCount.ToString()
+            ];
 
             foreach (DataRow row in table.Rows)
             {
-                for (int c = 0; c < row.ItemArray.Length; c++)
-                {
-                    allText += Environment.NewLine + row.ItemArray[c].ToString();
-                }
+                allStrings.AddRange(row.ItemArray.Select(cell => cell?.ToString() ?? string.Empty));
             }
 
-            string[] tableData = allText.Split(
-                new[] { "\r\n", "\r", "\n" },
-                StringSplitOptions.None
-            );
+            var tableData = allStrings.Select(x => x
+                .Replace("\n", string.Empty)
+                .Replace("\r", string.Empty)
+                .Trim()
+            ).ToArray();
 
             orderData.Add(table.TableName, tableData);
         }

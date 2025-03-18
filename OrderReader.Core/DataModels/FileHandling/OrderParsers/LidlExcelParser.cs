@@ -120,6 +120,8 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
             string CellA1 = GetCell(new Cell("A1"), valuePair.Value);
             string CellB1 = GetCell(new Cell("B1"), valuePair.Value);
 
+            if (string.IsNullOrEmpty(CellA1) || string.IsNullOrEmpty(CellB1)) return null;
+
             if (customers.HasCustomerOrderName(CellA1 + CellB1))
             {
                 return customers.GetCustomerByOrderName(CellA1 + CellB1);

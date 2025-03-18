@@ -558,7 +558,7 @@ public class CustomersViewModel : Screen
         // Make sure all fields have the required number of characters
         if (depot.Name.Length is < 3 or > 50) return false;
         if (depot.CsvName.Length is < 3 or > 50) return false;
-        if (depot.OrderName.Length is < 3 or > 50) return false;
+        if (depot.OrderName.Length < 3) return false;
 
         if (isNew)
         {
