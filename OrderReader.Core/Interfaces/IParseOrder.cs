@@ -21,8 +21,8 @@ public interface IParseOrder
     /// <param name="orderText">A <see cref="Dictionary{TKey, TValue}"/> with all order text</param>
     /// <param name="customers">A <see cref="CustomersHandler"/> with a list of all <see cref="Customer"/> objects</param>
     /// <returns>A <see cref="Customer"/> object or null</returns>
-    Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers);
-
+    Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers);
+    
     /// <summary>
     /// Parses the order by reading the text
     /// </summary>

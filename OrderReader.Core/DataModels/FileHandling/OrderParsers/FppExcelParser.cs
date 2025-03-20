@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OrderReader.Core.DataModels.Customers;
+using OrderReader.Core.DataModels.FileHandling.ExcelHelpers;
 using OrderReader.Core.DataModels.Orders;
 using OrderReader.Core.Interfaces;
 
@@ -11,16 +12,6 @@ namespace OrderReader.Core.DataModels.FileHandling.OrderParsers;
 public class FppExcelParser(INotificationService notificationService) : IParseOrder
 {
     #region Private Variables
-
-    /// <summary>
-    /// Where in a table string array we can find the column count
-    /// </summary>
-    private const int TableColumnCountPosition = 0;
-
-    /// <summary>
-    /// Where in a table string array we can find the row count
-    /// </summary>
-    private const int TableRowCountPosition = 1;
 
     private readonly INotificationService _notificationService = notificationService;
 
@@ -31,95 +22,21 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
     /// <summary>
     /// The file extension that this parser works with
     /// </summary>
-    public string FileExtension { get; } = ".xlsx";
-
-    #endregion
-
-    #region Private Structs
-
-    /// <summary>
-    /// A struct that represents the cell position in a table
-    /// </summary>
-    public struct Cell
-    {
-        /// <summary>
-        /// Constructs a cell out of column and row numbers
-        /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        public Cell(int column, int row)
-        {
-            this.column = column;
-            this.row = row;
-        }
-
-        /// <summary>
-        /// Constructs a cell out of cell name string
-        /// </summary>
-        /// <param name="cell"></param>
-        public Cell(string cell)
-        {
-            bool foundNums = false;
-
-            List<int> col = new List<int>();
-            string row = "";
-
-            foreach (char character in cell)
-            {
-                if (character >= 'A' && character <= 'Z')
-                {
-                    if (foundNums) { this.column = -1; this.row = -1; };
-                    col.Add(character - 'A');
-                }
-                else if (character >= 'a' && character <= 'z')
-                {
-                    if (foundNums) { this.column = -1; this.row = -1; };
-                    col.Add(character - 'a');
-                }
-                else if (character >= '0' && character <= '9')
-                {
-                    foundNums = true;
-                    row += character;
-                }
-                else
-                {
-                    this.column = -1;
-                    this.row = -1;
-                }
-            }
-
-            int c = 0;
-            for (int i = 0; i < col.Count; i++)
-            {
-                c += ((col[i] + 1) * (int)Math.Pow(26.0, i));
-            }
-
-            if (!int.TryParse(row, out int r)) { this.column = -1; this.row = -1; };
-
-            this.column = c;
-            this.row = r;
-        }
-
-        public bool IsSameAs(Cell otherCell)
-        {
-            return column == otherCell.column && row == otherCell.row;
-        }
-
-        public int column;
-        public int row;
-    }
+    public string FileExtension => ".xlsx";
 
     #endregion
 
     #region Public Helpers
 
-    public Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
         foreach (var valuePair in orderText)
         {
-            var customerIdCell = GetCell(new Cell("A1"), valuePair.Value);
+            var sheet = new ExcelSheet(valuePair.Key, valuePair.Value);
+            
+            var customerIdCell = sheet.GetCell("A1");
 
-            if (customers.HasCustomerOrderName(customerIdCell))
+            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerOrderName(customerIdCell))
             {
                 return customers.GetCustomerByOrderName(customerIdCell);
             }
@@ -137,11 +54,10 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
     /// <param name="ordersLibrary">The library containing all order data</param>
     public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
     {
-        foreach (var table in orderText.Values)
+        foreach (var table in orderText)
         {
-            // Table information
-            var columnCount = int.Parse(table[TableColumnCountPosition]);
-            var rowCount = int.Parse(table[TableRowCountPosition]);
+            // Create the sheet
+            var sheet = new ExcelSheet(table.Key, table.Value);
             
             const int firstOrderRow = 7;
             const int depotCol = 2;
@@ -156,13 +72,13 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
 
             while (true)
             {
-                var cellContent = GetCell(1, belowOrdersRow, table);
+                var cellContent = sheet.GetCell(1, belowOrdersRow);
                 if (string.IsNullOrEmpty(cellContent)) break;
                 
                 // Get the depot, product and qty per pallet
-                depotStrings.Add(belowOrdersRow, GetCell(depotCol, belowOrdersRow, table));
-                productStrings.Add(belowOrdersRow, GetCell(productCol, belowOrdersRow, table));
-                qtyPerPalletStrings.Add(belowOrdersRow, GetCell(qtyPerPalletCol, belowOrdersRow, table));
+                depotStrings.Add(belowOrdersRow, sheet.GetCell(depotCol, belowOrdersRow));
+                productStrings.Add(belowOrdersRow, sheet.GetCell(productCol, belowOrdersRow));
+                qtyPerPalletStrings.Add(belowOrdersRow, sheet.GetCell(qtyPerPalletCol, belowOrdersRow));
 
                 belowOrdersRow += 2;
             }
@@ -177,9 +93,9 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                 Dictionary<int, decimal> palletQuantities = [];
                 DateTime deliveryDate;
                 
-                var dateString = GetCell(c, dateRow, table);
-                var orderReference = GetCell(c, belowOrdersRow, table);
-                var totalQtyString = GetCell(c, totalRow, table);
+                var dateString = sheet.GetCell(c, dateRow);
+                var orderReference = sheet.GetCell(c, belowOrdersRow);
+                var totalQtyString = sheet.GetCell(c, totalRow);
                 var totalQty = 0m;
                 
                 // Variables that will be required
@@ -199,8 +115,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                 for (var r = firstOrderRow; r < belowOrdersRow; r += 2)
                 {
                     var quantity = 0m;
-                    var cell = new Cell(c, r);
-                    var cellValue = GetCell(cell, table);
+                    var cellValue = sheet.GetCell(c, r);
                     if (cellValue != null)
                     {
                         if (!decimal.TryParse(cellValue, out quantity))
@@ -349,46 +264,5 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
         }
     }
     
-    #endregion
-
-    #region Private Helpers
-
-    /// <summary>
-    /// Selects the cell from a text based table
-    /// </summary>
-    /// <param name="column">Column number (starting at index 1)</param>
-    /// <param name="row">Row number (starting at index 1)</param>
-    /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
-    /// <returns>Cell value string or null</returns>
-    private static string? GetCell(int column, int row, string[] tableText)
-    {
-        string? result = null;
-
-        var columnCount = int.Parse(tableText[TableColumnCountPosition]);
-        var rowCount = int.Parse(tableText[TableRowCountPosition]);
-
-        var c = column - 1;
-        var r = row - 1;
-
-        if (column > 0 && column <= columnCount && row > 0 && row <= rowCount)
-        {
-            result = tableText[c + r * columnCount + 2];
-            if (result == "") result = null;
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Selects the cell from a text based table
-    /// </summary>
-    /// <param name="cell">A <see cref="Cell"/> object</param>
-    /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
-    /// <returns></returns>
-    private static string? GetCell(Cell cell, string[] tableText)
-    {
-        return GetCell(cell.column, cell.row, tableText);
-    }
-
     #endregion
 }

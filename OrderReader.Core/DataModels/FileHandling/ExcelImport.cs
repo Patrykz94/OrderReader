@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -23,7 +22,7 @@ public class ExcelImport : IFileImport
     #region Public Properties
 
     /// <summary>
-    /// DataSet containing the data from excel file
+    /// DataSet containing the data from Excel file
     /// </summary>
     private readonly DataSet excelData;
 
@@ -62,17 +61,19 @@ public class ExcelImport : IFileImport
 
     public async Task<bool> ProcessFileAsync(CustomersHandler customers, OrdersLibrary ordersLibrary)
     {
-        // List of available processors - TODO: Populate this list with actual parsers
-        List<IParseOrder> orderParsers = new List<IParseOrder>();
-        orderParsers.Add(new LidlExcelParser(_notificationService));
-        orderParsers.Add(new LidlNewExcelParser(_notificationService));
-        orderParsers.Add(new FppExcelParser(_notificationService));
+        // List of available processors
+        List<IParseOrder> orderParsers =
+        [
+            new LidlExcelParser(_notificationService),
+            new LidlExcelParser(_notificationService),
+            new FppExcelParser(_notificationService)
+        ];
 
-        foreach (IParseOrder parser in orderParsers)
+        foreach (var parser in orderParsers)
         {
             if (parser.FileExtension == fileExtension)
             {
-                Customer customer = parser.GetCustomer(orderText, customers);
+                var customer = parser.GetCustomer(orderText, customers);
 
                 if (customer != null)
                 {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OrderReader.Core.DataModels.Customers;
+using OrderReader.Core.DataModels.FileHandling.ExcelHelpers;
 using OrderReader.Core.DataModels.Orders;
-using OrderReader.Core.Enums;
 using OrderReader.Core.Interfaces;
 
 namespace OrderReader.Core.DataModels.FileHandling.OrderParsers;
@@ -12,16 +12,6 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
 {
     #region Private Variables
 
-    /// <summary>
-    /// Where in a table string array we can find the column count
-    /// </summary>
-    private static readonly int tableColumntCountPosition = 0;
-
-    /// <summary>
-    /// Where in a table string array we can find the row count
-    /// </summary>
-    private static readonly int tableRowCountPosition = 1;
-
     private readonly INotificationService _notificationService = notificationService;
 
     #endregion
@@ -29,102 +19,25 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
     #region Public Properties
 
     /// <summary>
-    /// The file extention that this parser works with
+    /// The file extension that this parser works with
     /// </summary>
-    public string FileExtension { get; } = ".xlsx";
-
-    #endregion
-
-    #region Private Structs
-
-    /// <summary>
-    /// A struct that represents the cell position in a table
-    /// </summary>
-    public struct Cell
-    {
-        /// <summary>
-        /// Constructs a cell out of column and row numbers
-        /// </summary>
-        /// <param name="column"></param>
-        /// <param name="row"></param>
-        public Cell(int column, int row)
-        {
-            this.column = column;
-            this.row = row;
-        }
-
-        /// <summary>
-        /// Constructs a cell out of cell name string
-        /// </summary>
-        /// <param name="cell"></param>
-        public Cell(string cell)
-        {
-            bool foundNums = false;
-
-            List<int> col = new List<int>();
-            string row = "";
-
-            foreach (char character in cell)
-            {
-                if (character >= 'A' && character <= 'Z')
-                {
-                    if (foundNums) { this.column = -1; this.row = -1; };
-                    col.Add(character - 'A');
-                }
-                else if (character >= 'a' && character <= 'z')
-                {
-                    if (foundNums) { this.column = -1; this.row = -1; };
-                    col.Add(character - 'a');
-                }
-                else if (character >= '0' && character <= '9')
-                {
-                    foundNums = true;
-                    row += character;
-                }
-                else
-                {
-                    this.column = -1;
-                    this.row = -1;
-                }
-            }
-
-            int c = 0;
-            for (int i = 0; i < col.Count; i++)
-            {
-                c += ((col[i] + 1) * (int)Math.Pow(26.0, i));
-            }
-
-            if (!int.TryParse(row, out int r)) { this.column = -1; this.row = -1; };
-
-            this.column = c;
-            this.row = r;
-        }
-
-        public bool IsSameAs(Cell otherCell)
-        {
-            return column == otherCell.column && row == otherCell.row;
-        }
-
-        public int column;
-        public int row;
-    }
+    public string FileExtension => ".xlsx";
 
     #endregion
 
     #region Public Helpers
 
-    public Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
-        foreach (KeyValuePair<string, string[]> valuePair in orderText)
+        foreach (var sheetText in orderText)
         {
-            string CellA1 = GetCell(new Cell("A1"), valuePair.Value);
-            string CellB1 = GetCell(new Cell("B1"), valuePair.Value);
+            var sheet = new ExcelSheet(sheetText.Key, sheetText.Value);
+            
+            var customerIdCell = sheet.GetCell("D1");
 
-            if (string.IsNullOrEmpty(CellA1) || string.IsNullOrEmpty(CellB1)) return null;
-
-            if (customers.HasCustomerOrderName(CellA1 + CellB1))
+            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerOrderName(customerIdCell))
             {
-                return customers.GetCustomerByOrderName(CellA1 + CellB1);
+                return customers.GetCustomerByOrderName(customerIdCell);
             }
         }
 
@@ -137,72 +50,64 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
     /// <param name="orderText">The data that we should read from</param>
     /// <param name="fileName">Name of the order file</param>
     /// <param name="customer">Customer associated with this order</param>
-    /// <param name="ordersLibrary">The orders library where this order should be added</param>
+    /// <param name="ordersLibrary"></param>
     public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
     {
-        foreach (string[] table in orderText.Values)
+        foreach (var table in orderText)
         {
-            // TODO: Future improvement: consolidate errors of the same type together and display at once
-
-            // Table information
-            int columnCount = int.Parse(table[tableColumntCountPosition]);
-            int rowCount = int.Parse(table[tableRowCountPosition]);
+            // Load the sheet
+            var sheet = new ExcelSheet(table.Key, table.Value);
 
             // Variables that will be required
-            Dictionary<int, List<OrderWarning>> depotWarnings = new Dictionary<int, List<OrderWarning>>();
-            List<string> readQtyErrors = new List<string>();
+            Dictionary<int, List<OrderWarning>> depotWarnings = [];
+            List<string> readQtyErrors = [];
 
             // Required data to extract in string form
-            string dateString = null;
-            string orderReference = null;
-            Dictionary<int, string> depotStrings = new Dictionary<int, string>();
-            Dictionary<int, string> productStrings = new Dictionary<int, string>();
-            Dictionary<Cell, double> orderQuantities = new Dictionary<Cell, double>();
-
-            // Required data
-            List<Depot> depots = new List<Depot>();
-            List<Product> products = new List<Product>();
-            DateTime deliveryDate = DateTime.MinValue;
+            Dictionary<int, string?> depotStrings = [];
+            Dictionary<int, string?> productStrings = [];
+            Dictionary<Cell, double> orderQuantities = [];
 
             // Data locations
-            Cell dateCell = new Cell("D1");
-            int productCol1 = 1;
-            int productCol2 = 3;
-            int productRowStart = 3;
-            int depotRow = 2;
-            int depotColStart = 5;
-            int depotColEnd = columnCount - 1;
-            int refCol = columnCount;
+            var dateCell = new Cell("B1");
+            const int productCol1 = 4;
+            const int productCol2 = 11;
+            const int truckCol = 3;
+            const int productRowStart = 8;
+            const int depotRow = 6;
+            const int depotColStart = 31;
+            var depotColEnd = sheet.ColumnCount - 85;
+            var refCell = new Cell("B8");
 
             // Extract the data
-            dateString = GetCell(dateCell, table);
-            orderReference = GetCell(refCol, 1, table);
+            var dateString = sheet.GetCell(dateCell);
+            var orderReference = sheet.GetCell(refCell);
 
             // Get list of depots
-            for (int c = depotColStart; c <= depotColEnd; c++)
+            for (var c = depotColStart; c <= depotColEnd; c++)
             {
-                depotStrings.Add(c, GetCell(c, depotRow, table));
+                depotStrings.Add(c, sheet.GetCell(c, depotRow));
             }
 
             // Get list of products
-            for (int r = productRowStart; r < productRowStart + 10; r++)
+            for (var r = productRowStart; r < productRowStart + 30; r++)
             {
-                string c1 = GetCell(productCol1, r, table);
-                string c2 = GetCell(productCol2, r, table);
-                if (c1 == null && c2 == null) break;
+                var c1 = sheet.GetCell(productCol1, r);
+                var c2 = sheet.GetCell(productCol2, r);
+                var truck = sheet.GetCell(truckCol, r);
+                if (c1 == null || c2 == null || truck is not "1") break;
                 productStrings.Add(r, $"{c1}{c2}");
             }
 
-            // Get all cells wich contain ordered product
-            for (int c = depotColStart; c <= depotColEnd; c++)
+            // Get all cells which contain ordered product
+            for (var c = depotColStart; c <= depotColEnd; c++)
             {
-                for (int r = productRowStart; r <= productRowStart+productStrings.Count-1; r++)
+                for (var r = productRowStart; r <= productRowStart+productStrings.Count-1; r++)
                 {
-                    Cell cell = new Cell(c, r);
-                    string cellValue = GetCell(cell, table);
+                    var cell = new Cell(c, r);
+                    var cellValue = sheet.GetCell(cell);
                     if (cellValue != null)
                     {
-                        if (double.TryParse(cellValue, out double quantity))
+                        if (double.TryParse(cellValue, out var quantity))
                         {
                             if (quantity > 0.0)
                             {
@@ -217,24 +122,24 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                 }
             }
 
-            List<int> usedDepotColumns = new List<int>();
+            List<int> usedDepotColumns = [];
 
             // Get all the used depot information
             foreach (var orderQuantity in orderQuantities)
             {
                 foreach (var depotString in depotStrings)
                 {
-                    if (orderQuantity.Key.column == depotString.Key)
+                    if (orderQuantity.Key.Column == depotString.Key)
                     {
-                        if (customer.HasDepotOrderName(depotString.Value))
+                        if (!string.IsNullOrEmpty(depotString.Value) && customer.HasDepotOrderName(depotString.Value))
                         {
                             if (!usedDepotColumns.Contains(depotString.Key)) usedDepotColumns.Add(depotString.Key);
                         }
                         else
                         {
-                            string errorMessage = $"Unknown depot \"{depotString.Value}\" was found in file {fileName}.\n" +
-                                                  "If this is a new depot, please add it to the list.\n" +
-                                                  $"\nThis file will be processed without depot \"{depotString.Value}\". You will need to add order for that depot manually.";
+                            var errorMessage = $"Unknown depot \"{depotString.Value}\" was found in file {fileName}.\n" +
+                                               "If this is a new depot, please add it to the list.\n" +
+                                               $"\nThis file will be processed without depot \"{depotString.Value}\". You will need to add order for that depot manually.";
 
                             // Display error message to the user
                             await _notificationService.ShowMessage("File Processing Error", errorMessage);
@@ -243,24 +148,24 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                 }
             }
 
-            List<int> usedProductRows = new List<int>();
+            List<int> usedProductRows = [];
 
             // Get all the used product information
             foreach (var orderQuantity in orderQuantities)
             {
                 foreach (var productString in productStrings)
                 {
-                    if (orderQuantity.Key.row == productString.Key)
+                    if (orderQuantity.Key.Row == productString.Key)
                     {
-                        if (customer.HasProductOrderName(productString.Value))
+                        if (!string.IsNullOrEmpty(productString.Value) && customer.HasProductOrderName(productString.Value))
                         {
                             if (!usedProductRows.Contains(productString.Key)) usedProductRows.Add(productString.Key);
                         }
                         else
                         {
-                            string errorMessage = $"Unknown product \"{productString.Value}\" was found in file {fileName}.\n" +
-                                                  "If this is a new product, please add it to the list.\n" +
-                                                  $"\nThis file will be processed without product \"{productString.Value}\". You will need to add that product to order manually if required.";
+                            var errorMessage = $"Unknown product \"{productString.Value}\" was found in file {fileName}.\n" +
+                                               "If this is a new product, please add it to the list.\n" +
+                                               $"\nThis file will be processed without product \"{productString.Value}\". You will need to add that product to order manually if required.";
 
                             // Display error message to the user
                             await _notificationService.ShowMessage("File Processing Error", errorMessage);
@@ -273,7 +178,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
             // Make sure that we have found all necessary data
             if (orderQuantities.Count == 0 || orderReference == null || dateString == null)
             {
-                string errorMessage = $"Following issues have been found in file {fileName}:\n";
+                var errorMessage = $"Following issues have been found in file {fileName}:\n";
                 if (orderQuantities.Count == 0) errorMessage += "* No orders have been found\n";
                 if (orderReference == null) errorMessage += "* PO reference number was not found\n";
                 if (dateString == null) errorMessage += "* Delivery date was not found\n";
@@ -286,23 +191,23 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
             else
             {
                 // Process and validate delivery date
-                if (!DateTime.TryParse(dateString.Trim(), out deliveryDate))
+                if (!DateTime.TryParse(dateString.Trim(), out var deliveryDate))
                 {
-                    string errorMessage = $"Could not read the date from file {fileName}.\n" +
-                                          "Please check the date in Excel file. If the date format looks correct then please contact Patryk Z.\n" +
-                                          "\nThis file was not processed.";
+                    var errorMessage = $"Could not read the date from file {fileName}.\n" +
+                                       "Please check the date in Excel file. If the date format looks correct then please contact Patryk Z.\n" +
+                                       "\nThis file was not processed.";
 
                     // Display error message to the user
                     await _notificationService.ShowMessage("File Processing Error", errorMessage);
                 }
                 else if (deliveryDate != DateTime.Today.AddDays(1))
                 {
-                    string errorMessage = $"Delivery date ({deliveryDate.ToShortDateString()}) in file {fileName} is not tomorrow.";
+                    var errorMessage = $"Delivery date ({deliveryDate.ToShortDateString()}) in file {fileName} is not tomorrow.";
 
                     // Create a new warning object for this order
-                    foreach (int col in usedDepotColumns)
+                    foreach (var col in usedDepotColumns)
                     {
-                        if (!depotWarnings.ContainsKey(col)) depotWarnings.Add(col, new List<OrderWarning>());
+                        if (!depotWarnings.ContainsKey(col)) depotWarnings.Add(col, []);
                         depotWarnings[col].Add(new OrderWarning(OrderWarning.WarningType.UnusualDate, errorMessage));
                     }
 
@@ -310,27 +215,12 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                     await _notificationService.ShowMessage("Unusual Date Warning", errorMessage);
                 }
 
-                if (orderReference.EndsWith("01"))
-                {
-                    string errorMessage = $"Order reference {orderReference} in file {fileName} indicates that this is a provisional order.\n\n" +
-                                          "Provisional orders usually end with \"01\" while full orders usually end with \"02\".\n\n" +
-                                          "Would you like to process this order anyway?";
-
-                    // Display error message to the user
-                    var result = await _notificationService.ShowQuestion("Order Reference Warning", errorMessage);
-
-                    if (result == DialogResult.No)
-                    {
-                        return;
-                    }
-                }
-
                 // Display all the cells that could not be read from
                 if (readQtyErrors.Count > 0)
                 {
-                    string errorMessage = $"Not all data could be read from file {fileName}.\n" +
-                                          "Please see below which orders could not be read:\n\n";
-                    foreach (string error in readQtyErrors)
+                    var errorMessage = $"Not all data could be read from file {fileName}.\n" +
+                                       "Please see below which orders could not be read:\n\n";
+                    foreach (var error in readQtyErrors)
                     {
                         errorMessage += error;
                     }
@@ -341,27 +231,27 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                 }
 
                 // Create the order objects
-                foreach (int col in usedDepotColumns)
+                foreach (var col in usedDepotColumns)
                 {
-                    Depot depot = customer.GetDepot(depotStrings[col]);
-                    Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
+                    var depot = customer.GetDepot(depotStrings[col] ?? string.Empty);
+                    var order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
                     // Add products
-                    foreach (int row in usedProductRows)
+                    foreach (var row in usedProductRows)
                     {
-                        Cell cell = new Cell(col, row);
+                        var cell = new Cell(col, row);
                         foreach (var orderQuantity in orderQuantities)
                         {
-                            if (orderQuantity.Key.IsSameAs(cell) && orderQuantity.Value > 0.0)
+                            if (orderQuantity.Key.Equals(cell) && orderQuantity.Value > 0.0)
                             {
-                                Product product = customer.GetProduct(productStrings[row]);
+                                var product = customer.GetProduct(productStrings[row] ?? string.Empty);
                                 order.AddProduct(product.Id, orderQuantity.Value);
                             }
                         }
                     }
                     // Add warnings
-                    if (depotWarnings.ContainsKey(col))
+                    if (depotWarnings.TryGetValue(col, out var value))
                     {
-                        foreach (OrderWarning warning in depotWarnings[col])
+                        foreach (var warning in value)
                         {
                             order.AddWarning(warning);
                         }
@@ -372,7 +262,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                         // Check if the same order already exists
                         if (ordersLibrary.HasOrder(order))
                         {
-                            string errorMessage = $"The order in file {fileName} for depot {order.DepotName} could not be processed. The same order already exists.";
+                            var errorMessage = $"The order in file {fileName} for depot {order.DepotName} could not be processed. The same order already exists.";
 
                             // Display error message to the user
                             await _notificationService.ShowMessage("Order Processing Error", errorMessage);
@@ -385,48 +275,9 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                     }
                 }
             }
+
+            break;
         }
-    }
-
-    #endregion
-
-    #region Private Helpers
-
-    /// <summary>
-    /// Selects the cell from a text based table
-    /// </summary>
-    /// <param name="column">Column number (starting at index 1)</param>
-    /// <param name="row">Row number (starting at index 1)</param>
-    /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
-    /// <returns>Cell value string or null</returns>
-    private static string GetCell(int column, int row, string[] tableText)
-    {
-        string result = null;
-
-        int columnCount = int.Parse(tableText[tableColumntCountPosition]);
-        int rowCount = int.Parse(tableText[tableRowCountPosition]);
-
-        int c = column - 1;
-        int r = row - 1;
-
-        if (column > 0 && column <= columnCount && row > 0 && row <= rowCount)
-        {
-            result = tableText[c + r * columnCount + 2];
-            if (result == "") result = null;
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Selects the cell from a text based table
-    /// </summary>
-    /// <param name="cell">A <see cref="Cell"/> object</param>
-    /// <param name="tableText">A <see cref="string[]"/> from which we want to get the cell value</param>
-    /// <returns></returns>
-    private static string GetCell(Cell cell, string[] tableText)
-    {
-        return GetCell(cell.column, cell.row, tableText);
     }
 
     #endregion
