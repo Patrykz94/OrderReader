@@ -13,7 +13,8 @@ public class OrderWarning
     public enum WarningType
     {
         UnusualDate,
-        UnknownProduct
+        UnknownProduct,
+        MissingReference
     }
 
     #endregion

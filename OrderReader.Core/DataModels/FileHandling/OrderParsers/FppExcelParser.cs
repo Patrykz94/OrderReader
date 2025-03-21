@@ -54,6 +54,8 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
     /// <param name="ordersLibrary">The library containing all order data</param>
     public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
     {
+        List<DateTime> missingReferenceDates = [];
+        
         foreach (var table in orderText)
         {
             // Create the sheet
@@ -138,13 +140,12 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                 }
                 
                 // Make sure that we have found all necessary data
-                if (palletQuantities.Count == 0 || string.IsNullOrEmpty(orderReference) || string.IsNullOrEmpty(dateString))
+                if (palletQuantities.Count == 0 || string.IsNullOrEmpty(dateString))
                 {
-                    var errorMessage = $"Following issues have been found in file {fileName}:\n";
+                    var errorMessage = $"Following issues have been found in file {fileName} on sheet {table.Key}:\n";
                     if (palletQuantities.Count == 0) errorMessage += "* No orders have been found\n";
-                    if (string.IsNullOrEmpty(orderReference)) errorMessage += "* PO reference number was not found\n";
                     if (string.IsNullOrEmpty(dateString)) errorMessage += "* Delivery date was not found\n";
-                    errorMessage += "\nThis order was not processed.\n";
+                    errorMessage += "\nOrder for this day was not processed.\n";
                     errorMessage += "If you think this file has all the correct data, please contact Patryk Z.";
 
                     // Display error message to the user
@@ -155,28 +156,30 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                     // Process and validate delivery date
                     if (!DateTime.TryParse(dateString.Trim(), out deliveryDate))
                     {
-                        var errorMessage = $"Could not read the date from file {fileName}, in column {c}.\n\n" +
+                        var errorMessage = $"Could not read the date from sheet {table.Key}, in column {c}.\n\n" +
                                            "Please check the date in Excel file. If the date format looks correct then please contact Patryk Z.\n" +
-                                           "\nThis order was not processed.";
+                                           "\nOrder for this day was not processed.";
 
                         // Display error message to the user
                         await _notificationService.ShowMessage("File Processing Error", errorMessage);
+                        continue;
                     }
-                    else if (deliveryDate != DateTime.Today.AddDays(1))
+
+                    // Only read orders for deliveries from tomorrow to 7 days ahead. Ignore all other orders
+                    if (deliveryDate <= DateTime.Today || deliveryDate > DateTime.Today.AddDays(7)) continue;
+
+                    if (deliveryDate != DateTime.Today.AddDays(1))
                     {
-                        var errorMessage = $"Delivery date ({deliveryDate.ToShortDateString()}) in file {fileName} is not tomorrow.";
+                        var errorMessage = $"Delivery date ({deliveryDate.ToShortDateString()}) on sheet {table.Key} is not tomorrow.";
 
                         // Create a new warning object for this order
                         depotWarnings.Add(new OrderWarning(OrderWarning.WarningType.UnusualDate, errorMessage));
-
-                        // Display error message to the user
-                        //await _notificationService.ShowMessage("Unusual Date Warning", errorMessage);
                     }
 
                     // Display all the cells that could not be read from
                     if (readQtyErrors.Count > 0)
                     {
-                        var errorMessage = $"Not all data could be read from file {fileName}.\n" +
+                        var errorMessage = $"Not all data could be read from file {fileName} on sheet {table.Key}.\n" +
                                            "Please see below which orders could not be read:\n\n";
                         foreach (var error in readQtyErrors)
                         {
@@ -187,6 +190,16 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                         // Display error message to the user
                         await _notificationService.ShowMessage("File Processing Error", errorMessage);
                         continue;
+                    }
+                    
+                    if (string.IsNullOrEmpty(orderReference))
+                    {
+                        var errorMessage = $"Delivery for ({deliveryDate.ToShortDateString()}) on sheet {table.Key} has no reference number.";
+
+                        // Create a new warning object for this order
+                        depotWarnings.Add(new OrderWarning(OrderWarning.WarningType.MissingReference, errorMessage));
+                        
+                        missingReferenceDates.Add(deliveryDate);
                     }
 
                     // Create the order objects
@@ -215,7 +228,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                             {
                                 errorMessage = $"Unknown product name found: {productStrings[row]}, in file {fileName}.\n";
                             }
-                            errorMessage += "\nThis order was not processed.";
+                            errorMessage += "\nOrder for this day was not processed.";
 
                             // Display error message to the user
                             await _notificationService.ShowMessage("File Processing Error", errorMessage);
@@ -231,7 +244,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
 
                         if (order is not null) updatingExistingOrder = true;
                         
-                        order ??= new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
+                        order ??= new Order(orderReference ?? "N/A", deliveryDate, customer.Id, depot.Id, customer);
                         order.AddProduct(product.Id, (double)(palletQuantities[row] * qtyPerPallet));
                         
                         // Add warnings
@@ -261,6 +274,19 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                     }
                 }
             }
+        }
+
+        if (missingReferenceDates.Count > 0)
+        {
+            var errorMessage = "Orders with the following dates were processed but have no reference numbers:\n";
+
+            foreach (var missingRefDate in missingReferenceDates)
+            {
+                errorMessage += $"\n• {missingRefDate.ToShortDateString()}";
+            }
+
+            // Display error message to the user
+            await _notificationService.ShowMessage("Missing References", errorMessage);
         }
     }
     
