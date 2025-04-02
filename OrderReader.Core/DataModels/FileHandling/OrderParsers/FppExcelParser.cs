@@ -85,16 +85,15 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                 belowOrdersRow += 2;
             }
 
-            var dateRow = belowOrdersRow + 2;
-            var totalRow = dateRow + 1;
+            var totalRow = belowOrdersRow + 1;
+            const int dateRow = 6;
             const int dateColumnStart = 9;
             const int dateColumnEnd = 9 + 6;
 
             for (var c = dateColumnStart; c <= dateColumnEnd; c++)
             {
                 Dictionary<int, decimal> palletQuantities = [];
-                DateTime deliveryDate;
-                
+
                 var dateString = sheet.GetCell(c, dateRow);
                 var orderReference = sheet.GetCell(c, belowOrdersRow);
                 var totalQtyString = sheet.GetCell(c, totalRow);
@@ -122,7 +121,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                     {
                         if (!decimal.TryParse(cellValue, out quantity))
                         {
-                            readQtyErrors.Add($"Depot: {depotStrings[r]}, Date: {dateString}, Product: {productStrings[r]}\n");
+                            readQtyErrors.Add($"Depot: {depotStrings[r]}, Collection Date: {dateString}, Product: {productStrings[r]}\n");
                         }
                     }
                     
@@ -154,7 +153,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                 else
                 {
                     // Process and validate delivery date
-                    if (!DateTime.TryParse(dateString.Trim(), out deliveryDate))
+                    if (!DateTime.TryParse(dateString.Trim(), out var deliveryDate))
                     {
                         var errorMessage = $"Could not read the date from sheet {table.Key}, in column {c}.\n\n" +
                                            "Please check the date in Excel file. If the date format looks correct then please contact Patryk Z.\n" +
@@ -164,6 +163,9 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                         await _notificationService.ShowMessage("File Processing Error", errorMessage);
                         continue;
                     }
+                    
+                    // Convert the date from collection date to delivery date by adding 1 day
+                    deliveryDate = deliveryDate.AddDays(1);
 
                     // Only read orders for deliveries from tomorrow to 7 days ahead. Ignore all other orders
                     if (deliveryDate <= DateTime.Today || deliveryDate > DateTime.Today.AddDays(7)) continue;
