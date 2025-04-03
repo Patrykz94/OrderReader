@@ -163,9 +163,6 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                         await _notificationService.ShowMessage("File Processing Error", errorMessage);
                         continue;
                     }
-                    
-                    // Convert the date from collection date to delivery date by adding 1 day
-                    deliveryDate = deliveryDate.AddDays(1);
 
                     // Only read orders for deliveries from tomorrow to 7 days ahead. Ignore all other orders
                     if (deliveryDate <= DateTime.Today || deliveryDate > DateTime.Today.AddDays(7)) continue;
