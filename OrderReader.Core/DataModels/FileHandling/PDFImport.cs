@@ -55,6 +55,7 @@ public class PDFImport : IFileImport
         // List of available processors - TODO: Populate this list automatically
         List<IParseOrder> orderParsers = new List<IParseOrder>();
         orderParsers.Add(new KeelingsPDFParser(_notificationService));
+        orderParsers.Add(new FppPdfParser(_notificationService));
 
         foreach (IParseOrder parser in orderParsers)
         {

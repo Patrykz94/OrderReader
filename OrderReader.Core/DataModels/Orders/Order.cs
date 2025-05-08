@@ -76,6 +76,7 @@ public class Order
     /// <param name="date">The required delivery date</param>
     /// <param name="customerId">Id of the customer</param>
     /// <param name="depotId">Id of the customer depot</param>
+    /// <param name="customer">Customer object</param>
     public Order(string orderReference, DateTime date, int customerId, int depotId, Customer customer)
     {
         OrderReference = orderReference;
