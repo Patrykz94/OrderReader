@@ -232,6 +232,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                     
                     // Get the product quantity
                     var productQuantity = linesWithProductQuantities[p][d];
+                    if (productQuantity == 0.0) continue;
                     
                     // Create a new order product
                     var orderProduct = new OrderProduct(customer.Id, product.Id, productQuantity, customer);
