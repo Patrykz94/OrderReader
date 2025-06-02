@@ -60,7 +60,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
             List<Product> products = [];
 
             // Product code specification
-            const int productCodeMinLength = 7;
+            const int productCodeMinLength = 8;
             
             // Get depot date
             var dateString = string.Empty;
@@ -73,6 +73,8 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                 }
             }
             var dateFound = DateTime.TryParse(dateString, out var deliveryDate);
+
+            var combinedProductsAndQuantities = false;
             
             // Iterate over the lines to find required data
             foreach (var line in lines)
@@ -87,13 +89,48 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                 
                 // Split this line into strings separated by spaces
                 var lineElements = line.Split(' ');
-                
+
+                var productFound = false;
                 // Check if the line contains any of the product codes
-                if (lineElements.Length > 1 && lineElements[^1].Length >= productCodeMinLength && lineElements[^1].All(char.IsDigit))
+                for (var i = 0; i < lineElements.Length; i++)
                 {
-                    productStrings.Add(lineElements[^1]);
-                    continue;
+                    if (lineElements[i].Length >= productCodeMinLength && lineElements[i].All(char.IsDigit))
+                    {
+                        productFound = true;
+                        productStrings.Add(lineElements[i]);
+
+                        if (i < lineElements.Length - 2)
+                        {
+                            var subList = lineElements.Skip(i + 1).Take(lineElements.Length - i - 1).ToList();
+                            
+                            // Check if the line contains product quantities
+                            if (subList.Count > 1 && subList.All(x => x.All(char.IsDigit)))
+                            {
+                                combinedProductsAndQuantities = true;
+                                var productQuantities = subList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+                                linesWithProductQuantities.Add(productQuantities);
+                            }
+                        }
+                        break;
+                    }
                 }
+                
+                if (productFound) continue;
+
+                if (lineElements.Length > 2 && lineElements[0] == "Total")
+                {
+                    var subList = lineElements.Skip(1).Take(lineElements.Length - 1).ToList();
+                    
+                    // Check if the line contains product quantities
+                    if (subList.Count > 1 && subList.All(x => x.All(char.IsDigit)))
+                    {
+                        productFound = true;
+                        var productQuantities = subList.Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToList();
+                        linesWithProductQuantities.Add(productQuantities);
+                    }
+                }
+                
+                if (productFound) continue;
                 
                 // Check if the line contains product quantities
                 if (lineElements.Length > 1 && lineElements.All(x => x.All(char.IsDigit)))
@@ -102,11 +139,14 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                     linesWithProductQuantities.Add(productQuantities);
                 }
             }
-            
-            // Reverse the order of depots and products as for some reason they both appear in the opposite order when reading text from the file
-            depotStrings.Reverse();
-            productStrings.Reverse();
-            
+
+            if (!combinedProductsAndQuantities)
+            {
+                // Reverse the order of depots and products as for some reason they both appear in the opposite order when reading text from the file
+                depotStrings.Reverse();
+                productStrings.Reverse();
+            }
+
             // Make sure that we have found all necessary data
             if (depotStrings.Count == 0 || productStrings.Count == 0 || linesWithProductQuantities.Count == 0 ||
                 linesWithProductQuantities.Count != productStrings.Count + 1 ||
