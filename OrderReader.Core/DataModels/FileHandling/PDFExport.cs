@@ -28,7 +28,7 @@ public static class PDFExport
         // Create the file name
         DateTime time = DateTime.Now;
         string pcName = Environment.MachineName;
-        string customerName = customer.CSVName;
+        string customerName = customer.CsvName;
         string fileName = $"OrderReaderExport_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orderId}_{customerName}.pdf";
         // Load the user settings
         UserSettings settings = Settings.LoadSettings();

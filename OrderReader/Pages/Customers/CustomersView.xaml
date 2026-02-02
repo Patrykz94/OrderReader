@@ -16,23 +16,39 @@
         <Border Background="{DynamicResource Background.Panel.Brush}" Margin="20 20 20 0" Padding="5" CornerRadius="10">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition MinWidth="250"/>
+                    <ColumnDefinition MinWidth="200"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition MinWidth="200"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
-                           Text="Customer Selection:" FontSize="{StaticResource FontSize.Large}" FontWeight="Medium"/>
-                <ComboBox Grid.Column="2" x:Name="Customers">
+                           Text="Profile:" FontSize="{StaticResource FontSize.Large}" FontWeight="Medium"/>
+                <ComboBox Grid.Column="2" x:Name="CustomerProfiles">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Button Grid.Column="3" x:Name="LoadCustomers"
+                
+                <TextBlock Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           Text="Customers:" FontSize="{StaticResource FontSize.Large}" FontWeight="Medium"/>
+                <ComboBox Grid.Column="5"
+                          ItemsSource="{Binding Customers, Mode=TwoWay}"
+                          SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <Button Grid.Column="6" x:Name="LoadCustomerData"
                         Style="{StaticResource AltButton}" Content="{StaticResource IconReload}"
                         FontFamily="{StaticResource IconFontSolid}" Padding="10"/>
             </Grid>
@@ -43,42 +59,38 @@
         </Border>
 
         <TabControl Margin="20" Grid.Row="1">
-            <TabItem Header="Customer">
+            
+            <!-- Profile Section -->
+            <TabItem Header="Profile">
                 <StackPanel>
-                    <TextBlock Text="Customer Information" Style="{DynamicResource HeaderText}"/>
-                    <TextBlock Text="View and manage information about customers" Margin="5 -5 5 5"
+                    <TextBlock Text="Customer Profile Information" Style="{DynamicResource HeaderText}"/>
+                    <TextBlock Text="View and manage information about customer profiles" Margin="5 -5 5 5"
                                HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
 
                     <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
 
                     <!-- Customer Details -->
-                    <TextBlock Text="Customer Details" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock Text="Profile Details" FontSize="{StaticResource FontSize.Large}"/>
                     <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
-                        Details about this customer that are used to identify it on order files and tranlsate it to the exported CSV/PDF files.
+                        Details about this customer profile that are used to identify it on order files and translate it to the exported CSV/PDF files.
                     </TextBlock>
                     <UniformGrid Columns="2">
 
                         <StackPanel>
                             <Label Content="Display Name"/>
-                            <TextBox Text="{Binding CustomerToEdit.Name}" Tag="Display Name"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
-                        </StackPanel>
-
-                        <StackPanel>
-                            <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding CustomerToEdit.CsvName}" Tag="CSV Name"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
+                            <TextBox Text="{Binding CustomerProfileToEdit.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomerProfile}"/>
                         </StackPanel>
                         
                         <StackPanel>
                             <Label Content="Order Name"/>
-                            <TextBox Text="{Binding CustomerToEdit.OrderName}" Tag="Order Name"
-                                     Height="{Binding ActualHeight, ElementName=UpdateCustomer}"/>
+                            <TextBox Text="{Binding CustomerProfileToEdit.Identifier}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=UpdateCustomerProfile}"/>
                         </StackPanel>
                         
                         <StackPanel>
                             <Label Content=""/>
-                            <Button x:Name="UpdateCustomer" Content="Update Customer"/>
+                            <Button x:Name="UpdateCustomerProfile" Content="Update Customer"/>
                         </StackPanel>
 
                     </UniformGrid>
@@ -88,23 +100,117 @@
                     <!-- Other Info -->
                     <TextBlock Text="Other Information" FontSize="{StaticResource FontSize.Large}"/>
                     <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
-                        Other information about the selected customer.
+                        Other information about the selected customer profile.
                     </TextBlock>
                     <UniformGrid Columns="2">
 
                         <StackPanel>
-                            <Label Content="Number of depots"/>
-                            <TextBlock Text="{Binding SelectedCustomer.Depots.Count}" FontWeight="Medium"/>
+                            <Label Content="Number of customers"/>
+                            <TextBlock Text="{Binding SelectedCustomerProfile.Customers.Count}" FontWeight="Medium"/>
                         </StackPanel>
 
                         <StackPanel>
                             <Label Content="Number of products"/>
-                            <TextBlock Text="{Binding SelectedCustomer.Products.Count}" FontWeight="Medium"/>
+                            <TextBlock Text="{Binding SelectedCustomerProfile.Products.Count}" FontWeight="Medium"/>
                         </StackPanel>
 
                     </UniformGrid>
                 </StackPanel>
             </TabItem>
+            
+            <!-- Customers Section -->
+            <TabItem Header="Customers">
+                <StackPanel>
+                    <TextBlock Style="{DynamicResource HeaderText}">
+                        <Run Text="Customers for"/>
+                        <Run Text="{Binding SelectedCustomerProfile.Name}"/>
+                        <Run Text="Profile"/>
+                    </TextBlock>
+                    <TextBlock Text="Add, edit or remove customers from a profile" Margin="5 -5 5 5"
+                               HorizontalAlignment="Center" FontSize="{StaticResource FontSize.Small}"/>
+
+                    <Border Style="{DynamicResource Divider}" Margin="0 5 0 15"/>
+
+                    <!-- Customer Details -->
+                    <TextBlock Text="Edit/Remove Selected Customer" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Select a customer from the list to edit the details or remove it.
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel Grid.Column="0" x:Name="CustomerEditor">
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding SelectedCustomer.Name}" Tag="Display Name"
+                                     IsEnabled="{Binding HasSelectedCustomer}"/>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding SelectedCustomer.CsvName}" Tag="CSV Name"
+                                     IsEnabled="{Binding HasSelectedCustomer}"/>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding SelectedCustomer.OrderName}" Tag="Order Name"
+                                     IsEnabled="{Binding HasSelectedCustomer}"/>
+                            <Button x:Name="UpdateCustomer" Content="Update Customer"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="1" Height="{Binding ActualHeight, ElementName=CustomerEditor}">
+                            <ListBox x:Name="Customers">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                                            <Button Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                                    Style="{DynamicResource ListBoxDeleteButton}" Grid.Column="1"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Grid>
+
+                    <Border Style="{DynamicResource Divider}"/>
+
+                    <!-- Add Customer -->
+                    <TextBlock Text="Add New Customer" FontSize="{StaticResource FontSize.Large}"/>
+                    <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
+                        Enter details of a new customer, to add it to the selected profile.
+                    </TextBlock>
+                    <UniformGrid Columns="2">
+
+                        <StackPanel>
+                            <Label Content="Display Name"/>
+                            <TextBox Text="{Binding NewCustomer.Name}" Tag="Display Name"
+                                     Height="{Binding ActualHeight, ElementName=AddCustomer}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="CSV Name"/>
+                            <TextBox Text="{Binding NewCustomer.CsvName}" Tag="CSV Name"
+                                     Height="{Binding ActualHeight, ElementName=AddCustomer}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content="Order Name"/>
+                            <TextBox Text="{Binding NewCustomer.OrderName}" Tag="Order Name"
+                                     Height="{Binding ActualHeight, ElementName=AddCustomer}"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                            <Label Content=""/>
+                            <Button x:Name="AddCustomer" Content="Add Customer"/>
+                        </StackPanel>
+
+                    </UniformGrid>
+                </StackPanel>
+            </TabItem>
+            
+            <!-- Depot Section -->
             <TabItem Header="Depots">
                 <StackPanel>
                     <TextBlock Style="{DynamicResource HeaderText}">
@@ -194,6 +300,8 @@
                     </UniformGrid>
                 </StackPanel>
             </TabItem>
+            
+            <!-- Product Section -->
             <TabItem Header="Products">
                 <StackPanel>
                     <TextBlock Style="{DynamicResource HeaderText}">

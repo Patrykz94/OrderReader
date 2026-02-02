@@ -9,9 +9,10 @@ namespace OrderReader.Models;
 /// </summary>
 public class CustomerDisplayModel : INotifyPropertyChanged
 {
-    private string _name = string.Empty;
-
     public int Id { get; set; } = -1;
+    public int CustomerProfileId { get; set; } = -1;
+    
+    private string _name = string.Empty;
     public string Name
     {
         get => _name;
@@ -24,17 +25,16 @@ public class CustomerDisplayModel : INotifyPropertyChanged
     public string CsvName { get; set; } = string.Empty;
     public string OrderName { get; set; } = string.Empty;
     public ObservableCollection<DepotDisplayModel> Depots { get; set; } = [];
-    public ObservableCollection<ProductDisplayModel> Products { get; set; } = [];
 
     public CustomerDisplayModel() { }
     public CustomerDisplayModel(CustomerDisplayModel other)
     {
         Id = other.Id;
+        CustomerProfileId = other.CustomerProfileId;
         Name = other.Name;
         CsvName = other.CsvName;
         OrderName = other.OrderName;
         Depots = other.Depots;
-        Products = other.Products;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

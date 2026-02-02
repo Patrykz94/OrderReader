@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OrderReader.Core.DataModels.Customers;
 
 /// <summary>
-/// The customer class that will hold information about the customer, as well as it's depots and products
+/// The customer class that will hold information about the customer, as well as it's depots
 /// </summary>
 public class Customer
 {
@@ -13,7 +14,9 @@ public class Customer
     /// <summary>
     /// Unique Customer ID number
     /// </summary>
-    public int Id { get; }
+    public int Id { get; private set; } = -1;
+    
+    public int CustomerProfileId { get; }
 
     /// <summary>
     /// Name of the customer, this is what's displayed in the application UI
@@ -23,7 +26,7 @@ public class Customer
     /// <summary>
     /// The name that will appear on the CSV file
     /// </summary>
-    public string CSVName { get; private set; }
+    public string CsvName { get; private set; }
 
     /// <summary>
     /// The name that will appear on the orders that we are reading from
@@ -33,43 +36,57 @@ public class Customer
     /// <summary>
     /// List of depots for this customer
     /// </summary>
-    public ObservableCollection<Depot> Depots { get; } = new ObservableCollection<Depot>();
-
-    /// <summary>
-    /// List of products for this customer
-    /// </summary>
-    public ObservableCollection<Product> Products { get; } = new ObservableCollection<Product>();
+    public List<Depot> Depots { get; } = [];
 
     #endregion
 
     #region Constructors
 
+    public Customer()
+    {
+        Name = string.Empty;
+        CsvName = string.Empty;
+        OrderName = string.Empty;
+    }
+    
     /// <summary>
-    /// Default constructor
+    /// A constructor that creates the customer and optionally depots, if provided
     /// </summary>
-    public Customer() { }
-
-    /// <summary>
-    /// A constructor that creates the customer and optionally depots and products (if they are provided)
-    /// </summary>
-    /// <param name="id">The Id numer of this customer</param>
+    /// <param name="customerProfileId">The ID of the customer profile this customer belongs to</param>
     /// <param name="name">Name as will appear in the UI</param>
     /// <param name="csvName">Name on CSV files</param>
     /// <param name="orderName">Name on Orders</param>
     /// <param name="depots">A list of depots that belong to this customer</param>
-    /// <param name="products">A list of products that belong to this customer</param>
-    public Customer(int id, string name, string csvName, string orderName, ObservableCollection<Depot> depots = null, ObservableCollection<Product> products = null)
+    public Customer(int customerProfileId, string name, string csvName, string orderName, List<Depot>? depots = null)
     {
-        Id = id;
+        CustomerProfileId = customerProfileId;
         Name = name;
-        CSVName = csvName;
+        CsvName = csvName;
         OrderName = orderName;
 
-        // If populated list of depots is provided, add it
+        // If a populated list of depots is provided, add it
         if (depots != null) Depots = depots;
+    }
 
-        // If populated list of products is provided, add it
-        if (products != null) Products = products;
+    /// <summary>
+    /// A constructor that creates the customer and optionally depots, if provided
+    /// </summary>
+    /// <param name="id">The ID of this customer</param>
+    /// <param name="customerProfileId">The ID of the customer profile this customer belongs to</param>
+    /// <param name="name">Name as will appear in the UI</param>
+    /// <param name="csvName">Name on CSV files</param>
+    /// <param name="orderName">Name on Orders</param>
+    /// <param name="depots">A list of depots that belong to this customer</param>
+    public Customer(int id, int customerProfileId, string name, string csvName, string orderName, List<Depot>? depots = null)
+    {
+        Id = id;
+        CustomerProfileId = customerProfileId;
+        Name = name;
+        CsvName = csvName;
+        OrderName = orderName;
+
+        // If a populated list of depots is provided, add it
+        if (depots != null) Depots = depots;
     }
 
     #endregion
@@ -85,174 +102,13 @@ public class Customer
     public void Update(string name, string csvName, string orderName)
     {
         Name = name;
-        CSVName = csvName;
+        CsvName = csvName;
         OrderName = orderName;
     }
 
-    /// <summary>
-    /// A function that checks if a product with this id already exists for this customer
-    /// </summary>
-    /// <param name="id">Id number of the product</param>
-    /// <returns><see cref="bool"/> whether the products already exists or not</returns>
-    public bool HasProduct(int id)
+    public void UpdateId(int id)
     {
-        foreach (Product product in Products)
-        {
-            if (product.Id == id) return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// A function that checks if a product with this name already exists for this customer
-    /// </summary>
-    /// <param name="name">Name of the product</param>
-    /// <returns><see cref="bool"/> whether the products already exists or not</returns>
-    public bool HasProductName(string name)
-    {
-        foreach (Product product in Products)
-        {
-            if (product.Name == name) return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// A function that checks if a product with this order name exists for this customer
-    /// </summary>
-    /// <param name="orderName">Order Name of the product</param>
-    /// <returns><see cref="bool"/> whether the products exists or not</returns>
-    public bool HasProductOrderName(string orderName)
-    {
-        foreach (Product product in Products)
-        {
-            if (product.OrderName == orderName) return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// A function that checks if a product with this CSVName and OrderName already exists for this customer
-    /// </summary>
-    /// <param name="product">A <see cref="Product"/> object to compare</param>
-    /// <returns><see cref="bool"/> whether the product already exists or not</returns>
-    public bool SameProductExists(Product product)
-    {
-        foreach (Product ourProduct in Products)
-        {
-            if (ourProduct.CSVName == product.CSVName && ourProduct.OrderName == product.OrderName) return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Add a new product to the list of products if it doesn't already exist
-    /// </summary>
-    /// <param name="id">Id number of the product</param>
-    /// <param name="customerId">Id number of this customer</param>
-    /// <param name="name">Name as will appear in the UI</param>
-    /// <param name="csvName">Name on CSV files</param>
-    /// <param name="orderName">Name on Orders</param>
-    /// <param name="price">Price of this product</param>
-    /// <returns><see cref="bool"/> false if the product already exists</returns>
-    public bool AddProduct(int id, string name, string csvName, string orderName, decimal price = 0.0m)
-    {
-        // Make sure to check whether this product exists first
-        // We don't want duplicate products
-        if (!HasProduct(id) && !HasProductName(name) && !HasProductOrderName(orderName))
-        {
-            Products.Add(new Product(id, Id, name, csvName, orderName, price));
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Add a new product to the list of products if it doesn't already exist
-    /// </summary>
-    /// <param name="product">A <see cref="Product"/> object</param>
-    /// <returns><see cref="bool"/> false if the product already exists</returns>
-    public bool AddProduct(Product product)
-    {
-        // Make sure to check whether this product exists first
-        // We don't want duplicate products
-        if (!HasProduct(product.Id) && !HasProductName(product.Name) && !HasProductOrderName(product.OrderName))
-        {
-            Products.Add(product);
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Add a list of products if it doesn't already exist
-    /// </summary>
-    /// <param name="Products">A list of <see cref="Product"/></param>
-    public void AddProducts(List<Product> Products)
-    {
-        foreach (Product product in Products)
-        {
-            // Make sure to check whether this product exists first
-            // We don't want duplicate products
-            if (!HasProduct(product.Id) && !HasProductName(product.Name) && !HasProductOrderName(product.OrderName))
-            {
-                Products.Add(product);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Delets a product from this customer
-    /// </summary>
-    /// <param name="id">Id number of this product</param>
-    public void DeleteProduct(int id)
-    {
-        foreach (Product product in Products)
-        {
-            if (product.Id == id)
-            {
-                Products.Remove(product);
-                return;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the product by it's id
-    /// </summary>
-    /// <param name="id">Id of this product</param>
-    /// <returns><see cref="Product"/> object</returns>
-    public Product GetProduct(int id)
-    {
-        foreach (Product product in Products)
-        {
-            if (product.Id == id) return product;
-        }
-
-        // If the product was not found, return null
-        return null;
-    }
-
-    /// <summary>
-    /// Gets the product by it's order name
-    /// </summary>
-    /// <param name="orderName">Order Name of this product</param>
-    /// <returns><see cref="Product"/> object</returns>
-    public Product GetProduct(string orderName)
-    {
-        foreach (Product product in Products)
-        {
-            if (product.OrderName == orderName) return product;
-        }
-
-        // If the product was not found, return null
-        return null;
+        Id = id;
     }
 
     /// <summary>
@@ -309,7 +165,7 @@ public class Customer
     {
         foreach (Depot ourDepot in Depots)
         {
-            if (ourDepot.CSVName == depot.CSVName && ourDepot.OrderName == depot.OrderName) return true;
+            if (ourDepot.CsvName == depot.CsvName && ourDepot.OrderName == depot.OrderName) return true;
         }
 
         return false;
@@ -319,7 +175,6 @@ public class Customer
     /// Add a new depot to the list of depots if it doesn't already exist
     /// </summary>
     /// <param name="id">Id number of the depot</param>
-    /// <param name="customerId">Id number of this customer</param>
     /// <param name="name">Name as will appear in the UI</param>
     /// <param name="csvName">Name on CSV files</param>
     /// <param name="orderName">Name on Orders</param>
@@ -358,10 +213,10 @@ public class Customer
     /// <summary>
     /// Add a list of depots if it doesn't already exist
     /// </summary>
-    /// <param name="Depots">A list of <see cref="Depot"/></param>
-    public void AddDepots(List<Depot> Depots)
+    /// <param name="depots">A list of <see cref="Depot"/></param>
+    public void AddDepots(List<Depot> depots)
     {
-        foreach (Depot depot in Depots)
+        foreach (var depot in depots)
         {
             // Make sure to check whether this depot exists first
             // We don't want duplicate depots
@@ -393,15 +248,9 @@ public class Customer
     /// </summary>
     /// <param name="id">Id number of this depot</param>
     /// <returns><see cref="Depot"/> object</returns>
-    public Depot GetDepot(int id)
+    public Depot? GetDepot(int id)
     {
-        foreach (Depot depot in Depots)
-        {
-            if (depot.Id == id) return depot;
-        }
-
-        // If the depot was not found, return null
-        return null;
+        return Depots.FirstOrDefault(depot => depot.Id == id);
     }
 
     /// <summary>
@@ -409,15 +258,9 @@ public class Customer
     /// </summary>
     /// <param name="orderName">Order name of this depot</param>
     /// <returns><see cref="Depot"/> object</returns>
-    public Depot GetDepot(string orderName)
+    public Depot? GetDepot(string orderName)
     {
-        foreach (Depot depot in Depots)
-        {
-            if (depot.OrderName == orderName) return depot;
-        }
-
-        // If the depot was not found, return null
-        return null;
+        return Depots.FirstOrDefault(depot => depot.OrderName == orderName);
     }
 
     #endregion

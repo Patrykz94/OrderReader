@@ -13,7 +13,7 @@
         public int Id { get; private set; } = -1;
 
         /// <summary>
-        /// Id of the customer that this depot belongs to
+        /// ID of the customer that this depot belongs to
         /// </summary>
         public int CustomerId { get; }
 
@@ -25,7 +25,7 @@
         /// <summary>
         /// The name that will appear on the CSV file
         /// </summary>
-        public string CSVName { get; private set; }
+        public string CsvName { get; private set; }
 
         /// <summary>
         /// The name that will appear on the orders that we are reading from
@@ -36,11 +36,13 @@
 
         #region Constructor
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public Depot() { }
-
+        public Depot()
+        {
+            Name = string.Empty;
+            CsvName = string.Empty;
+            OrderName = string.Empty;
+        }
+        
         /// <summary>
         /// Constructor that creates a new depot
         /// </summary>
@@ -52,7 +54,7 @@
         {
             CustomerId = customerId;
             Name = name;
-            CSVName = csvName;
+            CsvName = csvName;
             OrderName = orderName;
         }
 
@@ -69,7 +71,7 @@
             Id = id;
             CustomerId = customerId;
             Name = name;
-            CSVName = csvName;
+            CsvName = csvName;
             OrderName = orderName;
         }
 
@@ -86,17 +88,17 @@
         public void Update(string name, string csvName, string orderName)
         {
             Name = name;
-            CSVName = csvName;
+            CsvName = csvName;
             OrderName = orderName;
         }
 
         /// <summary>
-        /// Update the ID of the depot. This is usually used when craeting a new depot and we don't know the ID yet
+        /// Update the ID of the depot. This is usually used when creating a new depot, and we don't know the ID yet
         /// </summary>
-        /// <param name="Id">The Id number of the depot</param>
-        public void UpdateID(int Id)
+        /// <param name="id">The ID number of the depot</param>
+        public void UpdateId(int id)
         {
-            this.Id = Id;
+            Id = id;
         }
 
         #endregion

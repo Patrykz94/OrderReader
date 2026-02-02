@@ -22,17 +22,17 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
 
     #region Public Helpers
 
-    public Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public CustomerProfile? GetCustomerProfile(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
-        foreach (KeyValuePair<string, string[]> pageText in orderText)
+        foreach (var pageText in orderText)
         {
             // Check if any of the lines contain a customer name
-            foreach (string line in pageText.Value)
+            foreach (var line in pageText.Value)
             {
                 var lineElements = line.Split(' ');
                 if (lineElements.Length > 1)
                 {
-                    if (customers.HasCustomerOrderName(lineElements[^1])) return customers.GetCustomerByOrderName(lineElements[^1]);
+                    if (customers.HasCustomerProfileIdentifier(lineElements[^1])) return customers.GetCustomerProfile(lineElements[^1]);
                 }
             }
         }
@@ -40,8 +40,37 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
         return null;
     }
 
-    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
+    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, CustomerProfile customerProfile, OrdersLibrary ordersLibrary)
     {
+        Customer? customer = null;
+        
+        foreach (var pageText in orderText)
+        {
+            // Check if any of the lines contain a customer name
+            foreach (var line in pageText.Value)
+            {
+                var lineElements = line.Split(' ');
+                if (lineElements.Length > 1)
+                {
+                    if (customerProfile.HasCustomerOrderName(lineElements[^1]))
+                    {
+                        customer = customerProfile.GetCustomer(lineElements[^1]);
+                    }
+                }
+            }
+        }
+        
+        if (customer is null)
+        {
+            var errorMessage = $"Could not read the customer information in file {fileName}.\n\n" +
+                               "Please check the file and verify if it contains correct customer information. If it looks correct then please contact Patryk Z.\n" +
+                               "\nThis file was not processed.";
+
+            // Display an error message to the user
+            await notificationService.ShowMessage("File Processing Error", errorMessage);
+            return;
+        }
+        
         var depotNames = customer.Depots.Select(d => d.OrderName).ToList();
         
         // Iterate over the pages in extracted text
@@ -195,7 +224,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                 foreach (var product in productStrings)
                 {
                     // Make sure that this product exists
-                    if (!customer.HasProductOrderName(product))
+                    if (!customerProfile.HasProductOrderName(product))
                     {
                         var errorMessage = $"Unknown product ({product}) in file {fileName}.\n" +
                                            "If this is a new product that Order Reader doesn't know about yet, please add it to Order Reader and try processing this file again. Otherwise, please contact Patryk Z." +
@@ -209,7 +238,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                     }
 
                     // Get the product object
-                    products.Add(customer.GetProduct(product));
+                    products.Add(customerProfile.GetProduct(product));
                 }
                 
                 // Make sure the total product quantities are correct
@@ -263,7 +292,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                 var depot = depots[d];
                 
                 // Create a new order
-                var order = new Order("N/A", deliveryDate, customer.Id, depot.Id, customer);
+                var order = new Order("N/A", deliveryDate, customer.Id, depot.Id, customerProfile, customer);
 
                 for (var p = 0; p < products.Count; p++)
                 {
@@ -275,7 +304,7 @@ public class FppPdfParser(INotificationService notificationService) : IParseOrde
                     if (productQuantity == 0.0) continue;
                     
                     // Create a new order product
-                    var orderProduct = new OrderProduct(customer.Id, product.Id, productQuantity, customer);
+                    var orderProduct = new OrderProduct(customer.Id, product.Id, productQuantity, customerProfile);
                     order.AddProduct(orderProduct);
                 }
                 

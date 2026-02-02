@@ -11,7 +11,7 @@ public class ProductDisplayModel : INotifyPropertyChanged
     private string _name = string.Empty;
 
     public int Id { get; set; } = -1;
-    public int CustomerId { get; set; } = -1;
+    public int CustomerProfileId { get; set; } = -1;
     public string Name
     {
         get => _name;
@@ -29,7 +29,7 @@ public class ProductDisplayModel : INotifyPropertyChanged
     public ProductDisplayModel(ProductDisplayModel other)
     {
         Id = other.Id;
-        CustomerId = other.CustomerId;
+        CustomerProfileId = other.CustomerProfileId;
         Name = other.Name;
         CsvName = other.CsvName;
         OrderName = other.OrderName;

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Linq;
 using OrderReader.Core.DataAccess;
 
 namespace OrderReader.Core.DataModels.Customers;
@@ -9,11 +10,11 @@ namespace OrderReader.Core.DataModels.Customers;
 public class CustomersHandler
 {
     #region Public Properties
-        
+
     /// <summary>
     /// A list of all known customers
     /// </summary>
-    public ObservableCollection<Customer> Customers { get; private set; }
+    public List<CustomerProfile> CustomerProfiles { get; private set; } = [];
 
     #endregion
 
@@ -24,7 +25,7 @@ public class CustomersHandler
     /// </summary>
     public CustomersHandler()
     {
-        LoadCustomers();
+        LoadCustomerData();
     }
 
     #endregion
@@ -34,9 +35,9 @@ public class CustomersHandler
     /// <summary>
     /// Loads the customers from database into the Customers property
     /// </summary>
-    public void LoadCustomers()
+    public void LoadCustomerData()
     {
-        Customers = SqliteDataAccess.LoadCustomers();
+        CustomerProfiles = SqliteDataAccess.LoadCustomers();
     }
 
     /// <summary>
@@ -44,14 +45,9 @@ public class CustomersHandler
     /// </summary>
     /// <param name="id">ID number of the customer</param>
     /// <returns>True or false</returns>
-    public bool HasCustomer(int id)
+    public bool HasCustomerProfile(int id)
     {
-        foreach (Customer customer in Customers)
-        {
-            if (customer.Id == id) return true;
-        }
-
-        return false;
+        return CustomerProfiles.Any(customerProfile => customerProfile.Id == id);
     }
 
     /// <summary>
@@ -59,59 +55,39 @@ public class CustomersHandler
     /// </summary>
     /// <param name="name">Name as it appears in the UI</param>
     /// <returns>true or false</returns>
-    public bool HasCustomerName(string name)
+    public bool HasCustomerProfileName(string name)
     {
-        foreach (Customer customer in Customers)
-        {
-            if (customer.Name == name) return true;
-        }
-
-        return false;
+        return CustomerProfiles.Any(customerProfile => customerProfile.Name == name);
     }
 
     /// <summary>
     /// Check if a customer with that order name already exists
     /// </summary>
-    /// <param name="orderName">The name that will appear on the orders that we are reading from</param>
+    /// <param name="identifier">The name that will appear on the orders that we are reading from</param>
     /// <returns>True or false</returns>
-    public bool HasCustomerOrderName(string orderName)
+    public bool HasCustomerProfileIdentifier(string identifier)
     {
-        foreach (Customer customer in Customers)
-        {
-            if (customer.OrderName == orderName) return true;
-        }
-
-        return false;
+        return CustomerProfiles.Any(customerProfile => customerProfile.Identifier == identifier);
     }
 
     /// <summary>
     /// Gets the customer object by ID number
     /// </summary>
-    /// <param name="customerId">The ID number of required customer</param>
+    /// <param name="id">The ID number of required customer</param>
     /// <returns><see cref="Customer"/> object or Null</returns>
-    public Customer GetCustomerByID(int customerId)
+    public CustomerProfile? GetCustomerProfile(int id)
     {
-        foreach (Customer customer in Customers)
-        {
-            if (customer.Id == customerId) return customer;
-        }
-
-        return null;
+        return CustomerProfiles.FirstOrDefault(customerProfile => customerProfile.Id == id);
     }
 
     /// <summary>
     /// Gets the customer object by the order name
     /// </summary>
-    /// <param name="orderName">The name that will appear on the orders that we are reading from</param>
+    /// <param name="identifier">The name that will appear on the orders that we are reading from</param>
     /// <returns>A <see cref="Customer"/> object</returns>
-    public Customer GetCustomerByOrderName(string orderName)
+    public CustomerProfile? GetCustomerProfile(string identifier)
     {
-        foreach (Customer customer in Customers)
-        {
-            if (customer.OrderName == orderName) return customer;
-        }
-
-        return null;
+        return CustomerProfiles.FirstOrDefault(customerProfile => customerProfile.Identifier == identifier);
     }
 
     #endregion

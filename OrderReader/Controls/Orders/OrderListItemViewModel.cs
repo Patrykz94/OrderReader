@@ -71,7 +71,7 @@ public class OrderListItemViewModel : Screen
         tempTable.Columns.Add("PO Number", typeof(string));
 
         // Get a list of all unique products
-        var uniqueProducts = Orders.SelectMany(x => x.Products).DistinctBy(x => x.ProductID).OrderBy(x => x.ProductName).ToList();
+        var uniqueProducts = Orders.SelectMany(x => x.Products).DistinctBy(x => x.ProductId).OrderBy(x => x.ProductName).ToList();
 
         // Add a column for each product name
         foreach (var uniqueProduct in uniqueProducts)
@@ -132,11 +132,11 @@ public class OrderListItemViewModel : Screen
 
         try
         {
+            var customerProfile = Orders[0].CustomerProfile;
             var customer = Orders[0].Customer;
 
             // Perform all the order processing tasks based on users settings
-            if (settings.ExportCsv) await CSVExport.ExportOrdersToCSV(Orders, customer);
-
+            if (settings.ExportCsv) await CsvExport.ExportOrdersToCsv(Orders, customerProfile, customer);
 
             if (settings.PrintOrders || settings.ExportPdf) PDFExport.ExportOrderToPDF(_ordersTable, customer, OrderId, Date);
 

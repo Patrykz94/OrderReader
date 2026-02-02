@@ -24,7 +24,7 @@ public class CustomersViewModel : Screen
     /// <summary>
     /// The parent object that contains and manages all <see cref="Customer"/> objects
     /// </summary>
-    private CustomersHandler _customersHandler;
+    private readonly CustomersHandler _customersHandler;
 
     /// <summary>
     /// An instance of INotificationService used to display notifications on screen
@@ -44,9 +44,10 @@ public class CustomersViewModel : Screen
         _customersHandler = customersHandler;
         _notificationService = notificationService;
 
-        LoadCustomers();
+        LoadCustomerData();
 
-        // Initialize Commands
+        // Initialise Commands
+        DeleteCustomerCommand = new RelayCommand(DeleteCustomer);
         DeleteDepotCommand = new RelayCommand(DeleteDepot);
         DeleteProductCommand = new RelayCommand(DeleteProduct);
     }
@@ -54,7 +55,85 @@ public class CustomersViewModel : Screen
     #endregion
 
     #region Properties
+    
+    private ObservableCollection<CustomerProfileDisplayModel> _customerProfiles = [];
+    public ObservableCollection<CustomerProfileDisplayModel> CustomerProfiles
+    {
+        get => _customerProfiles;
+        set
+        {
+            _customerProfiles = value;
+            NotifyOfPropertyChange(() => CustomerProfiles);
+        }
+    }
+    
+    private CustomerProfileDisplayModel? _selectedCustomerProfile;
+    public CustomerProfileDisplayModel? SelectedCustomerProfile
+    {
+        get => _selectedCustomerProfile;
+        set
+        {
+            _selectedCustomerProfile = value;
+            if (_selectedCustomerProfile != null)
+            {
+                Customers = _selectedCustomerProfile.Customers;
+                SelectedCustomer = Customers.FirstOrDefault();
+                Products = _selectedCustomerProfile.Products;
+            }
+            else
+            {
+                Customers.Clear();
+                Products.Clear();
+            }
 
+            CustomerProfileToEdit = _selectedCustomerProfile!;
+            
+            NotifyOfPropertyChange(() => SelectedCustomerProfile);
+            NotifyOfPropertyChange(() => HasSelectedCustomerProfile);
+        }
+    }
+    
+    private CustomerProfileDisplayModel? _customerProfileToEdit;
+    /// <summary>
+    /// A copy of the <see cref="CustomerProfileDisplayModel"/> object that is currently selected in the UI, that is safe for editing,
+    /// without affecting the original Customer object. This had to be created as a separate property because,
+    /// if we set the value of <see cref="SelectedCustomerProfile"/> in the ViewModel to a copy of a <see cref="CustomerProfileDisplayModel"/> object,
+    /// the ComboBox in WPF would not know which of the customers is selected, as the <see cref="SelectedCustomerProfile"/> would not be a reference
+    /// to any of the <see cref="CustomerProfileDisplayModel"/> objects in the list.
+    /// This is not necessary for <see cref="SelectedDepot"/> or <see cref="SelectedProduct"/> properties, because they are only ever selected
+    /// directly in the UI, so UI know which one was selected.
+    /// </summary>
+    public CustomerProfileDisplayModel? CustomerProfileToEdit
+    {
+        get => _customerProfileToEdit;
+        private set
+        {
+            _customerProfileToEdit = value != null ? new CustomerProfileDisplayModel(value) : null;
+
+            NotifyOfPropertyChange(() => CustomerProfileToEdit);
+            NotifyOfPropertyChange(() => CanUpdateCustomerProfile);
+        }
+    }
+    
+    /// <summary>
+    /// Whether a <see cref="CustomerProfileDisplayModel"/> object has been selected in UI
+    /// </summary>
+    public bool HasSelectedCustomerProfile => SelectedCustomerProfile != null;
+
+    /// <summary>
+    /// Whether a <see cref="CustomerProfileDisplayModel"/> object can be updated via the UI
+    /// </summary>
+    public bool CanUpdateCustomerProfile
+    {
+        get
+        {
+            if (CustomerProfileToEdit == null) return false;
+            // TODO: Look into validation here
+            //if (!ValidateCustomerProfile()) return false;
+            return true;
+        }
+    }
+    
     private ObservableCollection<CustomerDisplayModel> _customers = [];
     /// <summary>
     /// A list of all <see cref="Customer"/> objects from <see cref="CustomersHandler"/>
@@ -82,12 +161,10 @@ public class CustomersViewModel : Screen
             if (_selectedCustomer != null)
             {
                 Depots = _selectedCustomer.Depots;
-                Products = _selectedCustomer.Products;
             }
             else
             {
                 Depots.Clear();
-                Products.Clear();
             }
 
             CustomerToEdit = _selectedCustomer!;
@@ -118,6 +195,20 @@ public class CustomersViewModel : Screen
             NotifyOfPropertyChange(() => CanUpdateCustomer);
         }
     }
+    
+    private CustomerDisplayModel _newCustomer = new();
+    /// <summary>
+    /// An empty <see cref="CustomerDisplayModel"/> object that the user can fill in with information when creating a new customer via the UI
+    /// </summary>
+    public CustomerDisplayModel NewCustomer
+    {
+        get => _newCustomer;
+        private set
+        {
+            _newCustomer = value;
+            NotifyOfPropertyChange(() => NewCustomer);
+        }
+    }
 
     /// <summary>
     /// Whether or not a <see cref="CustomerDisplayModel"/> object has been selected in UI
@@ -137,6 +228,11 @@ public class CustomersViewModel : Screen
             return true;
         }
     }
+    
+    /// <summary>
+    /// Command that is used to delete the selected customer
+    /// </summary>
+    public ICommand DeleteCustomerCommand { get; private set; }
 
     private ObservableCollection<DepotDisplayModel> _depots = [];
     /// <summary>
@@ -282,46 +378,90 @@ public class CustomersViewModel : Screen
     /// maps them to the corresponding <see cref="CustomerDisplayModel"/>, <see cref="DepotDisplayModel"/> and <see cref="ProductDisplayModel"/>
     /// and makes sure that, whenever possible, the same <see cref="SelectedCustomer"/> as before stays selected after the reload
     /// </summary>
-    public void LoadCustomers()
+    public void LoadCustomerData()
     {
-        // If customer is selected, save the Id so that we can reselect it after reloading customers
+        // If a customer profile is selected, save the ID so that we can reselect it after reloading customer data
+        var selectedCustomerProfileId = SelectedCustomerProfile?.Id ?? -1;
         var selectedCustomerId = SelectedCustomer?.Id ?? -1;
 
         // Load all customers from the database and map them over to their display models
-        _customersHandler.LoadCustomers();
-        Customers = _mapper.Map<ObservableCollection<CustomerDisplayModel>>(_customersHandler.Customers);
+        _customersHandler.LoadCustomerData();
+        CustomerProfiles = _mapper.Map<ObservableCollection<CustomerProfileDisplayModel>>(_customersHandler.CustomerProfiles);
+        
+        // Make sure we have some customer profiles in the list
+        if (CustomerProfiles.Count == 0)
+        {
+            SelectedCustomerProfile = null;
+            SelectedCustomer = null;
+            SelectedDepot = null;
+            SelectedProduct = null;
+            return;
+        }
 
-        // Make sure we have some customers in the list
-        if (Customers.Count == 0) return;
-
-        // If we managed to save a selected customer Id before, reselect that customer now
-        if (_customersHandler.HasCustomer(selectedCustomerId))
-            SelectedCustomer = Customers.FirstOrDefault(x => x.Id == selectedCustomerId)!;
-        else
-            SelectedCustomer = Customers.First();
-
-        // Populate the Depot and Product lists with data from the selected customer
+        // Attempt to reselect the same customer profile as before, if possible
+        SelectedCustomerProfile = CustomerProfiles.FirstOrDefault(x => x.Id == selectedCustomerProfileId) ?? CustomerProfiles.First();
+        
+        Customers = SelectedCustomerProfile.Customers;
+        Products = SelectedCustomerProfile.Products;
+        SelectedProduct = null;
+        
+        if (Customers.Count == 0)
+        {
+            SelectedCustomer = null;
+            SelectedDepot = null;
+            return;
+        }
+        
+        // Attempt to reselect the same customer as before, if possible
+        SelectedCustomer = Customers.FirstOrDefault(x => x.Id == selectedCustomerId) ?? Customers.First();
         Depots = SelectedCustomer.Depots;
-        Products = SelectedCustomer.Products;
+        SelectedDepot = null;
     }
 
+    /// <summary>
+    /// Updates the currently selected customer profiles information in the <see cref="CustomersHandler"/> and in the database to the new values
+    /// </summary>
+    public void UpdateCustomerProfile()
+    {
+        if (CustomerProfileToEdit is null || SelectedCustomerProfile is null) return;
+
+        // Check if validation is passed
+        if (!ValidateCustomerProfile(CustomerProfileToEdit)) return;
+        
+        // Get the selected customer profile
+        var customerProfileToUpdate = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfileToUpdate is null) return;
+        
+        // Update the selected customer profile display model
+        SelectedCustomerProfile.Name = CustomerProfileToEdit.Name;
+        SelectedCustomerProfile.Identifier = CustomerProfileToEdit.Identifier;
+
+        // Update the corresponding customer profile model
+        customerProfileToUpdate.Update(CustomerProfileToEdit.Name, CustomerProfileToEdit.Identifier);
+
+        // Update the customer in the database
+        SqliteDataAccess.UpdateCustomerProfile(customerProfileToUpdate);
+    }
+    
     /// <summary>
     /// Updates the currently selected customers information in the <see cref="CustomersHandler"/> and in the database to the new values
     /// </summary>
     public void UpdateCustomer()
     {
-        if (CustomerToEdit is null || SelectedCustomer is null) return;
+        if (CustomerToEdit is null || SelectedCustomer is null || SelectedCustomerProfile is null) return;
 
         // Check if validation is passed
         if (!ValidateCustomer(CustomerToEdit)) return;
+        
+        var customerToUpdate = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id)?.GetCustomer(SelectedCustomer.Id);
+        if (customerToUpdate is null) return;
 
         // Update the selected customer display model
         SelectedCustomer.Name = CustomerToEdit.Name;
-        SelectedCustomer.CsvName = SelectedCustomer.CsvName;
-        SelectedCustomer.OrderName = SelectedCustomer.OrderName;
+        SelectedCustomer.CsvName = CustomerToEdit.CsvName;
+        SelectedCustomer.OrderName = CustomerToEdit.OrderName;
 
         // Update the corresponding customer model
-        var customerToUpdate = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
         customerToUpdate.Update(CustomerToEdit.Name, CustomerToEdit.CsvName, CustomerToEdit.OrderName);
 
         // Update the customer in the database
@@ -333,12 +473,17 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void UpdateDepot()
     {
-        if (SelectedDepot is null) return;
+        if (SelectedDepot is null || SelectedCustomer is null || SelectedCustomerProfile is null) return;
 
         var depotDisplayModel = Depots.FirstOrDefault(x => x.Id == SelectedDepot.Id);
         if (depotDisplayModel is null) return;
 
-        var depotToUpdate = _customersHandler.GetCustomerByID(SelectedDepot.CustomerId).GetDepot(SelectedDepot.Id);
+        var depotToUpdate = _customersHandler
+            .GetCustomerProfile(SelectedCustomerProfile.Id)?
+            .GetCustomer(SelectedCustomer.Id)?
+            .GetDepot(SelectedDepot.Id);
+        
+        if (depotToUpdate is null) return;
 
         // Check if validation is passed
         if (!ValidateDepot(SelectedDepot)) return;
@@ -363,12 +508,16 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void UpdateProduct()
     {
-        if (SelectedProduct is null) return;
+        if (SelectedProduct is null || SelectedCustomerProfile is null) return;
 
         var productDisplayModel = Products.FirstOrDefault(x => x.Id == SelectedProduct.Id);
         if (productDisplayModel is null) return;
 
-        var productToUpdate = _customersHandler.GetCustomerByID(SelectedProduct.CustomerId).GetProduct(SelectedProduct.Id);
+        var productToUpdate = _customersHandler
+            .GetCustomerProfile(SelectedCustomerProfile.Id)?
+            .GetProduct(SelectedProduct.Id);
+        
+        if (productToUpdate is null) return;
 
         // Check if validation is passed
         if (!ValidateProduct(SelectedProduct)) return;
@@ -390,14 +539,49 @@ public class CustomersViewModel : Screen
     }
 
     /// <summary>
+    /// Adds a new <see cref="Customer"/> to this <see cref="CustomerProfile"/>. Updates the <see cref="CustomersHandler"/> and the database.
+    /// </summary>
+    public void AddCustomer()
+    {
+        if (SelectedCustomerProfile is null) return;
+
+        // Get the selected customer profile object
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfile is null) return;
+
+        // Check if validation is passed
+        if (!ValidateCustomer(NewCustomer, true)) return;
+
+        // Create a new customer for this customer profile
+        Customer newCustomer = new(customerProfile.Id, NewCustomer.Name, NewCustomer.CsvName, NewCustomer.OrderName);
+
+        // Add the customer to the database and retrieve the unique ID
+        var customerId = SqliteDataAccess.AddCustomer(newCustomer);
+
+        // Update the ID of the customer and add it to the customerProfile
+        newCustomer.UpdateId(customerId);
+        customerProfile.AddCustomer(newCustomer);
+
+        // Update the display model and add it to the list
+        NewCustomer.Id = customerId;
+        NewCustomer.CustomerProfileId = customerProfile.Id;
+        Customers.Add(NewCustomer);
+
+        // Clear the NewCustomer object
+        NewCustomer = new CustomerDisplayModel();
+    }
+    
+    /// <summary>
     /// Adds a new <see cref="Depot"/> to this <see cref="Customer"/>. Updates the <see cref="CustomersHandler"/> and the database.
     /// </summary>
     public void AddDepot()
     {
-        if (SelectedCustomer is null) return;
+        if (SelectedCustomer is null || SelectedCustomerProfile is null) return;
 
         // Get the selected customer object
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerProfile(SelectedCustomer.Id)?.GetCustomer(SelectedCustomer.Id);
+        
+        if (customer is null) return;
 
         // Check if validation is passed
         if (!ValidateDepot(NewDepot, true)) return;
@@ -409,7 +593,7 @@ public class CustomersViewModel : Screen
         var depotId = SqliteDataAccess.AddDepot(newDepot);
 
         // Update the ID of the depot and add it to the customer
-        newDepot.UpdateID(depotId);
+        newDepot.UpdateId(depotId);
         customer.AddDepot(newDepot);
 
         // Update the display model and add it to the list
@@ -426,27 +610,29 @@ public class CustomersViewModel : Screen
     /// </summary>
     public void AddProduct()
     {
-        if (SelectedCustomer is null) return;
+        if (SelectedCustomerProfile is null) return;
 
         // Get the selected customer object
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        
+        if (customerProfile is null) return;
 
         // Check if validation is passed
         if (!ValidateProduct(NewProduct, true)) return;
 
         // Create a new product for this customer
-        Product newProduct = new(customer.Id, NewProduct.Name, NewProduct.CsvName, NewProduct.OrderName, NewProduct.Price);
+        Product newProduct = new(customerProfile.Id, NewProduct.Name, NewProduct.CsvName, NewProduct.OrderName, NewProduct.Price);
 
         // Add the product to the database and retrieve the unique ID
         var productId = SqliteDataAccess.AddProduct(newProduct);
 
         // Update the ID of the product and add it to the customer
-        newProduct.UpdateID(productId);
-        customer.AddProduct(newProduct);
+        newProduct.UpdateId(productId);
+        customerProfile.AddProduct(newProduct);
 
         // Update the display model and add it to the list
         NewProduct.Id = productId;
-        NewProduct.CustomerId = customer.Id;
+        NewProduct.CustomerProfileId = customerProfile.Id;
         Products.Add(NewProduct);
 
         // Clear the NewProduct object
@@ -454,18 +640,55 @@ public class CustomersViewModel : Screen
     }
 
     /// <summary>
+    /// Delete the selected customer from this customer profile
+    /// </summary>
+    public async void DeleteCustomer()
+    {
+        // Make sure a customer is selected
+        if (SelectedCustomer is null || SelectedCustomerProfile is null ) return;
+
+        if (Customers.Count <= 1)
+        {
+            await _notificationService.ShowMessage("Cannot Remove Customer", $"Cannot remove {SelectedCustomer.Name} because it is the only customer on this profile.");
+            return;
+        }
+        
+        // Get the selected customer profile
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfile is null) return;
+        
+        var result = await _notificationService.ShowQuestion("Confirm Removing Customer", $"Are you sure you want to remove {SelectedCustomer.Name}?");
+        if (result == DialogResult.No) return;
+
+        // Remove the depot from the database
+        SqliteDataAccess.RemoveCustomer(SelectedCustomer.Id);
+
+        // Remove the depot from the customer
+        customerProfile.DeleteCustomer(SelectedCustomer.Id);
+
+        // Remove the depot from the list
+        Customers.Remove(Customers.Single(x => x.Id == SelectedCustomer.Id));
+        
+        // Select another customer
+        SelectedCustomer = Customers.First();
+        Depots = SelectedCustomer.Depots;
+        SelectedDepot = null;
+    }
+    
+    /// <summary>
     /// Delete the selected depot from this customer
     /// </summary>
     public async void DeleteDepot()
     {
         // Make sure a depot is selected
-        if (SelectedDepot is null || SelectedCustomer is null) return;
+        if (SelectedDepot is null || SelectedCustomer is null || SelectedCustomerProfile is null) return;
 
         var result = await _notificationService.ShowQuestion("Confirm Removing Depot", $"Are you sure you want to remove the {SelectedDepot.Name} depot?");
         if (result == DialogResult.No) return;
 
-        // Get selected customer
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        // Get a selected customer
+        var customer = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id)?.GetCustomer(SelectedCustomer.Id);
+        if (customer is null) return;
 
         // Remove the depot from the database
         SqliteDataAccess.RemoveDepot(SelectedDepot.Id);
@@ -483,19 +706,20 @@ public class CustomersViewModel : Screen
     public async void DeleteProduct()
     {
         // Make sure a product is selected
-        if (SelectedProduct is null || SelectedCustomer is null) return;
+        if (SelectedProduct is null || SelectedCustomerProfile is null) return;
 
         var result = await _notificationService.ShowQuestion("Confirm Removing Product", $"Are you sure you want to remove {SelectedProduct.Name}?");
         if (result == DialogResult.No) return;
 
-        // Get selected customer
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        // Get a selected customer profile
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfile is null) return;
 
         // Remove the product from the database
         SqliteDataAccess.RemoveProduct(SelectedProduct.Id);
 
         // Remove the product from the customer
-        customer.DeleteProduct(SelectedProduct.Id);
+        customerProfile.DeleteProduct(SelectedProduct.Id);
 
         // Remove the product from the list
         Products.Remove(Products.Single(x => x.Id == SelectedProduct.Id));
@@ -506,13 +730,53 @@ public class CustomersViewModel : Screen
     #region Private Functions
 
     /// <summary>
+    /// Validate the customer profile's new or edited details to make sure all checks are passed
+    /// </summary>
+    /// <param name="customerProfile">The customer profile that we want to validate</param>
+    /// <param name="isNew">Whether this is a new customer profile</param>
+    /// <returns><see cref="bool"/> representing the validation result</returns>
+    private bool ValidateCustomerProfile(CustomerProfileDisplayModel customerProfile, bool isNew = false)
+    {
+        // Make sure all fields have the required number of characters
+        if (customerProfile.Name.Length is < 3 or > 50) return false;
+        if (customerProfile.Identifier.Length is < 3 or > 50) return false;
+
+        if (isNew)
+        {
+            // Make sure both the name and identifier are unique
+            if (_customersHandler.HasCustomerProfileName(customerProfile.Name)) return false;
+            if (_customersHandler.HasCustomerProfileIdentifier(customerProfile.Identifier)) return false;
+        }
+        else
+        {
+            if (SelectedCustomerProfile is null) return false;
+
+            // Make sure changes have actually been made
+            if (customerProfile.Name == SelectedCustomerProfile.Name &&
+                customerProfile.Identifier == SelectedCustomerProfile.Identifier) return false;
+
+            // Make sure both the name and order name are either the same as they were or they are unique
+            if (customerProfile.Name != SelectedCustomerProfile.Name && _customersHandler.HasCustomerProfileName(customerProfile.Name)) return false;
+            if (customerProfile.Identifier != SelectedCustomerProfile.Identifier && _customersHandler.HasCustomerProfileIdentifier(customerProfile.Identifier)) return false;
+        }
+
+        // Validation passed
+        return true;
+    }
+    
+    /// <summary>
     /// Validate the customer's new or edited details to make sure all checks are passed
     /// </summary>
     /// <param name="customer">The customer that we want to validate</param>
-    /// <param name="isNew">Whether or not this is a new customer</param>
+    /// <param name="isNew">Whether this is a new customer</param>
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateCustomer(CustomerDisplayModel customer, bool isNew = false)
     {
+        if (SelectedCustomerProfile is null) return false;
+        
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfile is null) return false;
+        
         // Make sure all fields have the required number of characters
         if (customer.Name.Length is < 3 or > 50) return false;
         if (customer.CsvName.Length is < 3 or > 50) return false;
@@ -521,8 +785,8 @@ public class CustomersViewModel : Screen
         if (isNew)
         {
             // Make sure both the name and order name are unique
-            if (_customersHandler.HasCustomerName(customer.Name)) return false;
-            if (_customersHandler.HasCustomerOrderName(customer.OrderName)) return false;
+            if (customerProfile.HasCustomerName(customer.Name)) return false;
+            if (customerProfile.HasCustomerOrderName(customer.OrderName)) return false;
         }
         else
         {
@@ -534,8 +798,8 @@ public class CustomersViewModel : Screen
                 customer.OrderName == SelectedCustomer.OrderName) return false;
 
             // Make sure both the name and order name are either the same as they were or they are unique
-            if (customer.Name != SelectedCustomer.Name && _customersHandler.HasCustomerName(customer.Name)) return false;
-            if (customer.OrderName != SelectedCustomer.OrderName && _customersHandler.HasCustomerOrderName(customer.OrderName)) return false;
+            if (customer.Name != SelectedCustomer.Name && customerProfile.HasCustomerName(customer.Name)) return false;
+            if (customer.OrderName != SelectedCustomer.OrderName && customerProfile.HasCustomerOrderName(customer.OrderName)) return false;
         }
 
         // Validation passed
@@ -546,14 +810,15 @@ public class CustomersViewModel : Screen
     /// Validate the depot's new or edited details to make sure all checks are passed
     /// </summary>
     /// <param name="depot">The depot we want to validate</param>
-    /// <param name="isNew">Whether or not this is a new depot</param>
+    /// <param name="isNew">Whether this is a new depot</param>
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateDepot(DepotDisplayModel depot, bool isNew = false)
     {
-        if (SelectedCustomer is null) return false;
+        if (SelectedCustomer is null || SelectedCustomerProfile is null) return false;
 
         // Get the customer model
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id)?.GetCustomer(SelectedCustomer.Id);
+        if (customer is null) return false;
 
         // Make sure all fields have the required number of characters
         if (depot.Name.Length is < 3 or > 50) return false;
@@ -593,10 +858,11 @@ public class CustomersViewModel : Screen
     /// <returns><see cref="bool"/> representing the validation result</returns>
     private bool ValidateProduct(ProductDisplayModel product, bool isNew = false)
     {
-        if (SelectedCustomer is null) return false;
+        if (SelectedCustomerProfile is null) return false;
 
         // Get the customer model
-        var customer = _customersHandler.GetCustomerByID(SelectedCustomer.Id);
+        var customerProfile = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id);
+        if (customerProfile is null) return false;
 
         // Make sure all fields have the required number of characters
         if (product.Name.Length is < 3 or > 50) return false;
@@ -609,8 +875,8 @@ public class CustomersViewModel : Screen
         if (isNew)
         {
             // Make sure both the name and order name are unique
-            if (customer.HasProductName(product.Name)) return false;
-            if (customer.HasProductOrderName(product.OrderName)) return false;
+            if (customerProfile.HasProductName(product.Name)) return false;
+            if (customerProfile.HasProductOrderName(product.OrderName)) return false;
         }
         else
         {
@@ -624,8 +890,8 @@ public class CustomersViewModel : Screen
                 product.Price == productDisplayModel.Price) return false;
 
             // Make sure both the name and order name are either the same as they were or they are unique
-            if (product.Name != productDisplayModel.Name && customer.HasProductName(product.Name)) return false;
-            if (product.OrderName != productDisplayModel.OrderName && customer.HasProductOrderName(product.OrderName)) return false;
+            if (product.Name != productDisplayModel.Name && customerProfile.HasProductName(product.Name)) return false;
+            if (product.OrderName != productDisplayModel.OrderName && customerProfile.HasProductOrderName(product.OrderName)) return false;
         }
 
         // Validation passed

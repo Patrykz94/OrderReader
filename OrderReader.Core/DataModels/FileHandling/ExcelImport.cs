@@ -73,11 +73,11 @@ public class ExcelImport : IFileImport
         {
             if (parser.FileExtension == fileExtension)
             {
-                var customer = parser.GetCustomer(orderText, customers);
+                var customerProfile = parser.GetCustomerProfile(orderText, customers);
 
-                if (customer != null)
+                if (customerProfile != null)
                 {
-                    await parser.ParseOrderAsync(orderText, fileName, customer, ordersLibrary);
+                    await parser.ParseOrderAsync(orderText, fileName, customerProfile, ordersLibrary);
                     return true;
                 }
             }

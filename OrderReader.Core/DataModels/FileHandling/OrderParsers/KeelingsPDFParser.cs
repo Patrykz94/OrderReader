@@ -28,22 +28,47 @@ public class KeelingsPDFParser(INotificationService notificationService) : IPars
 
     #region Public Helpers
 
-    public Customer GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public CustomerProfile? GetCustomerProfile(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
-        foreach (KeyValuePair<string, string[]> pageText in orderText)
+        foreach (var pageText in orderText)
         {
             // Check if any of the lines contain a customer name
-            foreach (string line in pageText.Value)
+            foreach (var line in pageText.Value)
             {
-                if (customers.HasCustomerOrderName(line)) return customers.GetCustomerByOrderName(line);
+                if (customers.HasCustomerProfileIdentifier(line)) return customers.GetCustomerProfile(line);
             }
         }
 
         return null;
     }
 
-    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
+    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, CustomerProfile customerProfile, OrdersLibrary ordersLibrary)
     {
+        Customer? customer = null;
+        
+        foreach (var pageText in orderText)
+        {
+            // Check if any of the lines contain a customer name
+            foreach (var line in pageText.Value)
+            {
+                if (customerProfile.HasCustomerOrderName(line))
+                {
+                    customer = customerProfile.GetCustomer(line);
+                }
+            }
+        }
+        
+        if (customer is null)
+        {
+            var errorMessage = $"Could not read the customer information in file {fileName}.\n\n" +
+                               "Please check the file and verify if it contains correct customer information. If it looks correct then please contact Patryk Z.\n" +
+                               "\nThis file was not processed.";
+
+            // Display an error message to the user
+            await _notificationService.ShowMessage("File Processing Error", errorMessage);
+            return;
+        }
+        
         // Iterate over the pages in extracted text
         foreach (KeyValuePair<string, string[]> pageText in orderText)
         {
@@ -169,7 +194,7 @@ public class KeelingsPDFParser(INotificationService notificationService) : IPars
                 foreach (var product in productStrings)
                 {
                     // Make sure that this product exists
-                    if (!customer.HasProductOrderName(product.Key))
+                    if (!customerProfile.HasProductOrderName(product.Key))
                     {
                         // If the quantity of unknown product can be parsed then we can add this product and just display a warning
                         // Otherwise, we can not process this order
@@ -204,7 +229,7 @@ public class KeelingsPDFParser(INotificationService notificationService) : IPars
                         // Get the product quantity
                         if (double.TryParse(product.Value, NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double quantity))
                         {
-                            OrderProduct orderProduct = new OrderProduct(customer.Id, customer.GetProduct(product.Key).Id, quantity, customer);
+                            OrderProduct orderProduct = new OrderProduct(customer.Id, customerProfile.GetProduct(product.Key).Id, quantity, customerProfile);
                             products.Add(orderProduct);
                         }
                         else
@@ -253,7 +278,7 @@ public class KeelingsPDFParser(INotificationService notificationService) : IPars
                 if (isAllDataFound)
                 {
                     // Create a  new order object
-                    Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
+                    Order order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customerProfile, customer);
 
                     // Add products to this order
                     foreach (OrderProduct product in products)

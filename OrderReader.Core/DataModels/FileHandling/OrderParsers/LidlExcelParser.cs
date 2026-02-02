@@ -27,7 +27,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
 
     #region Public Helpers
 
-    public Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public CustomerProfile? GetCustomerProfile(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
         foreach (var sheetText in orderText)
         {
@@ -35,9 +35,9 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
             
             var customerIdCell = sheet.GetCell("D1");
 
-            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerOrderName(customerIdCell))
+            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerProfileIdentifier(customerIdCell))
             {
-                return customers.GetCustomerByOrderName(customerIdCell);
+                return customers.GetCustomerProfile(customerIdCell);
             }
         }
 
@@ -49,10 +49,35 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
     /// </summary>
     /// <param name="orderText">The data that we should read from</param>
     /// <param name="fileName">Name of the order file</param>
-    /// <param name="customer">Customer associated with this order</param>
+    /// <param name="customerProfile">Customer profile associated with this order</param>
     /// <param name="ordersLibrary"></param>
-    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
+    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, CustomerProfile customerProfile, OrdersLibrary ordersLibrary)
     {
+        Customer? customer = null;
+
+        foreach (var sheetText in orderText)
+        {
+            var sheet = new ExcelSheet(sheetText.Key, sheetText.Value);
+            
+            var customerIdCell = sheet.GetCell("D1");
+
+            if (!string.IsNullOrEmpty(customerIdCell) && customerProfile.HasCustomerOrderName(customerIdCell))
+            {
+                customer = customerProfile.GetCustomer(customerIdCell);
+            }
+        }
+        
+        if (customer is null)
+        {
+            var errorMessage = $"Could not read the customer information in file {fileName}.\n\n" +
+                               "Please check the file and verify if it contains correct customer information. If it looks correct then please contact Patryk Z.\n" +
+                               "\nThis file was not processed.";
+
+            // Display an error message to the user
+            await _notificationService.ShowMessage("File Processing Error", errorMessage);
+            return;
+        }
+        
         foreach (var table in orderText)
         {
             // Load the sheet
@@ -157,7 +182,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                 {
                     if (orderQuantity.Key.Row == productString.Key)
                     {
-                        if (!string.IsNullOrEmpty(productString.Value) && customer.HasProductOrderName(productString.Value))
+                        if (!string.IsNullOrEmpty(productString.Value) && customerProfile.HasProductOrderName(productString.Value))
                         {
                             if (!usedProductRows.Contains(productString.Key)) usedProductRows.Add(productString.Key);
                         }
@@ -234,7 +259,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                 foreach (var col in usedDepotColumns)
                 {
                     var depot = customer.GetDepot(depotStrings[col] ?? string.Empty);
-                    var order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customer);
+                    var order = new Order(orderReference, deliveryDate, customer.Id, depot.Id, customerProfile, customer);
                     // Add products
                     foreach (var row in usedProductRows)
                     {
@@ -243,7 +268,7 @@ public class LidlExcelParser(INotificationService notificationService) : IParseO
                         {
                             if (orderQuantity.Key.Equals(cell) && orderQuantity.Value > 0.0)
                             {
-                                var product = customer.GetProduct(productStrings[row] ?? string.Empty);
+                                var product = customerProfile.GetProduct(productStrings[row] ?? string.Empty);
                                 order.AddProduct(product.Id, orderQuantity.Value);
                             }
                         }

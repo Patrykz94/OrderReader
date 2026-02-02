@@ -9,7 +9,7 @@ public class OrderProduct
 {
     #region Private Variables
 
-    private readonly Customer _customer;
+    private readonly CustomerProfile _customerProfile;
 
     #endregion
 
@@ -18,12 +18,12 @@ public class OrderProduct
     /// <summary>
     /// The ID number of customer that ordered this product
     /// </summary>
-    public int CustomerID { get; set; }
+    public int CustomerId { get; set; }
 
     /// <summary>
     /// The ID number of the product that is ordered
     /// </summary>
-    public int ProductID { get; set; }
+    public int ProductId { get; set; }
 
     /// <summary>
     /// The name of the product that is ordered
@@ -42,13 +42,11 @@ public class OrderProduct
     /// <summary>
     /// A default constructor for the OrderLine class
     /// </summary>
-    /// <param name="ProductID"></param>
-    /// <param name="Quantity"></param>
-    public OrderProduct(int customerId, int productId, double quantity, Customer customer)
+    public OrderProduct(int customerId, int productId, double quantity, CustomerProfile customerProfile)
     {
-        _customer = customer;
-        CustomerID = customerId;
-        ProductID = productId;
+        _customerProfile = customerProfile;
+        CustomerId = customerId;
+        ProductId = productId;
         Quantity = quantity;
     }
 
@@ -62,7 +60,7 @@ public class OrderProduct
     /// <returns>Product name</returns>
     private string GetProductName()
     {
-        return _customer.HasProduct(ProductID) ? _customer.GetProduct(ProductID).Name : $"Product not found [ID - {ProductID}]";
+        return _customerProfile.GetProduct(ProductId)?.Name ?? $"Product not found [ID - {ProductId}]";
     }
 
     #endregion

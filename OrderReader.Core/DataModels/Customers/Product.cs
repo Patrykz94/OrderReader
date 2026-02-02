@@ -13,9 +13,9 @@ public class Product
     public int Id { get; private set; } = -1;
 
     /// <summary>
-    /// Id of the customer that this product belongs to
+    /// Id of the customer profile that this product belongs to
     /// </summary>
-    public int CustomerId { get; }
+    public int CustomerProfileId { get; }
 
     /// <summary>
     /// This is the name of the product that will be displayed in the application
@@ -25,7 +25,7 @@ public class Product
     /// <summary>
     /// The name that will appear on the CSV file
     /// </summary>
-    public string CSVName { get; private set; }
+    public string CsvName { get; private set; }
 
     /// <summary>
     /// The name that will appear on the orders that we are reading from
@@ -41,24 +41,26 @@ public class Product
 
     #region Constructor
 
-    /// <summary>
-    /// Default constructor
-    /// </summary>
-    public Product() { }
-
+    public Product()
+    {
+        Name = string.Empty;
+        CsvName = string.Empty;
+        OrderName = string.Empty;
+    }
+    
     /// <summary>
     /// Constructor that creates a new product
     /// </summary>
-    /// <param name="customerId">The Id number of customer that owns this product</param>
+    /// <param name="customerProfileId">The ID of customer profile that owns this product</param>
     /// <param name="name">Name as will appear in the UI</param>
     /// <param name="csvName">Name on CSV files</param>
     /// <param name="orderName">Name on Orders</param>
     /// <param name="price">Price of this product</param>
-    public Product(int customerId, string name, string csvName, string orderName, decimal price = 0.0m)
+    public Product(int customerProfileId, string name, string csvName, string orderName, decimal price = 0.0m)
     {
-        CustomerId = customerId;
+        CustomerProfileId = customerProfileId;
         Name = name;
-        CSVName = csvName;
+        CsvName = csvName;
         OrderName = orderName;
         Price = price;
     }
@@ -67,17 +69,17 @@ public class Product
     /// Constructor that creates a new product. Used when loading products from databse
     /// </summary>
     /// <param name="id">The Id number of this product</param>
-    /// <param name="customerId">The Id number of customer that owns this product</param>
+    /// <param name="customerProfileId">The Id number of customer profile that owns this product</param>
     /// <param name="name">Name as will appear in the UI</param>
     /// <param name="csvName">Name on CSV files</param>
     /// <param name="orderName">Name on Orders</param>
     /// <param name="price">Price of this product</param>
-    public Product(int id, int customerId, string name, string csvName, string orderName, decimal price = 0.0m)
+    public Product(int id, int customerProfileId, string name, string csvName, string orderName, decimal price = 0.0m)
     {
         Id = id;
-        CustomerId = customerId;
+        CustomerProfileId = customerProfileId;
         Name = name;
-        CSVName = csvName;
+        CsvName = csvName;
         OrderName = orderName;
         Price = price;
     }
@@ -96,7 +98,7 @@ public class Product
     public void Update(string name, string csvName, string orderName, decimal price)
     {
         Name = name;
-        CSVName = csvName;
+        CsvName = csvName;
         OrderName = orderName;
         Price = price;
     }
@@ -104,10 +106,10 @@ public class Product
     /// <summary>
     /// Update the ID of the product. This is usually used when craeting a new product and we don't know the ID yet
     /// </summary>
-    /// <param name="Id">The Id number of the product</param>
-    public void UpdateID(int Id)
+    /// <param name="id">The Id number of the product</param>
+    public void UpdateId(int id)
     {
-        this.Id = Id;
+        Id = id;
     }
 
     #endregion

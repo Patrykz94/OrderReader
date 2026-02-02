@@ -16,7 +16,7 @@ public class Order
     /// The ID of this order
     /// This is mainly used to group orders together by customer and date
     /// </summary>
-    public string OrderID { get; private set; }
+    public string OrderId { get; private set; }
 
     /// <summary>
     /// The reference number for the order
@@ -31,7 +31,7 @@ public class Order
     /// <summary>
     /// An ID of the customer
     /// </summary>
-    public int CustomerID { get; private set; }
+    public int CustomerId { get; private set; }
 
     /// <summary>
     /// Gets the name of the Customer
@@ -41,8 +41,10 @@ public class Order
     /// <summary>
     /// An ID of the depot
     /// </summary>
-    public int DepotID { get; private set; }
+    public int DepotId { get; private set; }
 
+    public CustomerProfile CustomerProfile { get; }
+    
     public Customer Customer { get; }
 
     /// <summary>
@@ -72,21 +74,17 @@ public class Order
     /// <summary>
     /// Default constructor
     /// </summary>
-    /// <param name="orderReference">The customer reference number</param>
-    /// <param name="date">The required delivery date</param>
-    /// <param name="customerId">Id of the customer</param>
-    /// <param name="depotId">Id of the customer depot</param>
-    /// <param name="customer">Customer object</param>
-    public Order(string orderReference, DateTime date, int customerId, int depotId, Customer customer)
+    public Order(string orderReference, DateTime date, int customerId, int depotId, CustomerProfile customerProfile, Customer customer)
     {
         OrderReference = orderReference;
         Date = date;
-        CustomerID = customerId;
-        DepotID = depotId;
+        CustomerId = customerId;
+        DepotId = depotId;
+        CustomerProfile = customerProfile;
         Customer = customer;
 
         // OrderID is constructed from CustomerID and date
-        OrderID = $"{CustomerID}-{Date.Year}-{Date.Month}-{Date.Day}";
+        OrderId = $"{CustomerId}-{Date.Year}-{Date.Month}-{Date.Day}";
     }
 
     #endregion
@@ -101,19 +99,19 @@ public class Order
     public void AddProduct(int productId, double quantity)
     {
         // First iterate through the list of products already on the order
-        foreach (OrderProduct line in Products)
+        foreach (var line in Products)
         {
             // Look for the same product id
-            if (line.ProductID == productId)
+            if (line.ProductId == productId)
             {
-                // If same product is already on the list, just add the new quantity to the existing one
+                // If the same product is already on the list, just add the new quantity to the existing one
                 line.Quantity += quantity;
                 return;
             }
         }
 
         // If same product is not on this order yet, add it to the list
-        Products.Add(new OrderProduct(CustomerID, productId, quantity, Customer));
+        Products.Add(new OrderProduct(CustomerId, productId, quantity, CustomerProfile));
         SortProducts();
     }
 
@@ -123,13 +121,13 @@ public class Order
     /// <param name="product">An <see cref="OrderProduct"/> object</param>
     public void AddProduct(OrderProduct product)
     {
-        if (product.CustomerID == CustomerID)
+        if (product.CustomerId == CustomerId)
         {
             // First iterate through the list of products already on the order
             foreach (OrderProduct line in Products)
             {
                 // Look for the same product id
-                if (line.ProductID == product.ProductID)
+                if (line.ProductId == product.ProductId)
                 {
                     // If same product is already on the list, just add the new quantity to the existing one
                     line.Quantity += product.Quantity;
@@ -161,7 +159,7 @@ public class Order
     {
         foreach (OrderProduct product in Products)
         {
-            if (product.ProductID == productId) return product.Quantity;
+            if (product.ProductId == productId) return product.Quantity;
         }
 
         return 0.0;
@@ -193,7 +191,7 @@ public class Order
     /// <returns>Name of the depot</returns>
     private string GetDepotName()
     {
-        return Customer.HasDepot(DepotID) ? Customer.GetDepot(DepotID).Name : $"Depot not found [ID - {DepotID}]";
+        return Customer.GetDepot(DepotId)?.Name ?? $"Depot not found [ID - {DepotId}]";
     }
 
     /// <summary>

@@ -61,11 +61,11 @@ public class PDFImport : IFileImport
         {
             if (parser.FileExtension == fileExtension)
             {
-                Customer customer = parser.GetCustomer(orderText, customers);
+                var customerProfile = parser.GetCustomerProfile(orderText, customers);
 
-                if (customer != null)
+                if (customerProfile != null)
                 {
-                    await parser.ParseOrderAsync(orderText, fileName, customer, ordersLibrary);
+                    await parser.ParseOrderAsync(orderText, fileName, customerProfile, ordersLibrary);
                     return true;
                 }
             }

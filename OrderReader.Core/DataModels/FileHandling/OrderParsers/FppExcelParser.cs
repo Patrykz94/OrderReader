@@ -28,7 +28,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
 
     #region Public Helpers
 
-    public Customer? GetCustomer(Dictionary<string, string[]> orderText, CustomersHandler customers)
+    public CustomerProfile? GetCustomerProfile(Dictionary<string, string[]> orderText, CustomersHandler customers)
     {
         foreach (var valuePair in orderText)
         {
@@ -36,9 +36,9 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
             
             var customerIdCell = sheet.GetCell("A1");
 
-            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerOrderName(customerIdCell))
+            if (!string.IsNullOrEmpty(customerIdCell) && customers.HasCustomerProfileIdentifier(customerIdCell))
             {
-                return customers.GetCustomerByOrderName(customerIdCell);
+                return customers.GetCustomerProfile(customerIdCell);
             }
         }
 
@@ -50,10 +50,35 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
     /// </summary>
     /// <param name="orderText">The data that we should read from</param>
     /// <param name="fileName">Name of the order file</param>
-    /// <param name="customer">Customer associated with this order</param>
+    /// <param name="customerProfile">Customer profile associated with this order</param>
     /// <param name="ordersLibrary">The library containing all order data</param>
-    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, Customer customer, OrdersLibrary ordersLibrary)
+    public async Task ParseOrderAsync(Dictionary<string, string[]> orderText, string fileName, CustomerProfile customerProfile, OrdersLibrary ordersLibrary)
     {
+        // Find the customer object for this order
+        Customer? customer = null;
+        foreach (var valuePair in orderText)
+        {
+            var sheet = new ExcelSheet(valuePair.Key, valuePair.Value);
+        
+            var customerIdCell = sheet.GetCell("A1");
+
+            if (!string.IsNullOrEmpty(customerIdCell) && customerProfile.HasCustomerOrderName(customerIdCell))
+            {
+                customer = customerProfile.GetCustomer(customerIdCell);
+            }
+        }
+        
+        if (customer is null)
+        {
+            var errorMessage = $"Could not read the customer information in file {fileName}.\n\n" +
+                               "Please check the file and verify if it contains correct customer information. If it looks correct then please contact Patryk Z.\n" +
+                               "\nThis file was not processed.";
+
+            // Display an error message to the user
+            await _notificationService.ShowMessage("File Processing Error", errorMessage);
+            return;
+        }
+        
         List<DateTime> missingReferenceDates = [];
         
         foreach (var table in orderText)
@@ -205,7 +230,7 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
                     for (var row = firstOrderRow; row < belowOrdersRow; row += 2)
                     {
                         Depot? depot = customer.GetDepot(depotStrings[row]);
-                        Product? product = customer.GetProduct(productStrings[row]);
+                        Product? product = customerProfile.GetProduct(productStrings[row]);
                         if (!decimal.TryParse(qtyPerPalletStrings[row], out var qtyPerPallet))
                         {
                             var errorMessage = $"Could not read quantity per pallet for product: {productStrings[row]}.\n";
@@ -238,12 +263,12 @@ public class FppExcelParser(INotificationService notificationService) : IParseOr
 
                         var order = ordersLibrary.Orders.FirstOrDefault(x =>
                             x.Customer.Id == customer.Id &&
-                            x.DepotID == depot.Id &&
+                            x.DepotId == depot.Id &&
                             x.Date == deliveryDate);
 
                         if (order is not null) updatingExistingOrder = true;
                         
-                        order ??= new Order(orderReference ?? "N/A", deliveryDate, customer.Id, depot.Id, customer);
+                        order ??= new Order(orderReference ?? "N/A", deliveryDate, customer.Id, depot.Id, customerProfile, customer);
                         order.AddProduct(product.Id, (double)(palletQuantities[row] * qtyPerPallet));
                         
                         // Add warnings

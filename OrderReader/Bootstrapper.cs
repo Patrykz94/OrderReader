@@ -39,8 +39,10 @@ public class Bootstrapper : BootstrapperBase
             cfg.CreateMap<Product, ProductDisplayModel>();
             cfg.CreateMap<Depot, DepotDisplayModel>();
             cfg.CreateMap<Customer, CustomerDisplayModel>()
-                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products))
                 .ForMember(dest => dest.Depots, opt => opt.MapFrom(src => src.Depots));
+            cfg.CreateMap<CustomerProfile, CustomerProfileDisplayModel>()
+                .ForMember(dest => dest.Customers, opt => opt.MapFrom(src => src.Customers))
+                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products));
         });
 
         var output = config.CreateMapper();
@@ -70,7 +72,7 @@ public class Bootstrapper : BootstrapperBase
         FileImport.CustomersHandler = _container.GetInstance<CustomersHandler>();
 
         PrintingManager.NotificationService = _container.GetInstance<INotificationService>();
-        CSVExport.NotificationService = _container.GetInstance<INotificationService>();
+        CsvExport.NotificationService = _container.GetInstance<INotificationService>();
         DropFilesBehaviourExtension.NotificationService = _container.GetInstance<INotificationService>();
 
         // Display the shell view

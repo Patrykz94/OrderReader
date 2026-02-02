@@ -13,48 +13,53 @@ namespace OrderReader.Core.DataModels.FileHandling;
 /// <summary>
 /// Is responsible for exporting data into a CSV file
 /// </summary>
-public static class CSVExport
+public static class CsvExport
 {
     public static INotificationService NotificationService { get; set; }
         
     // A function that will export the orders with provided order ID to a CSV file
-    public static async Task ExportOrdersToCSV(ObservableCollection<Order> orders, Customer customer)
+    public static async Task ExportOrdersToCsv(ObservableCollection<Order> orders, CustomerProfile customerProfile, Customer customer)
     {
         // Make sure that list is not empty
         if (orders.Count == 0) return;
 
         // Create a list of strings which will represent lines on csv files
-        List<string> lines = new List<string>
-        {
-            // Add the row of headings
-            "Customer,Branch,Required Date,Customer Reference,Product Code,Order Qty,Price,"
-        };
+        List<string> lines = ["Customer,Branch,Required Date,Customer Reference,Product Code,Order Qty,Price,"];
 
         // Iterate over the list of orders that need to be printed
-        foreach (Order order in orders)
+        foreach (var order in orders)
         {
-            // Get depot for each order
-            Depot depot = customer.GetDepot(order.DepotID);
+            // Get a depot for each order
+            var depot = customer.GetDepot(order.DepotId);
 
-            foreach (OrderProduct product in order.Products)
+            if (depot == null)
+                throw new Exception($"Could not find depot with ID {order.DepotId}");
+
+            foreach (var orderProduct in order.Products)
             {
+                var product = customerProfile.GetProduct(orderProduct.ProductId);
+                
+                if (product == null)
+                    throw new Exception($"Could not find product with ID {orderProduct.ProductId}");
+                
                 // Get the price of the current product
-                decimal price = customer.GetProduct(product.ProductID).Price;
+                var price = product.Price;
+                
                 // Convert the price into the correct format for exporting
-                string priceString = price == 0m ? "" : string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:F2}", price);
+                var priceString = price == 0m ? "" : string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:F2}", price);
                 // Add the line with all required information into the list of lines
-                lines.Add($"{ customer.CSVName },{ depot.CSVName },{ order.Date.ToShortDateString() },{ order.OrderReference },{ customer.GetProduct(product.ProductID).CSVName },{ product.Quantity },{ priceString },");
+                lines.Add($"{ customer.CsvName },{ depot.CsvName },{ order.Date.ToShortDateString() },{ order.OrderReference },{ product.CsvName },{ orderProduct.Quantity },{ priceString },");
             }
         }
 
         if (lines.Count > 0)
         {
-            DateTime time = DateTime.Now;
-            string pcName = Environment.MachineName;
-            string customerName = customer.CSVName;
-            string fileName = $"order_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orders[0].OrderID}_{customerName}.csv";
+            var time = DateTime.Now;
+            var pcName = Environment.MachineName;
+            var customerName = customer.CsvName;
+            var fileName = $"order_{pcName}_{time.Year}-{time.Month}-{time.Day}_{time.Hour}-{time.Minute}-{time.Second}_{orders[0].OrderId}_{customerName}.csv";
 
-            UserSettings settings = Settings.LoadSettings();
+            var settings = Settings.LoadSettings();
 
             try
             {
@@ -62,7 +67,7 @@ public static class CSVExport
                 if (!Directory.Exists(settings.UserCsvExportPath)) Directory.CreateDirectory(settings.UserCsvExportPath);
 
                 // Create the file
-                File.WriteAllLines($"{settings.UserCsvExportPath}\\{fileName}", lines);
+                await File.WriteAllLinesAsync($"{settings.UserCsvExportPath}\\{fileName}", lines);
             }
             catch (Exception ex)
             {

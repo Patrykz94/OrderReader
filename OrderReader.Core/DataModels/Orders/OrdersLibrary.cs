@@ -39,7 +39,7 @@ public class OrdersLibrary
 
         foreach (Order order in Orders)
         {
-            if (!OrderIDs.Contains(order.OrderID)) OrderIDs.Add(order.OrderID);
+            if (!OrderIDs.Contains(order.OrderId)) OrderIDs.Add(order.OrderId);
         }
 
         return OrderIDs;
@@ -54,7 +54,7 @@ public class OrdersLibrary
     {
         foreach (Order order in Orders)
         {
-            if (order.OrderID == orderId) return true;
+            if (order.OrderId == orderId) return true;
         }
 
         return false;
@@ -71,7 +71,7 @@ public class OrdersLibrary
 
         foreach (Order order in Orders)
         {
-            if (order.OrderID == orderId) AllOrders.Add(order);
+            if (order.OrderId == orderId) AllOrders.Add(order);
         }
 
         // Before returning the orders, sort them by the depot name
@@ -86,7 +86,7 @@ public class OrdersLibrary
     {
         for (int i = Orders.Count-1; i >= 0; i--)
         {
-            if (Orders[i].OrderID == orderId)
+            if (Orders[i].OrderId == orderId)
             {
                 Orders.Remove(Orders[i]);
             }
@@ -126,9 +126,9 @@ public class OrdersLibrary
     {
         foreach (Order order in Orders)
         {
-            if (order.OrderID == orderIn.OrderID &&
+            if (order.OrderId == orderIn.OrderId &&
                 order.OrderReference == orderIn.OrderReference &&
-                order.DepotID == orderIn.DepotID &&
+                order.DepotId == orderIn.DepotId &&
                 order.Products.Count == orderIn.Products.Count)
             {
                 bool allProductsMatch = true;
@@ -137,7 +137,7 @@ public class OrdersLibrary
                     bool productMatches = false;
                     foreach (OrderProduct product2 in orderIn.Products)
                     {
-                        if (product1.ProductID == product2.ProductID && product1.Quantity == product2.Quantity)
+                        if (product1.ProductId == product2.ProductId && product1.Quantity == product2.Quantity)
                         {
                             productMatches = true;
                             break;
