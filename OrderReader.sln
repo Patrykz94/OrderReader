@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader.Core", "OrderRe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader", "OrderReader\OrderReader.csproj", "{55AE2991-A12D-4F8E-B27C-4927AAB96445}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderReader.Core.Tests", "OrderReader.Core.Tests\OrderReader.Core.Tests.csproj", "{A9916F59-4EBF-46D5-BAC4-1D30E379F912}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{55AE2991-A12D-4F8E-B27C-4927AAB96445}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55AE2991-A12D-4F8E-B27C-4927AAB96445}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55AE2991-A12D-4F8E-B27C-4927AAB96445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9916F59-4EBF-46D5-BAC4-1D30E379F912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9916F59-4EBF-46D5-BAC4-1D30E379F912}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9916F59-4EBF-46D5-BAC4-1D30E379F912}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9916F59-4EBF-46D5-BAC4-1D30E379F912}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
