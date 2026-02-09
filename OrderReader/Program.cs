@@ -24,13 +24,13 @@ public static class Program
             var logger = LoggerFactory.CreateLogger("VelopackLogger");
             
             VelopackApp.Build()
-                .WithBeforeUpdateFastCallback(_ =>
+                .OnBeforeUpdateFastCallback(_ =>
                 {
                     Settings.Initialize();
                     var backupCreated = Settings.BackupConfigs();
                     logger.LogDebug(backupCreated ? "Config backup saved." : "Could not backup the configs.");
                 })
-                .Run(logger);
+                .Run();
             
             var application = new App();
             application.InitializeComponent();
