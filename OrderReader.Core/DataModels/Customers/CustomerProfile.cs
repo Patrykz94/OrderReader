@@ -64,7 +64,8 @@ public class CustomerProfile
 
     public Customer? GetCustomer(string orderName)
     {
-        return Customers.SingleOrDefault(customer => customer.OrderName == orderName);
+        var customer = Customers.SingleOrDefault(customer => customer.OrderName == orderName);
+        return customer;
     }
     
     public void Update(string name, string identifier)

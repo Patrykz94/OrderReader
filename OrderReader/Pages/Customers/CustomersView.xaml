@@ -362,7 +362,21 @@
                     <Border Style="{DynamicResource Divider}"/>
 
                     <!-- Add Product -->
-                    <TextBlock Text="Add New Product" FontSize="{StaticResource FontSize.Large}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Add New Product" FontSize="{StaticResource FontSize.Large}"/>
+                        <Button Style="{StaticResource ComboButton}"
+                                Content="{StaticResource IconCopy}"
+                                Tag="Copy Selected"
+                                FontSize="{StaticResource FontSize.Regular}"
+                                Margin="5 0" Grid.Column="1"
+                                Command="{Binding CopySelectedProductCommand}"
+                                IsEnabled="{Binding HasSelectedProduct}"/>
+                    </Grid>
+                    
                     <TextBlock FontSize="{StaticResource FontSize.Small}" TextWrapping="WrapWithOverflow" Margin="5 10 5 10">
                         Enter details of a new product, to add it to the selected customer.
                     </TextBlock>

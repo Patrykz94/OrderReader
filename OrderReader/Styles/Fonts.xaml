@@ -49,5 +49,6 @@
     <system:String x:Key="IconDownload">&#xf019;</system:String>
     <system:String x:Key="IconCalendar">&#xf783;</system:String>
     <system:String x:Key="IconStore">&#xf54e;</system:String>
+    <system:String x:Key="IconCopy">&#xf0c5;</system:String>
 
 </ResourceDictionary>

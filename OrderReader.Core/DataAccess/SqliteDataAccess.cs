@@ -93,7 +93,7 @@ public static class SqliteDataAccess
     {
         using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
         
-        cnn.Execute("UPDATE 'Customers' SET \"Name\" = @Name, \"CSVName\" = @CSVName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", customer);
+        cnn.Execute("UPDATE 'Customers' SET \"Name\" = @Name, \"CSVName\" = @CsvName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", customer);
     }
 
     /// <summary>
@@ -125,7 +125,7 @@ public static class SqliteDataAccess
     {
         using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
 
-        var result = cnn.Query<int>("INSERT INTO 'Depots' (CustomerId, Name, CSVName, OrderName) VALUES (@CustomerId, @Name, @CSVName, @OrderName); SELECT last_insert_rowid();", depot).ToList().FirstOrDefault();
+        var result = cnn.Query<int>("INSERT INTO 'Depots' (CustomerId, Name, CSVName, OrderName) VALUES (@CustomerId, @Name, @CsvName, @OrderName); SELECT last_insert_rowid();", depot).ToList().FirstOrDefault();
 
         return result;
     }
@@ -137,7 +137,7 @@ public static class SqliteDataAccess
     public static void UpdateDepot(Depot depot)
     {
         using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
-        cnn.Execute("UPDATE 'Depots' SET \"Name\" = @Name, \"CSVName\" = @CSVName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", depot);
+        cnn.Execute("UPDATE 'Depots' SET \"Name\" = @Name, \"CSVName\" = @CsvName, \"OrderName\" = @OrderName WHERE \"Id\" = @Id", depot);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public static class SqliteDataAccess
     {
         using IDbConnection cnn = new SqliteConnection(LoadConnectionString());
 
-        var result = cnn.Query<int>("INSERT INTO 'Products' (CustomerProfileId, Name, CSVName, OrderName, Price) VALUES (@CustomerProfileId, @Name, @CSVName, @OrderName, @Price); SELECT last_insert_rowid();", product).ToList().FirstOrDefault();
+        var result = cnn.Query<int>("INSERT INTO 'Products' (CustomerProfileId, Name, CSVName, OrderName, Price) VALUES (@CustomerProfileId, @Name, @CsvName, @OrderName, @Price); SELECT last_insert_rowid();", product).ToList().FirstOrDefault();
 
         return result;
     }

@@ -32,9 +32,6 @@ public static class CsvExport
             // Get a depot for each order
             var depot = customer.GetDepot(order.DepotId);
 
-            if (depot == null)
-                throw new Exception($"Could not find depot with ID {order.DepotId}");
-
             foreach (var orderProduct in order.Products)
             {
                 var product = customerProfile.GetProduct(orderProduct.ProductId);
@@ -42,13 +39,14 @@ public static class CsvExport
                 if (product == null)
                     throw new Exception($"Could not find product with ID {orderProduct.ProductId}");
                 
-                // Get the price of the current product
-                var price = product.Price;
+                // Try to get the price of the product from the order, otherwise from the product itself
+                var price = (decimal)double.Round(orderProduct.Price, 2);
+                if (price == 0m) price = product.Price;
                 
                 // Convert the price into the correct format for exporting
                 var priceString = price == 0m ? "" : string.Format(CultureInfo.CreateSpecificCulture("en-GB"), "{0:F2}", price);
                 // Add the line with all required information into the list of lines
-                lines.Add($"{ customer.CsvName },{ depot.CsvName },{ order.Date.ToShortDateString() },{ order.OrderReference },{ product.CsvName },{ orderProduct.Quantity },{ priceString },");
+                lines.Add($"{ customer.CsvName },{ depot?.CsvName },{ order.Date.ToShortDateString() },{ order.OrderReference },{ product.CsvName },{ orderProduct.Quantity },{ priceString },");
             }
         }
 

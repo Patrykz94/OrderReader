@@ -138,7 +138,7 @@ public class OrderListItemViewModel : Screen
             // Perform all the order processing tasks based on users settings
             if (settings.ExportCsv) await CsvExport.ExportOrdersToCsv(Orders, customerProfile, customer);
 
-            if (settings.PrintOrders || settings.ExportPdf) PDFExport.ExportOrderToPDF(_ordersTable, customer, OrderId, Date);
+            if ((settings.PrintOrders || settings.ExportPdf) && customerProfile.Id != 5) PDFExport.ExportOrderToPDF(_ordersTable, customer, OrderId, Date);
 
             // Once processed, remove the order
             Delete();

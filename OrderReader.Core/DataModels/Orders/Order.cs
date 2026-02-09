@@ -96,14 +96,23 @@ public class Order
     /// </summary>
     /// <param name="productId">Id number of the product</param>
     /// <param name="quantity">Quantity to add</param>
-    public void AddProduct(int productId, double quantity)
+    /// <param name="price">(OPTIONAL) Specify price of the product</param>
+    public void AddProduct(int productId, double quantity, double price = 0.0)
     {
-        // First iterate through the list of products already on the order
+        // First, iterate through the list of products already on the order
         foreach (var line in Products)
         {
             // Look for the same product id
             if (line.ProductId == productId)
             {
+                // If the price is different, average it out
+                if (Math.Abs(line.Price - price) > 0.0001)
+                {
+                    var existingTotal = line.Price * line.Quantity;
+                    var totalToAdd = price * quantity;
+                    line.Price = (existingTotal + totalToAdd) / (line.Quantity + quantity);
+                }
+                
                 // If the same product is already on the list, just add the new quantity to the existing one
                 line.Quantity += quantity;
                 return;
@@ -111,7 +120,7 @@ public class Order
         }
 
         // If same product is not on this order yet, add it to the list
-        Products.Add(new OrderProduct(CustomerId, productId, quantity, CustomerProfile));
+        Products.Add(new OrderProduct(CustomerId, productId, quantity, CustomerProfile, price));
         SortProducts();
     }
 
@@ -191,7 +200,7 @@ public class Order
     /// <returns>Name of the depot</returns>
     private string GetDepotName()
     {
-        return Customer.GetDepot(DepotId)?.Name ?? $"Depot not found [ID - {DepotId}]";
+        return Customer.GetDepot(DepotId)?.Name ?? "[H/O]";
     }
 
     /// <summary>

@@ -50,6 +50,7 @@ public class CustomersViewModel : Screen
         DeleteCustomerCommand = new RelayCommand(DeleteCustomer);
         DeleteDepotCommand = new RelayCommand(DeleteDepot);
         DeleteProductCommand = new RelayCommand(DeleteProduct);
+        CopySelectedProductCommand = new RelayCommand(CopySelectedProductInfo);
     }
 
     #endregion
@@ -363,11 +364,16 @@ public class CustomersViewModel : Screen
             return true;
         }
     }
-
+    
     /// <summary>
     /// Command that is used to delete the selected product
     /// </summary>
     public ICommand DeleteProductCommand { get; private set; }
+    
+    /// <summary>
+    /// Command used to copy the selected product detains into the new product fields
+    /// </summary>
+    public ICommand CopySelectedProductCommand { get; private set; }
 
     #endregion
 
@@ -725,6 +731,17 @@ public class CustomersViewModel : Screen
         Products.Remove(Products.Single(x => x.Id == SelectedProduct.Id));
     }
 
+    public void CopySelectedProductInfo()
+    {
+        // Make sure a product is selected
+        if (SelectedProduct is null) return;
+        
+        NewProduct.Name = SelectedProduct.Name;
+        NewProduct.CsvName = SelectedProduct.CsvName;
+        NewProduct.OrderName = SelectedProduct.OrderName;
+        NewProduct.Price = SelectedProduct.Price;
+    }
+    
     #endregion
 
     #region Private Functions

@@ -72,6 +72,39 @@ public struct Cell : IEquatable<Cell>
 
     #region Public Functions
 
+    /// <summary>
+    /// Returns the cell reference for a given column and row number
+    /// </summary>
+    /// <param name="column">Column index number, starting from 1</param>
+    /// <param name="row">Row index number, starting from 1</param>
+    /// <returns>Cell reference in format "A1"</returns>
+    public static string? GetCellReference(int column, int row)
+    {
+        if (column < 1 || row < 1) return null;
+        
+        return $"{GetColumnLetter(column)}{row}";
+    }
+
+    /// <summary>
+    /// Returns the column letter for a given column number
+    /// </summary>
+    /// <param name="column">Column index number, starting from 1</param>
+    /// <returns>Column letter(s)</returns>
+    public static string? GetColumnLetter(int column)
+    {
+        // The first column is column A (1)
+        if (column < 1) return null;
+        
+        // Excel uses 1-based column numbers, so we need to subtract 1 from the column number
+        column--;
+        
+        var remainder = column % 26;
+        var remainderLetter = (char)(remainder + 'A');
+        var multiple = column / 26;
+        
+        return multiple > 0 ? GetColumnLetter(multiple) + remainderLetter : remainderLetter.ToString();
+    }
+    
     public override bool Equals([NotNullWhen(true)] object? other)
     {
         if (other is Cell otherCell)

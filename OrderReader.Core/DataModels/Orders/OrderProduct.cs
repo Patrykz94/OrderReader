@@ -34,7 +34,9 @@ public class OrderProduct
     /// The quantity of the product that is ordered
     /// </summary>
     public double Quantity { get; set; }
-
+    
+    public double Price { get; set; }
+    
     #endregion
 
     #region Constructor
@@ -42,12 +44,13 @@ public class OrderProduct
     /// <summary>
     /// A default constructor for the OrderLine class
     /// </summary>
-    public OrderProduct(int customerId, int productId, double quantity, CustomerProfile customerProfile)
+    public OrderProduct(int customerId, int productId, double quantity, CustomerProfile customerProfile, double price = 0.0)
     {
         _customerProfile = customerProfile;
         CustomerId = customerId;
         ProductId = productId;
         Quantity = quantity;
+        Price = price;
     }
 
     #endregion

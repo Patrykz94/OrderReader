@@ -65,8 +65,8 @@ public class ExcelImport : IFileImport
         List<IParseOrder> orderParsers =
         [
             new LidlExcelParser(_notificationService),
-            new LidlExcelParser(_notificationService),
-            new FppExcelParser(_notificationService)
+            new FppExcelParser(_notificationService),
+            new MarketExcelParser(_notificationService)
         ];
 
         foreach (var parser in orderParsers)
@@ -110,7 +110,7 @@ public class ExcelImport : IFileImport
             string ext = Path.GetExtension(filePath);
             if (ext.ToLower() == ".xlsx")
             {
-                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
