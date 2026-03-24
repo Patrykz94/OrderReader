@@ -585,7 +585,7 @@ public class CustomersViewModel : Screen
         if (SelectedCustomer is null || SelectedCustomerProfile is null) return;
 
         // Get the selected customer object
-        var customer = _customersHandler.GetCustomerProfile(SelectedCustomer.Id)?.GetCustomer(SelectedCustomer.Id);
+        var customer = _customersHandler.GetCustomerProfile(SelectedCustomerProfile.Id)?.GetCustomer(SelectedCustomer.Id);
         
         if (customer is null) return;
 
