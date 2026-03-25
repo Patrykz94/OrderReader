@@ -144,13 +144,13 @@
                         
                         <StackPanel Grid.Column="0" x:Name="CustomerEditor">
                             <Label Content="Display Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.Name}" Tag="Display Name"
+                            <TextBox Text="{Binding CustomerToEdit.Name}" Tag="Display Name"
                                      IsEnabled="{Binding HasSelectedCustomer}"/>
                             <Label Content="CSV Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.CsvName}" Tag="CSV Name"
+                            <TextBox Text="{Binding CustomerToEdit.CsvName}" Tag="CSV Name"
                                      IsEnabled="{Binding HasSelectedCustomer}"/>
                             <Label Content="Order Name"/>
-                            <TextBox Text="{Binding SelectedCustomer.OrderName}" Tag="Order Name"
+                            <TextBox Text="{Binding CustomerToEdit.OrderName}" Tag="Order Name"
                                      IsEnabled="{Binding HasSelectedCustomer}"/>
                             <Button x:Name="UpdateCustomer" Content="Update Customer"/>
                         </StackPanel>
